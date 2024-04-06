@@ -42,18 +42,21 @@
 \begin{document}
 
 \begin{talk}
-  {Low Discrepancy Sequences for Kernel Density Estimation}% [1] talk title
+  {Quasi-Monte Carlo Kernel Density Estimation}% [1] talk title
   {Fred J. Hickernell}% [2] speaker name
   {Department of Applied Mathematics and Center for Interdisciplinary Scientific Computation, Illinois Institute of Technology}% [3] affiliations
   {hickernell@iit.edu}% [4] email
-  {}% [5] coauthors
+  {Guillem Grao I Grasa}% [5] coauthors
   {Universality in QMC and related algorithms}% [6] special session. Leave this field empty for contributed talks. 
 				% Insert the title of the special session if you were invited to give a talk in a special session.
 			
-Low discrepancy (LD) sequences, such as lattice, digital, and Halton sequences, are well known to estimate multivariate integrals with greater computational efficiency than independent and identically distributed (IID) sequences.  The use of LD sequences for density estimation has been studied recently %\cite{AbdEtal21a,LEcuyer2022b,LEcPuc20a} 
-[1--3].
+Quasi-Monte Carlo (qMC) methods use low discrepancy (LD) sequences, such as lattice, digital, and Halton sequences to estimate multivariate integrals with greater computational efficiency than simple Monte Carlo.  Given a random variable $Y = f(\boldsymbol{X})$, where $\boldsymbol{X} \sim \mathcal{U}[0,1]^d$, this equivalent to estimating $\mathbb{E}(Y)$.
 
-This talk explores further the use of LD sequences for kernel density estimation, but from a deterministic perspective.  Given a random variable $Y = f(\boldsymbol{X})$, where $\boldsymbol{X} \sim \mathcal{U}[0,1]^d$, with a probability density $\varrho$, and kernel density estimate, $\varrho$ as 
+QMC methods for estimating, $\varrho$, the density of $Y$, have been studied recently %\cite{AbdEtal21a,LEcuyer2022b,LEcPuc20a,GilKuoSlo23a} 
+[1--4], in many cases employing conditional sampling.
+This talk explores qMC kernel density estimation without employing conditional sampling.  
+
+The error of the kernel density estimate is bounded above by the sum of two terms:  the error in approximating the density by a smoothed version, and the error in approximating the smoothed density by a qMC cubature.   Theoretical and numerical results are presented.
 
 \medskip
 
@@ -64,11 +67,16 @@ This talk explores further the use of LD sequences for kernel density estimation
 \newblock {\em SIAM/ASA J.\ Uncertain.\ Quantif.}, 9(280-301).
 
 \item[{[2]}]
-L'Ecuyer, P. and Puchhammer, F. (2022).
-\newblock Density estimation by Monte Carlo and quasi-Monte Carlo.
-\newblock In Keller, A., editor, {\em {M}onte {C}arlo and Quasi-{M}onte {C}arlo Methods: {MCQMC}, {O}xford, England, {A}ugust 2020}, Springer Proceedings in Mathematics and Statistics. Springer, Cham.
+Gilbert, A.~D., Kuo, F.~Y., and Sloan, I.~H. (2023).
+\newblock Analysis of preintegration followed by quasi-{M}onte {C}arlo integration for distribution functions and densities.
+\newblock {\em SIAM J.\ Numer.\ Anal.}, 61:135--166.
 
 \item[{[3]}]
+L'Ecuyer, P. and Puchhammer, F. (2022).
+\newblock Density estimation by {M}onte {C}arlo and quasi-{M}onte {C}arlo.
+\newblock In Keller, A., editor, {\em {M}onte {C}arlo and Quasi-{M}onte {C}arlo Methods: {MCQMC}, {O}xford, England, {A}ugust 2020}, Springer Proceedings in Mathematics and Statistics, pages 3--21. Springer, Cham.
+
+\item[{[4]}]
 L'Ecuyer, P., Puchhammer, F., and {Ben Abdellah}, A. (2022).
 \newblock Monte Carlo and quasi{\textendash}{M}onte {C}arlo density estimation via conditioning.
 \newblock {\em INFORMS J.\ Comput.}, 34(3):1729--1748.
@@ -77,8 +85,7 @@ L'Ecuyer, P., Puchhammer, F., and {Ben Abdellah}, A. (2022).
 
 \end{talk}
 
-%\bibliographystyle{apalike}
-%\bibliography{FJH23,FJHown23}
+%\bibliographystyle{apalike} \bibliography{FJH23,FJHown23}
 
 \end{document}
 
