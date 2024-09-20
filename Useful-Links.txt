@@ -1,0 +1,4 @@
+https://github.com/mljar/mercury make presentations from Jupyter notebooks
+https://www.mathworks.com/products/reference-architectures/jupyter.html Jupyter + Matlab
+https://mljar.com/blog/jupyter-notebook-presentation/ create Presentation from Jupyter notebook
+https://nbconvert.readthedocs.io/en/latest/ nbconvert tool
