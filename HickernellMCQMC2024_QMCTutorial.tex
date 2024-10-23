@@ -65,6 +65,13 @@
 \input{macros}
 %%%% end added CL
 
+
+%%Fred's temporary macros
+
+
+%%End of Fred's temporary macros
+
+
 \begin{document}
 
 
@@ -72,7 +79,7 @@
 %
 \title{Quasi-Monte Carlo Methods:  What, Why, and How?}
 %
-\titlerunning{Hamiltonian Mechanics}  % abbreviated title (for running head)
+\titlerunning{Quasi-Monte Carlo Methods}  % abbreviated title (for running head)
 %                                     also used for the TOC unless
 %                                     \toctitle is used
 %
@@ -103,7 +110,11 @@ This tutorial describes  low discrepancy sequences  and their quality measures. 
 \end{abstract}
 %
 \section{Introduction} \label{sec:intro}
-%
+There are may settings where key quantities are unknown, such as future financial market forces, the porosity of rock containing oil or gas, or particle interactions leading to observations in a high energy physics experiment.   Such situations are often modeled using random variables or stochastic processes.  Computations are performed by generating a multidude of scenarios informed by the assumed probability distribution. One may then estimate the mean outcome, quantiles, and distributions.  This is the essence of the Monte Carlo method.
+
+In mathematical terms, the outcome is $Y := f(\boldsymbol{X})$, where $\boldsymbol{X}$ is a vector random variable driving the outcome, and $f$ is a function whose values can be computed by an algorithm, whose complexity may be such that it can be considered a ``black box''.  The scenarios are the $\bsX_0, \bsX_1, \ldots$ that give rise to $Y_0 = f(\bsX_0), Y_1 = f(\bsX_1), \ldots$.  The $Y_i$ form the basis for approximating $\bbE(Y)$ and other quantities of interest.
+
+How one generates scenarios
 %
 \section{Where in Practice} \label{sec:practice}
 \section{Low Discrepancy Sequence Constructions} \label{sec:construct}
