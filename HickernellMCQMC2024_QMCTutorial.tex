@@ -118,7 +118,7 @@ There are may settings where key underlying quantities that affect the outcome a
 \end{itemize}
 In such situations the unknown inputs are often modeled using random variables or stochastic processes.  Computations are performed by generating a multidude of possible scenarios informed by the assumed probability distribution of the input. These are used to estimate the mean, quantiles, and/or probability distribution of the outcome.  This is the essence of the Monte Carlo method.
 
-In mathematical terms, the outcome is $Y := f(\boldsymbol{X})$, where $\boldsymbol{X}$ is a vector random variable of inputs determining the outcome.  The values of the function $f$ can be computed by an algorithm, whose complexity may be such that $f$ can be considered a ``black box''.  The scenarios are $\bsX_0, \bsX_1, \ldots$, which give rise to $Y_0 = f(\bsX_0), Y_1 = f(\bsX_1), \ldots$.  The $Y_i$ form the basis for approximating $\bbE(Y)$ and other quantities of interest.
+In mathematical terms, the outcome is $Y := f(\boldsymbol{X})$, where $\boldsymbol{X}$ is a vector random variable of inputs determining the outcome.  The values of the function $f$ can be computed by an algorithm, whose complexity may be such that $f$ can be considered a ``black box''.  The scenarios are $\bsX_0, \bsX_1, \ldots$, which give rise to outcomes $Y_0 = f(\bsX_0), Y_1 = f(\bsX_1), \ldots$.  The $Y_i$ form the basis for approximating $\bbE(Y)$ and other quantities of interest.
 
 How one generates scenarios
 %
