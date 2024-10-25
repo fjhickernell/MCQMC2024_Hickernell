@@ -120,7 +120,11 @@ In such situations the unknown inputs are often modeled using random variables o
 
 In mathematical terms, the outcome is $Y := f(\boldsymbol{X})$, where $\boldsymbol{X}$ is a vector random variable of inputs determining the outcome.  The values of the function $f$ can be computed by an algorithm, whose complexity may be such that $f$ can be considered a ``black box''.  The scenarios are $\bsX_0, \bsX_1, \ldots$, which give rise to outcomes $Y_0 = f(\bsX_0), Y_1 = f(\bsX_1), \ldots$.  The $Y_i$ form the basis for approximating $\bbE(Y)$ and other quantities of interest.
 
-How one generates scenarios
+Simple or independent and identically distributed (IID)  Monte Carlo chooses $\bsX_0, \bsX_1, \ldots$ to be IID.  Quasi-Monte Carlo (qMC) methods choose $\bsX_0, \bsX_1, \ldots$ \emph{not} IID, but to have an empirical distribution that is close to the actual probability distribution of $\bsX$.  The difference between these two distributions is called a \emph{discrepancy}, and the sequences used in qMC are called low discrepancy sequences.
+
+This tutorial describes how
+
+
 %
 \section{An Illustration of Quasi-Monte Carlo} \label{sec:practice}
 \section{Low Discrepancy Sequence Constructions} \label{sec:construct}
