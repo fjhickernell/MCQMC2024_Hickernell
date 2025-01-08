@@ -150,7 +150,7 @@ but to do so requires some further preparation.  This integral above, $\mu$, may
 \end{equation}
 
 Since the low discrepancy sequences that drive qMC are defined on the unit cube, $[0,1]^d$, we perform a variable transformation $\bst = \bigl (\Phi^{-1}(x_1), \ldots, \Phi^{-1}(x_d) \bigr )/\sqrt{2}$, where is $\Phi$ is the cumulative distribution function of the standard Gaussian random variable.  This reimagines the integral $I$ as the expectation of a function, $f$, of a standard uniform random variable:
-\begin{multline}\label{eq:keisterB}
+\begin{multline}\label{eq:keisterC}
 	\mu = \int_{[0,1]^d} \underbrace{\pi^{d/2} \cos\Bigl (\sqrt{2} \bigl \lVert \bigl( \Phi^{-1}(x_1), \ldots, \Phi^{-1}(x_d)\bigr) \bigr\rVert \Bigr)}_{=:f(\bsx)} \, \rmd \bsx \\
 	= \bbE[Y]
 	= \bbE[f(\bsX)], \qquad \bsX \sim \calU[0,1]^d.
@@ -167,7 +167,7 @@ Consider the specific case of $d=6$ for which $\mu \approx -2.327303729298$.  We
 \begin{figure}
 	\centering
 	\includegraphics[width =10cm]{\figpath/n_is_16777216_d_is_6_n_rep_is_50_KeisterErrors.pdf}
-	\caption{The relative error of approximationg $\mu$ defined in \eqref{eq:keisterB} by the sample mean, $\hat{\mu}_n$ defined in \eqref{eq:sample_mean} for various choices of nodes, $\bsX_0, \bsX_1, \ldots$.  Grids have the largest error and low discrepancy (qMC) nodes have the smallest error. \label{fig:keister-err}}
+	\caption{The relative error of approximationg $\mu$ defined in \eqref{eq:keisterC} by the sample mean, $\hat{\mu}_n$ defined in \eqref{eq:sample_mean} for various choices of nodes, $\bsX_0, \bsX_1, \ldots$.  Grids have the largest error and low discrepancy (qMC) nodes have the smallest error. \label{fig:keister-err}}
 \end{figure}
 
 Note the following from this example:
