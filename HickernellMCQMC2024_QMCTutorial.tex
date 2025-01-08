@@ -174,12 +174,18 @@ Note the following from this example:
 \begin{itemize}
 	\item This integral is not particularly easy.  Even the best choice of nodes requires at least $n=100$ to get a relative error below $10\%$.
 
-	\item Although grids may be attractive for low dimensional problems, e.g., $d = 1$, $2$, or $3$, they do poorly for this modest dimension, $d=6$.  For modest $d$, the possible sample sizes, $n$, are quite sparse, as is shown in Figure \ref{fig:keister-err}. Choosing the nodes to lie on a grid corresponds to a tensor product midpoint cubature rule, which would normally be expected to have an error of $\mathcal{O}(n^{-2/d})$  for general $d$.  The error decay of $\mathcal{O}(n^{-1/5})$ rather than $\mathcal{O}(n^{-2/6})$ for this example may be due to the lack of smoothness of $f$ near the boundaries of the unit cube.
-	\item Simple MC (orange) are a substantial improvement over grid nodes.  Their root mean squared error is known to decay as $\mathcal{O}(n^{-1/2})$, as is observed here.  As a reminder, for IID nodes the root mean squared error
+	\item \emph{Grid nodes.} Although grids may be attractive for low dimensional problems, e.g., $d = 1$, $2$, or $3$, they do poorly for this modest dimension, $d=6$.  For this modest $d$, the possible sample sizes, $n$, are quite sparse, as shown in Figure \ref{fig:keister-err}.
+
+	Choosing the nodes to lie on a grid corresponds to a tensor product midpoint cubature rule, which would normally be expected to have an error of $\mathcal{O}(n^{-2/d})$  for general $d$.  The error decay of $\mathcal{O}(n^{-1/5})$ rather than $\mathcal{O}(n^{-2/6})$ for this example may be due to the lack of smoothness of $f$ near the boundaries of the unit cube.
+
+	\item \emph{IID nodes.}  Simple MC (orange) is a substantial improvement over grid nodes. As a reminder, for IID nodes the root mean squared error is
 	\begin{equation}\label{eq:IIDerror}
 		\sqrt{\mathbb{E}[(\mu - \hat{\mu})^2]} = \sqrt{\var(\hat{\mu})} = \sqrt{\frac{\var(f(\bsX))}{n}} = \frac{\mathrm{Std}(f(\bsX))}{n^{1/2}},
-	\end{equation*}
-	where $\var$ denotes the variance and $\mathrm{Std}$ the standard deviation.  For simple MC
+	\end{equation}
+	where $\var$ denotes the variance and $\mathrm{Std}$ the standard deviation.  This $\mathcal{O}(n^{-1/2})$ decay is observed in Figure \ref{fig:keister-err}. For simple MC the sample size, $n$, can be any positive integer without affecting the rate of decay of the error.
+
+	\item \emph{Low discrepancy nodes.}  For qMC methods the error decays nearly like $\mathcal{O}(n^{-1})$, which for this example correponds to a reduction in error of several orders of magnitude for large enough $n$.  Typically, low discrepancy sequences have preferred sample sizes.  For this Sobol' sequence, $n$ an positive integer power of $2$ tends to give better accuracy than arbitrary $n$.
+
 \end{itemize}
 
 
