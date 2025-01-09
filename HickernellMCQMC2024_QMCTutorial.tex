@@ -220,23 +220,45 @@ This section introduces some of the most popular LD sequences.  What sets these 
 
 \subsection{Lattice Sequences} \label{sec:lattice}
 The simplest LD construction is the family of good lattice points \cite{DicEtal22a,SloJoe94}.  As a finite node set, they are defined as follows:
-\begin{equation}
-	\bsx_i = i\bsh/n \pmod \bsone, \qquad i = 0, \ldots, n-1
+\begin{equation} \label{eq:latticepts}
+	\bsx_i = i\bsh/n \pmod \bsone, \qquad i = 0, \ldots, n-1,
 \end{equation}
-where $\bsh$ is a well chosen $d$-dimensional integer vector.  Note that the set $\{\bsx_0, \ldots, \bsx_{n-1}\}$ is closed under addition modulo $\bsone$ so that it forms a group.  Figure \ref{fig:latticeconstruct} illustrates this construction for $n = 16$ and $\bsh = (1,11)$.
+where $\bsh$ is a well chosen $d$-dimensional integer vector. Figure \ref{fig:latticeconstruct} illustrates this construction for $n = 16$ and $\bsh = (1,11)$.  Note that the set $\{\bsx_0, \ldots, \bsx_{n-1}\}$ defined in \eqref{eq:latticepts} is closed under addition modulo $\bsone$ so that it forms a group.
+
 
 \begin{figure}
 	\centering
 	\includegraphics[width = \textwidth]{\figpath/16_lattice_construct_d2.pdf}
-	\caption{The construction of a good lattice point set     \label{fig:latticeconstruct}}
+	\caption{The construction of a good lattice point set in two dimensions with $16$ nodes is obtained by moving $\bsh/n$ beyond the present point and wrapping around the boundaries of the square until one returns to the origin. \label{fig:latticeconstruct}}
 \end{figure}
+
 
 One disadvantage of this construction is that it is not readily extensible. For the example in Figure \ref{fig:latticeconstruct} the first $8$ points do not fill the unit square.  However, the set of points defined by even $i$ do a reasonable job.  This suggests a method for defining lattice sequences that was proposed independently by \cite{Mai81a} and \cite{HicEtal00}.
 
-Let's start with the one-dimensional extensible lattice that is defined by the van der Corput sequence, $\phi_b(0), \phi_b(1), \ldots$.  This involves reflecting the digits of the integer $i$ in base $b$ about the decimal point.  For example, $i = 6 = 110_{2}$ give $x_6 = {}_20.011 = 3/8$, or in general
+Let's start with the one-dimensional extensible lattice that is defined by the van der Corput sequence, $\{\phi_b(0), \phi_b(1), \ldots\}$.  This involves reflecting the digits of the integer $i$ in base $b$ about the decimal point.  For example, $i = 6 = 110_{2}$ gives $\phi_2(6) = {}_20.011 = 3/8$, or in general,
 \begin{equation}
-	i = i_0 + i_1b + i_2 b^2 + \cdots \implies x_i = \phi_b(i) := i_0 b^{-1} + i_1 b^{-2} + i_2 b^{-3} + \cdots \in [0,1).
+	i = i_0 + i_1b + i_2 b^2 + \cdots \implies \phi_b(i) := i_0 b^{-1} + i_1 b^{-2} + i_2 b^{-3} + \cdots \in [0,1).
 \end{equation}
+The first $n = b^m$ nodes in the van der Corput sequence correspond to the evenly spaced nodes $\{0, b^{-m}, \ldots, 1 - b^{-m} \}$---albeit in a different order---for all positive integers $m$.
+
+To construct an extensible lattice, we replace $i/n$ in \eqref{eq:latticepts} by $\phi_b(i)$ to get
+\begin{equation} \label{eq:extensiblelattice}
+	\bsx_i =\phi_b( i)\bsh \pmod \bsone, \qquad i = 0, 1 , \ldots.
+\end{equation}
+This reordering of points from the original construction allows us to preserve the lattice structure for the first $b^m$ points for any non-negative integer $m$. That is, $\{\bsx_0, \ldots, \bsx_{2^m-1}\}$ is a closed under addition modulo $\bsone$.
+
+Figure \ref{fig:extensiblelatticeconstruct} shows the first $4$, $8$, and $16$ points of the earlier example in Figure \ref{fig:latticeconstruct}.  The blue nodes are a copy of the nodes in the plot to the left, and the the orange nodes correspond to a shifted copy of the blue nodes modulo $\bsone$.  For the left plot, the shift is $\phi_2(2)\bsh = (1,11)/4$ or equivalently $(0.25,0.75)$.  For the middle plot, the shift is $\phi_2(4)\bsh = (1,11)/8$ or equivalently $(0.125,0.375)$. For the right plot, the shift is $\phi_2(8)\bsh = (1,11)/16$  or equivalently $(0.0625,0.6875)$.
+
+
+For the example in Figure \ref{fig:extensiblelatticeconstruct}, increasing $n$ beyond $16$ leads to repetition of the orginal points because the generator $\bsh$ has integers less than $16$.  Obtaining a truly extensible lattice sequence that  the
+
+
+\begin{figure}
+	\centering
+	\includegraphics[width = \textwidth]{\figpath/16_extensible_lattice_construct_d2.pdf}
+	\caption{An extensible lattice corresponding to  Figure \ref{fig:latticeconstruct}  with the nodes reordered using the van der Corput sequence in base $2$.  For each plot the blue nodes are a copy of the nodes to the left and the orange nodes are a shifted copy (modulo $\bsone$) of the blue nodes. \label{fig:extensiblelatticeconstruct}}
+\end{figure}
+
 
 \section{Discrepancy} \label{sec:discrepancy}
 \section{Randomization} \label{sec:random}
