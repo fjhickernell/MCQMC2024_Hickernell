@@ -68,7 +68,7 @@
 
 %%Fred's temporary macros
 \newcommand{\figpath}{Figures}
-
+\usepackage{xspace}
 
 %%End of Fred's temporary macros
 
@@ -236,10 +236,11 @@ where $\bsh$ is a well chosen $d$-dimensional integer vector. Figure \ref{fig:la
 One disadvantage of this construction is that it is not readily extensible. For the example in Figure \ref{fig:latticeconstruct} the first $8$ points do not fill the unit square.  However, the set of points defined by even $i$ do a reasonable job.  This suggests a method for defining lattice sequences that was proposed independently by \cite{Mai81a} and \cite{HicEtal00}.
 
 Let's start with the one-dimensional extensible lattice that is defined by the van der Corput sequence, $\{\phi_b(0), \phi_b(1), \ldots\}$.  This involves reflecting the digits of the integer $i$ in base $b$ about the decimal point.  For example, $i = 6 = 110_{2}$ gives $\phi_2(6) = {}_20.011 = 3/8$, or in general,
-\begin{equation}
-	i = i_0 + i_1b + i_2 b^2 + \cdots \implies \phi_b(i) := i_0 b^{-1} + i_1 b^{-2} + i_2 b^{-3} + \cdots \in [0,1).
+\begin{equation} \label{eq:vdc}
+	\phi_b(i) := i_0 b^{-1} + i_1 b^{-2} + i_2 b^{-3} + \cdots \in [0,1) \quad \text{for }
+		i = i_0 + i_1b + i_2 b^2 + \cdots .
 \end{equation}
-The first $n = b^m$ nodes in the van der Corput sequence correspond to the evenly spaced nodes $\{0, b^{-m}, \ldots, 1 - b^{-m} \}$---albeit in a different order---for all positive integers $m$.
+For all non-negative integers, $m$, the first $n = b^m$ nodes in the van der Corput sequence correspond to the evenly spaced nodes $\{0, b^{-m}, \ldots, 1 - b^{-m} \}$---albeit in a different order.
 
 To construct an extensible lattice, we replace $i/n$ in \eqref{eq:latticepts} by $\phi_b(i)$ to get
 \begin{equation} \label{eq:extensiblelattice}
@@ -249,15 +250,25 @@ This reordering of points from the original construction allows us to preserve t
 
 Figure \ref{fig:extensiblelatticeconstruct} shows the first $4$, $8$, and $16$ points of the earlier example in Figure \ref{fig:latticeconstruct}.  The blue nodes are a copy of the nodes in the plot to the left, and the the orange nodes correspond to a shifted copy of the blue nodes modulo $\bsone$.  For the left plot, the shift is $\phi_2(2)\bsh = (1,11)/4$ or equivalently $(0.25,0.75)$.  For the middle plot, the shift is $\phi_2(4)\bsh = (1,11)/8$ or equivalently $(0.125,0.375)$. For the right plot, the shift is $\phi_2(8)\bsh = (1,11)/16$  or equivalently $(0.0625,0.6875)$.
 
-
-For the example in Figure \ref{fig:extensiblelatticeconstruct}, increasing $n$ beyond $16$ leads to repetition of the orginal points because the generator $\bsh$ has integers less than $16$.  Obtaining a truly extensible lattice sequence that  the
-
-
 \begin{figure}
 	\centering
 	\includegraphics[width = \textwidth]{\figpath/16_extensible_lattice_construct_d2.pdf}
 	\caption{An extensible lattice corresponding to  Figure \ref{fig:latticeconstruct}  with the nodes reordered using the van der Corput sequence in base $2$.  For each plot the blue nodes are a copy of the nodes to the left and the orange nodes are a shifted copy (modulo $\bsone$) of the blue nodes. \label{fig:extensiblelatticeconstruct}}
 \end{figure}
+
+For the example in Figure \ref{fig:extensiblelatticeconstruct}, increasing $n$ beyond $16$ repeats the orginal points because the generating vector $\bsh$ has integers less than $16$.  Obtaining a truly extensible lattice sequence requires that $\bsh$ be a vector of generalized integers---essentially integers with infinite numbers of nonzero digits---as explained in \cite{HicNie03a}, where the existence of good generating vectors is also proved.  In practice, one searches computationally for a $\bsh$ that produces good set of lattice nodes of size $n = b^m$ for a range of $m$ \cite{HicEtal00}.
+
+\subsection{Digital Sequences} \label{sec:digital}
+
+Another family of LD sequences that also builds from the van der Corput sequence of \eqref{eq:vdc} is digital sequences \cite{DicPil10a,Nie92}.  For simplicity, we restrict ourselves to $b = 2$ and let $\oplus$ denote digitwise addition, e.g., $3/8 \oplus 3/4 = {}_20.011 \oplus {}_20.110 = {}_20.101 = 5/8$.  A digital sequence is defined as
+\begin{equation} \label{eq:vdc}
+	\bsx_i := i_0 \bsc_1 \oplus i_1 \bsc_2 \oplus i_2 \bsc_3 \oplus \cdots \in [0,1)^d \quad \text{for }
+	i = i_0 + i_12 + i_2 2^2 + \cdots,
+\end{equation}
+where $\bsc_1, \bsc_2, \ldots$ are carefully chosen.  If $c_{ij\ell}$ denotes the $\ell^{\text{th}}$ digit of the $j^{\text{th}}$ coordinate of $\bsc_i$, then in the literature one may see the generators of digital sequences stored as generating matrices, $\mathsf{C}_j = (c_{ij\ell})_{\ell,i = 1}^{M,N}$ for $j = 1, \ldots, d$, where $M$ is th maximum number of bits in the expression for $\bsx_i$, say $52$, and $2^N$ is the maximum number of nodes that is intended to be generated.
+
+Digital sequence generators can be found via number theory or numerical search.  The
+
 
 
 \section{Discrepancy} \label{sec:discrepancy}
