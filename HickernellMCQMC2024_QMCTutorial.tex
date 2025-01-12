@@ -124,9 +124,9 @@ There are may settings where key underlying quantities that affect the outcome a
 \end{itemize}
 In such situations, the unknown inputs are often modeled using random vector variables or stochastic processes.  Computations are performed by generating a multidude of possible outcomes informed by the assumed probability distribution of the input. These are used to estimate the mean, quantiles, and/or probability distribution of the outcome.  This is the essence of the Monte Carlo (MC) method.
 
-In mathematical terms, the random outcome is $Y := f(\bsX)$, where $\bsX$ is a vector random input.  Given a particular input value, $\bsx$, the corresponding outcome  $y = f(\bsx)$ can be computed by an algorithm, whose complexity may be such that $f$ can be considered a ``black box''.  The computer experiment selects a sequence of input values or \emph{nodes} $\bsx_0, \bsx_1, \ldots$, which give rise to the observed outcomes $y_0 = f(\bsx_0), y_1 = f(\bsx_1), \ldots$.  The $y_i$ form the basis for approximating $\bbE(Y)$ and other quantities of interest.
+In mathematical terms, the random outcome is $Y := f(\bsX)$, where $\bsX$ is a vector random input.  Given a particular input value, $\bsx$, the corresponding outcome  $y = f(\bsx)$ can be computed by an algorithm, whose complexity may be such that $f$ can be considered a ``black box''.  The user selects a sequence of input values, also known as data sites or \emph{nodes}, $\bsx_0, \bsx_1, \ldots$, which give rise to the observed outcomes $y_0 = f(\bsx_0), y_1 = f(\bsx_1), \ldots$.  The $y_i$ form the basis for approximating $\bbE(Y)$, quartiles of $Y$, the probability density of $Y$, and other quantities of interest.
 
-Simple or independent and identically distributed (IID)  Monte Carlo chooses the nodes $\{\bsx_0, \bsx_1, \ldots\}$ to be IID.  Quasi-Monte Carlo (qMC) methods choose the nodes \emph{not} IID, but with an empirical distribution that approximates well the true probability distribution of $\bsX$.  The difference between these two distributions is called a \emph{discrepancy}, and the node sequences used in qMC are called low discrepancy (LD) sequences.
+Simple  Monte Carlo chooses the nodes $\{\bsx_0, \bsx_1, \ldots\}$ to be independent and identically distributed (IID).  Quasi-Monte Carlo (qMC) methods choose the nodes \emph{not} IID, but with an empirical distribution that approximates well the true probability distribution of $\bsX$.  The difference between these two distributions is called a \emph{discrepancy}, and the node sequences used in qMC are called low discrepancy (LD) sequences.
 
 This tutorial describes what qMC is, why we would want to use qMC, and how qMC can be implemented well.  The next session provides an illustrative example of the advantages of qMC.  This is followed by a description of how LD sequences are constructed and various measures of discrepancy.  We then explain how randomization can improve qMC, how to decide what sample size, $n$, is sufficient, and how to rewrite the problem of interest in a qMC-friendly way.
 
@@ -134,7 +134,7 @@ This tutorial describes what qMC is, why we would want to use qMC, and how qMC c
 %
 \section{An Illustration of Quasi-Monte Carlo} \label{sec:practice}
 
-To illustrate the benefits of qMC, consider the example from Keister \cite[(13)]{Kei96}, motivated by computational physics:
+We illustrate the benefits of qMC with an example from Keister \cite[(13)]{Kei96}, motivated by computational physics:
 
 \begin{equation}\label{eq:keisterA}
 	\mu := \int_{\mathbb{R}^d} \cos(\lVert \bst \rVert) \exp(-\lVert \bst \rVert^2) \, \rmd \bst,
@@ -155,14 +155,19 @@ This $\mu$, may be thought of as the expectation of $Y := g(\bsT) := \pi^{d/2} \
 \begin{equation}\label{eq:keisterB}
 	\mu = \int_{\mathbb{R}^d} \underbrace{\pi^{d/2} \cos(\lVert \bst \rVert)}_{=:g(\bst)} \cdot \underbrace{\frac{\exp(-\lVert \bst \rVert^2)}{\pi^{d/2}}}_{\text{density of } \calN(\bszero,\mathsf{I}/2)} \, \rmd \bst = \bbE(Y) = \bbE[g(\bsT)].
 \end{equation}
-Nearly all LD sequences, which underly qMC, are defined to approximate the standard uniform distribution, $\calU[0,1]^d$.  Thus, we perform a variable transformation $\bst = \bigl (\Phi^{-1}(x_1), \ldots, \Phi^{-1}(x_d) \bigr )/\sqrt{2}$, where is $\Phi$ is the cumulative distribution function of the standard Gaussian random variable.  This reimagines the integral $\mu$ as the expectation of a function, $f$, of a standard uniform random variable:
+Nearly all LD sequences, which underly qMC, are defined to approximate the standard uniform distribution, $\calU[0,1]^d$.  Thus, we perform a variable transformation $bst = \bigl (\Phi^{-1}(x_1), \ldots, \Phi^{-1}(x_d) \bigr )/\sqrt{2}$,
+where is $\Phi$ is the cumulative distribution function of the standard Gaussian random variable.  This reimagines the integral $\mu$ as the expectation of a function, $f$, of a standard uniform random variable:
 \begin{multline}\label{eq:keisterC}
 	\mu = \int_{[0,1]^d} \underbrace{\pi^{d/2} \cos\Bigl (\bigl \lVert \bigl( \Phi^{-1}(x_1), \ldots, \Phi^{-1}(x_d)\bigr) \bigr\rVert/\sqrt{2}  \Bigr)}_{=:f(\bsx)} \, \rmd \bsx \\
 	= \bbE[Y]
 	= \bbE[f(\bsX)], \qquad \bsX \sim \calU[0,1]^d.
 \end{multline}
 
-Now we can apply IID MC, qMC, and other computational methods to approximate $\mu$.  Consider the specific case of $d=6$ for which $\mu \approx -2.327303729298$.  We approximate $\mu$ by the sample mean defined in \eqref{eq:sample_mean} for three different kinds of nodes, $\{\bsx_i\}_{i=0}^{n-1}$, for various sample sizes, $n$, and plot the relative errors, $\lvert (\mu - 	\hat{\mu}_n)/\mu\rvert$ in Figure \ref{fig:keister-err}. The three kind of nodes are
+Now we can apply IID MC, qMC, and other computational methods to approximate $\mu$ by the sample mean
+\begin{equation} \label{eq:sample_mean_Keister}
+	\hat{\mu}_n = \frac 1n \sum_{i=1}^n pi^{d/2} \cos\Bigl (\bigl \lVert \bigl( \Phi^{-1}(x_{i1}), \ldots, \Phi^{-1}(x_{id})\bigr) \bigr\rVert/\sqrt{2}  \Bigr).
+\end{equation}
+Consider the specific case of $d=6$ for which $\mu \approx -2.327303729298$.  We approximate $\mu$ by the sample mean defined in \eqref{eq:sample_mean} for three different kinds of nodes, $\{\bsx_i\}_{i=0}^{n-1}$, for various sample sizes, $n$, and plot the relative errors, $\lvert (\mu - 	\hat{\mu}_n)/\mu\rvert$ in Figure \ref{fig:keister-err}. The three kind of nodes are
 \begin{enumerate}
 	\renewcommand{\labelenumi}{\roman{enumi}.}
 	\item Cartesian grids, $\{1/(2m), \ldots, (2m-1)/(2m) \}^6$, for $m = 2, 3, \ldots$ and $n = m^6$ (blue),
@@ -274,28 +279,29 @@ Another family of LD sequences also built upon the van der Corput sequence \eqre
 \end{equation}
 where $\bsx_1, \bsx_2, \ldots$ are carefully chosen.  The node set $\{ \bsx_0, \ldots, \bsx_{2^m-1}\}$  for non-negative integer $m$ is called a digital net and is closed under $\oplus$.
 
-If $x_{ij\ell}$ denotes the $\ell^{\text{th}}$ digit of the $j^{\text{th}}$ coordinate of $\bsx_i$, then in the literature one may see the generators of digital sequences stored as generating matrices, $\mathsf{C}_j = (x_{ij\ell})_{\ell,i = 1}^{M,N}$ for $j = 1, \ldots, d$, where $M$ is th maximum number of bits in the expression for $\bsx_i$, say $52$, and $2^N$ is the maximum number of nodes that is intended to be generated.  In this form
+If $x_{ij\ell}$ denotes the $\ell^{\text{th}}$ digit of the $j^{\text{th}}$ coordinate of $\bsx_i$, then the literature often defineds generating matrices, $\mathsf{C}_j = (x_{ij\ell})_{\ell,i = 1}^{M,N}$ for $j = 1, \ldots, d$, where $M$ is th maximum number of bits in the expression for $\bsx_i$, say $52$, and $2^N$ is the maximum number of nodes that is intended to be generated.  The digital sequence can then be defined equivalently as
 \begin{equation} \label{eq:digitalB}
-	\overrightarrow{x}_{ij} = \mathsf{C}_j \overrightarrow{i} \quad \pmod{2}
+	\begin{pmatrix} x_{ij1} \\ x_{ij2} \\ \vdots \end{pmatrix}
+	= \mathsf{C}_j \begin{pmatrix} i_0 \\ i_1 \\ \vdots \end{pmatrix} \quad \pmod{2}, \qquad j = 1,\ldots, d, \ i = 0, 1, \ldots.
 \end{equation}
-where $\overrightarrow{x}_{ij}$ denotes the binary digits of $x_{ij}$ and $\overrightarrow{i}$ denotes the binary digits of $i$.
 
-Imagine a box in $[0,1)^d$ of the form
+
+To understand how these points might be evenly distributed over $[0,1)^d$, imagine a box of the form
 \begin{multline} \label{eq:element_box}
 	[a_1 b^{-k_1}, (a_1 + 1) 2^{-k_1}) \times \cdots \times [a_d b^{-k_d}, (a_d + 1) 2^{-k_d}), \\
 	a_j \in \{0, \ldots, 2^{k_j} - 1\}, \ k_j \in \{0,1, \ldots \}, \qquad j =1, \ldots d.
 \end{multline}
-This box has volume $2^{-(k_1 + \cdots +k_d)} = 2^{-\lVert\bsk\rVert_1}$.  For a digital net with $2^m$ points and $m \ge \lVert \bsk \rVert_1$, a "fair share" of nodes would be for this box would be $2^{m- \lVert \bsk \rVert_1}$.  This will occur if
+This box has volume $2^{-(k_1 + \cdots +k_d)} = 2^{-\lVert\bsk\rVert_1}$.  For a digital net with $2^m$ points and $m \ge \lVert \bsk \rVert_1$, a ``fair share" of nodes for this box would be $2^{m- \lVert \bsk \rVert_1}$.  This will occur if and only if
 \begin{multline} \label{eq:tcond}
 	\text{the first $k_1$ rows of the first $m$ columns of $\mathsf{C}_1$ plus} \\
 	\text{the first $k_2$ rows of the first $m$ columns of $\mathsf{C}_2$ plus} \\
 	 \cdots \\
 	\text{the first $k_d$ rows of the first $m$ columns of $\mathsf{C}_d$} \\
-	\text{are linearly independent over the finite field with the elements $\{0,1\}$. }
+	\text{are linearly independent over the finite field with the elements $\{0,1\}$, }
 \end{multline}
-This above consdition is necessary and sufficient regardless of the choice of $\bsa = (a_1, \ldots, a_d)$.  The $t$-value of a digital net with $2^m$ nodes is defined as the smallest $t$ for which condition \eqref{eq:tcond} holds for all $\bsk$ with $\lVert \bsk \rVert_1 \le m-t$.  This digital net is then called a $(t,m,d)$-net.  A digital sequence for which this condition holds for all non-negative $m$ is called a  $(t,d)$-sequence.
+regardless of the choice of $\bsa = (a_1, \ldots, a_d)$.  The $t$-value of a digital net with $2^m$ nodes is defined as the smallest $t$ for which condition \eqref{eq:tcond} holds for all $\bsk$ with $\lVert \bsk \rVert_1 \le m-t$.  Equivalently, this $t$ is the smallest value for which every box of the form \eqref{eq:element_box} with volume $2^{\lVert \bsk \rVert_1 - m}$ contains its fair share of $2^t$ nodes.  Such a digital net is then called a $(t,m,d)$-net.  An infinite sequence of the form \eqref{eq:digitalB} for which this condition holds for all non-negative $m$ is called a  $(t,d)$-sequence.
 
-To illustrate this idea of the $t$-value, consider the following digital net with $2^3$ (eight) nodes, i.e., $m = 3$:
+To illustrate the $t$-value, consider the following digital net with $2^3$ (eight) nodes, i.e., $m = 3$:
 \begin{multline} \label{eq:smallnet}
 	\{(0, 0,   0),
 	(0.5,   0.5,   0.5  ),
@@ -306,7 +312,7 @@ To illustrate this idea of the $t$-value, consider the following digital net wit
 	(0.375, 0.375, 0.625),
 	(0.875, 0.875, 0.125)\}.
 \end{multline}
-Figure \ref{fig:elementinterval} whows two dimensional projections of these nodes and the two-dimensional boxes (rectangles) of the form \eqref{eq:element_box} with $\lVert\bsk\rVert_1 = 3$.  For most of the boxes there is a fare share of one node, but the box $[0,1/4) \times [0,1) \times [0,1/2)$ contains no nodes and the adjacent box, $[1/4,1/2) \times [0,1) \times [0,1/2)$ contains no nodes.  Thus, the $t$-value cannot be $0$.  However, the $t$-value is $1$ because all boxes of the form  \eqref{eq:element_box} with $\lVert\bsk\rVert_1 = 2$, i.e., a volume of $2^{-2} = 1/4$ contain a fair share of $2^{m- \lVert \bsk \rVert_1} = 2$ points.  The node set \eqref{eq:smallnet} is a $(1,3,3)$-net.
+Figure \ref{fig:elementinterval} shows several two dimensional projections of these nodes and the two-dimensional boxes (rectangles) of the form \eqref{eq:element_box} with $\lVert\bsk\rVert_1 = 3$.  Most of the boxes contain their fair share of one node, but the box $[0,1/4) \times [0,1) \times [0,1/2)$ contains two nodes and the adjacent box, $[1/4,1/2) \times [0,1) \times [0,1/2)$ contains no nodes.  Thus, the $t$-value cannot be $0$.  However, the $t$-value is $1$ because all boxes of the form  \eqref{eq:element_box} with $\lVert\bsk\rVert_1 = 2$, i.e., a volume of $2^{-2} = 1/4$ contain a fair share of $2^{m- \lVert \bsk \rVert_1} = 2$ points.  The node set \eqref{eq:smallnet} is a $(1,3,3)$-net.
 
 This conclusion can also be reached by looking at the first three rows and columns of the generating matrices for this digital net, which are
 \begin{equation*}
@@ -320,9 +326,9 @@ This conclusion can also be reached by looking at the first three rows and colum
 	1 & 1 & 0 & \cdots \\ 0 & 1 & 1 & \cdots \\ 0 & 0 & 1 & \cdots \\ \vdots & \vdots & \vdots & \ddots
 \end{pmatrix}.
 \end{equation*}
-For $k_1=2$, $k_2 = 0$, and $k_3 = 1$ condition \eqref{eq:tcond} is not satisfied, and so $t$ cannot be $0$ for the node set  \eqref{eq:smallnet}.  However, condition \eqref{eq:tcond} is satisfied for all $\bsk$ with $\lVert \bsk \rVert = 2$, again confirming that we have a $(1,3,3)$-net.
+For $k_1=2$, $k_2 = 0$, and $k_3 = 1$ condition \eqref{eq:tcond} is not satisfied, and so $t$ cannot be $0$ for the node set  \eqref{eq:smallnet}.  However, condition \eqref{eq:tcond} is satisfied for all $\bsk$ with $\lVert \bsk \rVert_1 = 2$, again confirming that we have a $(1,3,3)$-net.
 
-If we consider only the first two coordinates of the node set defined in \eqref{eq:smallnet}, then  condition \eqref{eq:tcond} is satisfied for all $\bsk$ with $\lVert \bsk \rVert = 3$.  The first two coordinates of \eqref{eq:smallnet} are a $(0,3,2)$-net
+If we consider only the first two coordinates of the node set defined in \eqref{eq:smallnet}, then  condition \eqref{eq:tcond} is satisfied for all $\bsk$ with $\lVert \bsk \rVert_1 = 3$.  The first two coordinates of \eqref{eq:smallnet} are a $(0,3,2)$-net
 
 
 
@@ -335,11 +341,37 @@ If we consider only the first two coordinates of the node set defined in \eqref{
 
 
 
-Digital sequence generators can be found via number theory or numerical search.  The
+Digital sequence generators can be found via number theory or numerical search \cite{}.  The earliest instance is due to Sobol' \cite{}.
 
-(t,m,d)
+\subsection{Halton sequences} \label{sec:Halton}  While lattice sequences and digital sequences have preferred sample sizes, $n$, Halton sequences have no preferred sample size.  The Halton sequence is defined in terms of the van der Corput sequence
+\begin{equation}\label{eq:Halton}
+	\bsx_i = \bigl( \phi_{b_1}(i), \ldots, \phi_{b_d}(i) \bigr), \qquad i = 0, 1, \ldots,
+\end{equation}
+where $b_1, \ldots, b_d$ is a choice of $d$ distinct prime numbers.  Often they are chosen as the first $d$ prime numbers.  Figure \ref{fig:Halton} shows two dimensional projections of Halton points
+
+\begin{figure}
+	\centering
+	\includegraphics[width=\textwidth]{\figpath/64Halton_pts_d6.pdf}
+	\caption{Halton points as defined in \eqref{eq:Halton} have low discrepancy but no preferred sample size. \label{fig:Halton}}
+\end{figure}
 
 \section{Randomization} \label{sec:random}
+The LD constructions described in the previous section have so far been \emph{deterministic}. The sample mean, $\hat{\mu}_n$, does not change each time it is computed like it would for IID nodes.
+
+While determinism has some advantages randomization has advantages as well.
+\begin{itemize}
+	\item Randomization done right removes bias in the estimator.
+	\item Replications of random estimators can facilitate error estimates for the sample mean.
+	\item Often the application of interest requires transforming the LD nodes to mimic other distributions.  This is the case in the Keister example of Section \ref{sec:intro}, as seen in \eqref{eq:sample_mean_Keister}.  There the nodes, $\{\bsx_i\}_{i=0}^{n-1}$, are transformed to mimic a Gaussian distribution.
+
+	The LD sequences defined in the previous section start with $\bsx_0 = \bszero$, as can be seen in \eqref{eq:latticepts}, \eqref{eq:digital}, \eqref{eq:Halton}, and Figures \ref{fig:latticeconstruct}--\ref{fig:Halton}.  The node $\bszero$ becomes infinite under a transformation to mimic a Gaussian distribution, which can trigger runtime errors.  Randomization eliminates nodes on the boundary of the unit cube.
+\end{itemize}
+The key to good randomization is to preserve the LD quality of the node sequence.
+
+shifts
+scrambles
+
+
 randomizations
 random generators
 
