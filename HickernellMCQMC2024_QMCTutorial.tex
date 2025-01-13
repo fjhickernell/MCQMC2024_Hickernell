@@ -246,7 +246,7 @@ One disadvantage of this construction is that it is not readily extensible. For 
 
 Let's start with the one-dimensional extensible lattice that is defined by the van der Corput sequence, $\{\phi_b(0), \phi_b(1), \ldots\}$.  This involves reflecting the digits of the integer $i$ in base $b$ about the decimal point.  For example, $\phi_2(6) = \phi_2(110_{2}) = {}_20.011 = 3/8$.  In general,
 \begin{multline} \label{eq:vdc}
-	\phi_b(_0 + i_1b + i_2 b^2 + \cdots ) := i_0 b^{-1} + i_1 b^{-2} + i_2 b^{-3} + \cdots \in [0,1)
+	\phi_b(i_0 + i_1b + i_2 b^2 + \cdots ) := i_0 b^{-1} + i_1 b^{-2} + i_2 b^{-3} + \cdots \in [0,1)
 	\\
 	 \text{where } i_0, i_1, \ldots \in \{0,\ldots b-1\}.
 \end{multline}
@@ -368,18 +368,119 @@ While determinism has some advantages randomization has advantages as well.
 \end{itemize}
 The key to good randomization is to preserve the LD quality of the node sequence.
 
-shifts
-scrambles
+\subsection{Shifts} \label{sec:shifts}
+The simplest randomization is to shift the node sequence by $\bsDelta  \sim \calU[0,1)^d$.  For lattice  sequences the shift is applied modulo $\bsone$ so that shifted extensible lattice turns
+\eqref{eq:extensiblelattice} into
+\begin{equation} \label{eq:sh_extensiblelattice}
+	\bsx^{\bsDelta\text{-lat}}_i := \bsx_i + \bsDelta \pmod \bsone =\phi_b( i)\bsh + \bsDelta \pmod \bsone, \qquad i = 0, 1 , \ldots.
+\end{equation}
+Since the first $2^m$ elements of the lattice sequence form a group under modulo $\bsone$ addition, the coresponding shifted node set is a coset.  Figure \ref{fig:shift_lat} illustrates three shifts of the lattice plotted in Figure \ref{fig:latticeconstruct}.
 
+\begin{figure}
+	\centering
+	\includegraphics[width = \textwidth]{\figpath/16_shifted_lattice_construct_d2.pdf}
+	\caption{The original unshifted lattice (left) and three different shifts modulo $\bsone$ of the lattice.  Note that the structure of the lattice is maintained. \label{fig:shift_lat}}
+\end{figure}
 
-randomizations
-random generators
+For digital sequences the shift should be applied using digitwise addition.  A digital shift of the digital sequence defined in  \eqref{eq:digital} then becomes
+\begin{equation} \label{eq:sh_digital}
+	\bsx_i^{\bsDelta\text{-dig}} := \bsx_i \oplus \bsDelta = i_0 \bsx_1 \oplus i_1 \bsx_2 \oplus i_2 \bsx_4 \oplus \cdots \oplus \bsDelta \in [0,1)^d \quad \text{for }
+	i = i_0 + i_12 + i_2 2^2 + \cdots.
+\end{equation}
+Three digital shifts of the same net are given in Figure \ref{fig:shift_net}.  A digital shift does not alter the $t$-value of a $(t,m,d)$-net.
+
+\begin{figure}
+	\centering
+	\includegraphics[width = \textwidth]{\figpath/n_8_n_sh_3_shifted_sobol_sequence_d2.pdf}
+	\caption{Three digital shifts of a digital $(0,3,2)$-net with nodes denoted by three different colors.  There is one node in each smaller box of the form \eqref{eq:element_box} for $\lVert \bsk \rVert = 3$, for each digitally shifted net. \label{fig:shift_net}}
+\end{figure}
+
+Let $\{\bsx_i^{\bsDelta}\}_{i=0}^{n-1}$ denote a random shift of any deterministic original node set, $\{\bsx_i \}_{i=0}^{n-1}$ as described above.  That is, $\bsx_i^{\bsDelta} : = \bsx_i + \bsDelta \pmod \bsone$ or  $\bsx_i^{\bsDelta} : = \bsx_i \oplus \bsDelta$ and $\bsDelta \sim \calU[0,1)^d$. This then implies that each $\bsx_i^{\bsDelta} \sim \calU[0,1)^d$ and thus $\hat{\mu}_n$ is an unbiased estimator of $\mu$, which was mentioned at the beginning of this section.
+
+\subsection{Digital Scrambles} \label{sec:scrambles}
+For digital nets one can randomize even further by a scrambling that preserves the $t$-value.  Owen \cite{Owe95} proposed a scrambling of nets called nested uniform scrambling.  A simpler version called linear matrix scrambling was proposed by Matou\v{s}ek \cite{Mat98} and is described here.  Starting from the formulation of digital sequences involving generator matrices in \ref{eq:digitalB}, we multiply each generator matrix on the left by a lower triangular matrix with ones along the diagonals and elements below the diagonal that are randomly chosen to be $0$ or $1$ with equal probability:
+\begin{subequations} \label{eq:scr_lattice}
+\begin{gather} \label{eq:digitalscr}
+	\begin{pmatrix} x^{\text{scr}}_{ij1} \\ x^{\text{scr}}_{ij2} \\ \vdots \end{pmatrix}
+	= \mathsf{L_j} \mathsf{C}_j \begin{pmatrix} i_0 \\ i_1 \\ \vdots \end{pmatrix} + \begin{pmatrix} \Delta_{1j} \\ \Delta_{2j} \\ \vdots \end{pmatrix} \quad \pmod{2}, \qquad j = 1,\ldots, d, \ i = 0, 1, \ldots, \\
+	\mathsf{L_j} :=
+	\begin{pmatrix}
+		1 & 0 & 0 & 0 & \cdots \\
+		l_{21} & 1 & 0 & 0 & \cdots \\
+		l_{31} & l_{32} & 1 & 0 & \cdots \\
+		\vdots & \vdots & \vdots & \ddots & \ddots
+	\end{pmatrix}, \qquad l_{\ell j} \overset {\text{IID}}{\sim} \calU\{0,1\}
+\end{gather}
+\end{subequations}
+A random digital shift, $\bsDelta$ is also added, where $\Delta_{\ell j}$ denotes the $\ell^{\text{th}}$ digit of the $j^{\text{th}}$ of the shift.
+
+\begin{figure}
+	\centering
+	\includegraphics[width = \textwidth]{\figpath/n_8_n_scr_3_scrambled_sobol_sequence_d2.pdf}
+	\caption{Three linear scrambles of a digital $(0,3,2)$-net with nodes denoted by three different colors.  There is one node in each smaller box of the form \eqref{eq:element_box} for $\lVert \bsk \rVert = 3$, for each digitally shifted net. \label{fig:scrambled_net}}
+\end{figure}
+
+[make a scramble of an image]
+
+\subsection{Other Randomizations for Halton}
+
+\subsection{Randomized Generators}
+
 
 \section{Discrepancy} \label{sec:discrepancy}
+So far, we have relied on eye tests and the Keister example to show how LD sequences are better than IID.  This section introduces the theory that shows way minimizing discrepancy leads to better approximations to $\mu$.
+
+
 \subsection{Discrepancies Defined by Kernels} \label{sec:kerdisc}
+Let $K: [0,1)^d \times [0,1)^2 \to \mathbb{R}$ be a function satisfying the following two conditions:
+\begin{subequations}
+	\begin{align}
+		\text{Symmetry:} \quad & K(\bst,\bsx) = K(\bsx,\bst) \qquad \forall \bst,\bsx \in [0,1)^d \\
+		\nonumber
+		\text{Postitive definiteness:} \quad & \sum_{i,j = 0}^{n-1} c_i K(\bsx_i,\bsx_j) c_j > 0 \qquad  \forall n \in \mathbb{N}, \ \bsc \ne 0, \\
+		& \qquad \qquad  \ \text{distinct } \bsx_0, \ldots, \bsx_{n-1} \in [0,1)^d.
+	\end{align}
+\end{subequations}
+Then it is known that this $K$ is the reproducing kernel for a Hilbert space, $\calH_K$ with associated inner product $\langle \cdot, \cdot \rangle_{\calH_K}$, such that
+\begin{subequations}
+	\begin{align}
+	\text{Belonging:} \quad & K(\cdot,\bsx) \in \calH_K \qquad \forall \bsx \in [0,1)^d \\
+	\text{Reproducing:} \quad & f(\bsx) = \langle K(\cdot,\bsx),f \rangle \qquad  \forall \bsx \in [0,1)^d, \ f \in \calH_K.
+\end{align}
+\end{subequations}
+
+Having a reproducing kernel Hilbert space with a known kernel $K$ allows us to derive a rigorous error bound for $\mu - \hat{\mu}_n$.  First note that for any bounded, linear functional, $L$ on the Hilbert space $\calH_K$, there is some $\eta_L \in \calH_K$ such that
+\begin{equation*}
+L(f) = \langle \eta_L , f \rangle_{\calH_K} \qquad \forall f \in \calH_K.
+\end{equation*}
+This is guaranteed by the Riesz Representation Theorm and $\eta_L$ is called the representer of $L$.  Using the reproducing property of $K$, one may evaluate
+\begin{equation*}
+\eta_L(\bsx) = \langle K(\cdot, \bsx), \eta_L \rangle_{\calH_K} = L\bigl( K(\cdot,\bsx) \bigr).
+\end{equation*}
+From an explict expression for $\eta_L(\bsx)$ one may then calculate the squared norm of $L$ as
+\begin{equation*}
+	\lVert \eta_L \rVert_{\calH_K}^2 = \langle\eta_L, \eta_L \rangle_{\calH_K} = L(\eta_L) = L^{\cdot\cdot} \Bigl(L^{\cdot}\bigl( K(\cdot,\cdot \cdot) \bigr) \Bigr).
+\end{equation*}
+
+If $K$ has reasonable properties, we may use the argument above to derive our error bound.  First we write the dependence of $\mu - \hat{\mu}_n$ on  $f$ explicitly as $\mu(f) - \hat{\mu}_n(f)$ and note that the error functional, $\mu(\cdot) - \hat{\mu}_n(\cdot)$, is  linear.  The Riesz Representation Theorem and the Cauchy Schawarz inequality imply a tight error bound:
+\begin{align}
+	\nonumber
+	\lvert\mu(f) - \hat{\mu}_n(f) \rvert
+	& = \lvert \langle \eta_{\mu(\cdot) - \hat{\mu}_n(\cdot)}, f \rangle_{\calH_K} \rvert \\
+	& \le \lVert  \eta_{\mu(\cdot) - \hat{\mu}_n(\cdot)} \rVert_{\calH_K} \, \lVert  f \rVert_{\calH_K} \qquad \forall f \in \calH_K
+	\intertext{where the squared norm of the error funtional can be expressed explicitly as}
+	\nonumber
+	\lVert  \eta_{\mu(\cdot) - \hat{\mu}_n(\cdot)} \rVert_{\calH_K}^2 &=
+	\bigl(\mu(\cdot\cdot) - \hat{\mu}_n(\cdot\cdot)\bigr) \Bigl(\bigl(\mu(\cdot) - \hat{\mu}_n(\cdot)\bigr)\bigl( K(\cdot,\cdot \cdot) \bigr) \Bigr) \\
+	\nonumber
+	& = \int_{[0,1)^d \times [0,1)^d} K(\bst,\bsx) \, \mathrm{d} \bst \, \mathrm{d} \bsx  -\frac 2n  \sum_{i=0}^{n-1} \int_{[0,1)^d} K(\bst,\bsx_i) \, \mathrm{d} \bst \\
+	& \qquad \qquad + \frac{1}{n^2} \sum_{i,j=0}^{n-1}  K(\bsx_i,\bsx_j).
+\end{align}
+
+
 \subsection{Geometrically Motivated Discrepancies} \label{sec:geodisc}
 \subsection{Coordinate weights} \label{sec:coordwts}
-\subsection{Discrepancies for Lattices and Nets} \label{sec:kerdisc}
+\subsection{Discrepancies for Lattices and Nets} \label{sec:latticenetdis}
 
 \section{Stopping Criteria} \label{sec:stop}
 Art
