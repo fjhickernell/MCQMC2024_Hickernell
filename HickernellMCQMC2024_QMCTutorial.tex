@@ -487,16 +487,21 @@ Error bound \eqref{eq:cuberrbd} has two factors:
 \end{itemize}
 In general, designers of qMC methods want to construct sets or sequences of nodes with  discrepancy as small as possible, either by increasing $n$, if the computational budget allows, or by better placement of the nodes.  The constructions described in Section \ref{sec:construct} are ways of ensuring better placement of the nodes, provided that the generators are chosen well.  Practitioners of qMC want to formulate $\mu$ in a way to make the variation as small as possible.  This discussed in Section \ref{sec:reformulate}.
 
-Although error bound \eqref{eq:cuberrbd} is elegant, it leaves several questions unanswered:
+Although error bound \eqref{eq:cuberrbd} is elegant, it leaves several matters unresolved:
 \begin{itemize}
-	\item The reproducing kernel, $K$, defined both the discrepancy and the variation.  This means that differnt choices of $K$ will lead to different error bounds for the same $\hat{\mu}_n$, even though the error is unchanged.
-	\item The Hilbert space
+	\item The reproducing kernel $K$ defines both the discrepancy and the variation.  This means that differnt choices of $K$ will lead to different error bounds for the same $\hat{\mu}_n$, even though the error is unchanged.
+	\item The Hilbert space $\calH_K$ contains ones assumptions about $f$, such as smoothness or periodicity. Knowing $K$, however, does not automatically lead to an explict formula for the inner product of the associated Hilbert space, $\langle \cdot, \cdot \rangle_{\calH_K}$.  Conversely, having an explict formula for  $\langle \cdot, \cdot \rangle_{\calH_K}$ does not automatically lead to an explict formula for the reproducing kernel, $K$.  In both cases educated guesswork is involved.
+	\item Choosing a more restrictive $\calH_K$ may lead to a sharper error bound, however, it is often infeasible in practice to check whether the ``black box'' $f$ lies in $\calH_K$.
+	\item   Moreover, even if one is confident that $f \in \calH_K$, it is usually impractical to compute variation$(f,K)$, as we shall see below.  Error bound \eqref{eq:cuberrbd} cannot be used as a stopping criterion to determine the $n$ needed to satisfy an error tolerance.
 \end{itemize}
+Nonetheless \eqref{eq:cuberrbd}
 
 
 \subsection{Geometrically Motivated Discrepancies} \label{sec:geodisc}
 \subsection{Coordinate weights} \label{sec:coordwts}
 \subsection{Discrepancies for Lattices and Nets} \label{sec:latticenetdis}
+
+\subsection{Randomized Error}
 
 \section{Stopping Criteria} \label{sec:stop}
 Art
