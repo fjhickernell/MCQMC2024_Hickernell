@@ -441,7 +441,7 @@ Let $K: [0,1)^d \times [0,1)^2 \to \mathbb{R}$ be a function satisfying the foll
 		& \qquad \qquad  \ \text{distinct } \bsx_0, \ldots, \bsx_{n-1} \in [0,1)^d.
 	\end{align}
 \end{subequations}
-Then it is known that this $K$ is the reproducing kernel for a Hilbert space, $\calH_K$ with associated inner product $\langle \cdot, \cdot \rangle_{\calH_K}$, such that
+Then it is known \cite{Aro50} that this $K$ is the reproducing kernel for a Hilbert space, $\calH_K$ with associated inner product $\langle \cdot, \cdot \rangle_{\calH_K}$, such that
 \begin{subequations}
 	\begin{align}
 	\text{Belonging:} \quad & K(\cdot,\bsx) \in \calH_K \qquad \forall \bsx \in [0,1)^d \\
@@ -453,22 +453,25 @@ Having a reproducing kernel Hilbert space with a known kernel $K$ allows us to d
 \begin{equation*}
 L(f) = \langle \eta_L , f \rangle_{\calH_K} \qquad \forall f \in \calH_K.
 \end{equation*}
-This is guaranteed by the Riesz Representation Theorm and $\eta_L$ is called the representer of $L$.  Using the reproducing property of $K$, one may evaluate
+This is guaranteed by the Riesz Representation Theorm, and $\eta_L$ is called the representer of $L$.  Using the reproducing property of $K$, one may derove am explict formula for $\eta_L(\bsx)$, namely,
 \begin{equation*}
 \eta_L(\bsx) = \langle K(\cdot, \bsx), \eta_L \rangle_{\calH_K} = L\bigl( K(\cdot,\bsx) \bigr).
 \end{equation*}
-From an explict expression for $\eta_L(\bsx)$ one may then calculate the squared norm of $L$ as
+From this expression for $\eta_L(\bsx)$ one may then calculate the squared norm of the linear functional $L$ as the squared norm of its representer:
 \begin{equation*}
 	\lVert \eta_L \rVert_{\calH_K}^2 = \langle\eta_L, \eta_L \rangle_{\calH_K} = L(\eta_L) = L^{\cdot\cdot} \Bigl(L^{\cdot}\bigl( K(\cdot,\cdot \cdot) \bigr) \Bigr).
 \end{equation*}
 
-If $K$ has reasonable properties, we may use the argument above to derive our error bound.  First we write the dependence of $\mu - \hat{\mu}_n$ on  $f$ explicitly as $\mu(f) - \hat{\mu}_n(f)$ and note that the error functional, $\mu(\cdot) - \hat{\mu}_n(\cdot)$, is  linear.  The Riesz Representation Theorem and the Cauchy Schawarz inequality imply a tight error bound:
+If $\mu(\cdot)$ is a bounded linear functional on $\calH_K$ is, we may use the argument above to derive our error bound.  First we write the dependence of $\mu - \hat{\mu}_n$ on  $f$ explicitly as $\mu(f) - \hat{\mu}_n(f)$ and note that the error functional, $\mu(\cdot) - \hat{\mu}_n(\cdot)$, is  linear.  The Riesz Representation Theorem and the Cauchy-Schawarz inequality imply a tight error bound:
 \begin{align}
 	\nonumber
 	\lvert\mu(f) - \hat{\mu}_n(f) \rvert
-	& = \lvert \langle \eta_{\mu(\cdot) - \hat{\mu}_n(\cdot)}, f \rangle_{\calH_K} \rvert \\
-	& \le \lVert  \eta_{\mu(\cdot) - \hat{\mu}_n(\cdot)} \rVert_{\calH_K} \, \lVert  f \rVert_{\calH_K} \qquad \forall f \in \calH_K,
-	\intertext{where the squared norm of the error funtional can be expressed explicitly as}
+	& = \lvert \langle \eta_{\mu(\cdot) - \hat{\mu}_n(\cdot)}, f \rangle_{\calH_K} \rvert
+	 \le \lVert  \eta_{\mu(\cdot) - \hat{\mu}_n(\cdot)} \rVert_{\calH_K} \, \lVert f \rVert_{\calH_K}\\
+	\lvert\mu(f) - \hat{\mu}_n(f) \rvert
+	& \le \underbrace{\lVert  \eta_{\mu(\cdot) - \hat{\mu}_n(\cdot)} \rVert_{\calH_K}}_{\text{discrepancy}\bigl(\{\bsx\}_{i=0}^{n-1},K \bigr)}
+	\, \underbrace{\inf_{c \in \RR}\lVert  f - c \rVert_{\calH_K}}_{\text{variation}(f,K)} \qquad \forall f \in \calH_K,  \label{eq:cuberrbd}
+	\intertext{since $\hat{\mu}_n$ is exact for constants.  (It is assumed that $\calH$ contains constant functions so that $f \in \calH_K$ implies that $f - c \in \calH_K$.)  The squared norm of the error funtional can be expressed explicitly as}
 	\nonumber
 	\lVert  \eta_{\mu(\cdot) - \hat{\mu}_n(\cdot)} \rVert_{\calH_K}^2 &=
 	\bigl(\mu(\cdot\cdot) - \hat{\mu}_n(\cdot\cdot)\bigr) \Bigl(\bigl(\mu(\cdot) - \hat{\mu}_n(\cdot)\bigr)\bigl( K(\cdot,\cdot \cdot) \bigr) \Bigr) \\
@@ -476,6 +479,19 @@ If $K$ has reasonable properties, we may use the argument above to derive our er
 	& = \int_{[0,1)^d \times [0,1)^d} K(\bst,\bsx) \, \mathrm{d} \bst \, \mathrm{d} \bsx  -\frac 2n  \sum_{i=0}^{n-1} \int_{[0,1)^d} K(\bst,\bsx_i) \, \mathrm{d} \bst \\
 	& \qquad \qquad + \frac{1}{n^2} \sum_{i,j=0}^{n-1}  K(\bsx_i,\bsx_j).
 \end{align}
+
+Error bound \eqref{eq:cuberrbd} has two factors:
+\begin{itemize}
+	\item the discrepancy, which is the norm of the error functional, is a measure of deficiency of the node set, $\{\bsx\}_{i=0}^{n-1}$, and
+	\item the variation is a measure of the roughness of the function defining our random variable whose expectation we wish to compute.
+\end{itemize}
+In general, designers of qMC methods want to construct sets or sequences of nodes with  discrepancy as small as possible, either by increasing $n$, if the computational budget allows, or by better placement of the nodes.  The constructions described in Section \ref{sec:construct} are ways of ensuring better placement of the nodes, provided that the generators are chosen well.  Practitioners of qMC want to formulate $\mu$ in a way to make the variation as small as possible.  This discussed in Section \ref{sec:reformulate}.
+
+Although error bound \eqref{eq:cuberrbd} is elegant, it leaves several questions unanswered:
+\begin{itemize}
+	\item The reproducing kernel, $K$, defined both the discrepancy and the variation.  This means that differnt choices of $K$ will lead to different error bounds for the same $\hat{\mu}_n$, even though the error is unchanged.
+	\item The Hilbert space
+\end{itemize}
 
 
 \subsection{Geometrically Motivated Discrepancies} \label{sec:geodisc}
@@ -505,13 +521,13 @@ Jags
 \section*{Appendix A}
 The integral $I_{\cos}(d) := \int_{0}^{\infty} \cos(r) \exp(-r^2) \, r^{d-1} \rmd r$ and its relative, the integral $I_{\sin}(d) := \int_{0}^{\infty} \sin(r) \exp(-r^2) \, r^{d-1} \rmd r$, may be evaluated iteratively for $d = 1, 2, \ldots$.  Note that using integration by parts:
 \begin{align*}
-I_{\cos}(d) 
+I_{\cos}(d)
 	&=  \left .   \cos(r) \exp(-r^2) \, \frac{r^{d}}{d}  \right \rvert_0^{\infty} \\
 	& \qquad \qquad - \int_{0}^{\infty} [\cos(r) (-2r )\exp(-r^2) -\sin(r)  \exp(-r^2)] \,  \frac{r^{d}}{d} \rmd r \\
 	&= \frac{2 I_{\cos}(d+2) + I_{\sin}(d+1)}{d} \\
 	I_{\sin}(d) &=  \left .   \sin(r) \exp(-r^2) \, \frac{r^{d}}{d}  \right \rvert_0^{\infty} \\
 	&\qquad \qquad - \int_{0}^{\infty} [\sin(r) (-2r )\exp(-r^2) + \cos(r)  \exp(-r^2)] \,  \frac{r^{d}}{d} \rmd r \\
-&= \frac{2 I_{\sin}(d+2) - I_{\cos}(d+1)}{d} 
+&= \frac{2 I_{\sin}(d+2) - I_{\cos}(d+1)}{d}
 \end{align*}
 This implies that
 \begin{align*}
