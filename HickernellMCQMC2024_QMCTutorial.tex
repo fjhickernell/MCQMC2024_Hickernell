@@ -433,12 +433,13 @@ So far, we have relied on eye tests and the Keister example to show how LD seque
 
 \subsection{Discrepancies Defined by Kernels} \label{sec:kerdisc}
 Let $K: [0,1)^d \times [0,1)^2 \to \mathbb{R}$ be a function satisfying the following two conditions:
-\begin{subequations}
+\begin{subequations} \label{eq:Kcond}
 	\begin{align}
+		\label{eq:KcondSym}
 		\text{Symmetry:} \quad & K(\bst,\bsx) = K(\bsx,\bst) \qquad \forall \bst,\bsx \in [0,1)^d \\
 		\nonumber
 		\text{Postitive definiteness:} \quad & \sum_{i,j = 0}^{n-1} c_i K(\bsx_i,\bsx_j) c_j > 0 \qquad  \forall n \in \mathbb{N}, \ \bsc \ne 0, \\
-		& \qquad \qquad  \ \text{distinct } \bsx_0, \ldots, \bsx_{n-1} \in [0,1)^d.
+		& \qquad \qquad  \ \text{distinct } \bsx_0, \ldots, \bsx_{n-1} \in [0,1)^d. \label{eq:KcondPD}
 	\end{align}
 \end{subequations}
 Then it is known \cite{Aro50} that this $K$ is the reproducing kernel for a Hilbert space, $\calH_K$ with associated inner product $\langle \cdot, \cdot \rangle_{\calH_K}$, such that
@@ -494,7 +495,68 @@ Although error bound \eqref{eq:cuberrbd} is elegant, it leaves several matters u
 	\item Choosing a more restrictive $\calH_K$ may lead to a sharper error bound, however, it is often infeasible in practice to check whether the ``black box'' $f$ lies in $\calH_K$.
 	\item   Moreover, even if one is confident that $f \in \calH_K$, it is usually impractical to compute variation$(f,K)$, as we shall see below.  Error bound \eqref{eq:cuberrbd} cannot be used as a stopping criterion to determine the $n$ needed to satisfy an error tolerance.
 \end{itemize}
-Nonetheless \eqref{eq:cuberrbd}
+In spite of these drawbacks, \eqref{eq:cuberrbd} is quite useful:
+\begin{itemize}
+	\item There are a family of commonly used reproducing kernels \cite{BerT-A04,Hic97a,Hic98b,Hic99b}. Once $K$ has been fixed, the discrepancy may be used as a comparison measure among different LD sequences, and its rate of decay---which sometimes can be computed theoretically---indicates how quickly $\hat{\mu}_n$ approaches $\mu$.
+	\item When an explict formula for the inner product of the associated Hilbert space, $\langle \cdot, \cdot \rangle_{\calH_K}$ can be deduced, it suggests how to $\mu$ to reduce variation$(f)$.
+\end{itemize}
+
+\subsection{The Centered Discrepancy}
+An example of a reproducing kernel defined on $[0,1)^d \times [0,1)^d$ is
+\begin{equation} \label{eq:ctrkernel}
+	K(\bst,\bsx) = \prod_{\ell = 1}^d \left[ 1 + \frac 12 \bigl ( \lvert t_\ell - 1/2 \rvert + \lvert x_\ell - 1/2 \rvert - \lvert t_\ell - x_\ell \rvert \bigr ) \right] .
+\end{equation}
+One can easily see that this $K$ satisfies the symmetry condition \eqref{eq:KcondSym}.  It also is symmetric about the middle of the unit cube, i.e.,
+\begin{equation*}
+	K\bigl((t_1,\ldots, t_{\ell-1}, 1 - t_\ell,  t_{\ell+1}, \ldots, t_d),
+	(x_1,\ldots, x_{\ell-1}, 1 - x_\ell,  x_{\ell+1}, \ldots, x_d)
+	\bigr) =
+	K(\bst,\bsx),
+\end{equation*}
+which is a desirable property for problems where there is no preferred corner.
+
+The inner product for the Hilbert space $\calH_K$ with reproducing kernel $K$ is
+\begin{align}
+	\langle f, g \rangle_{\calH_K} &= f(\boldsymbol{1/2}) g(\boldsymbol{1/2}) \nonumber
+	\\
+	&
+	+ \int_{[0,1)} [D^{\{1\}}f](x_1) \, [D^{\{1\}}g](x_1)\, \mathrm{d} x_1
+	+ \int_{[0,1)} [D^{\{2\}}f](x_2) \, [D^{\{2\}}g](x_2)\, \mathrm{d} x_2 \nonumber \\
+	& \qquad \qquad + \cdots \nonumber\\
+	&
+	+ \int_{[0,1)^2} [D^{{\{1,2\}}}f](x_1,x_2) \, [D^{\{1,2\}}g](x_1,x_2)\, \mathrm{d} x_1 \mathrm{d} x_2 + \cdots \nonumber \\
+	&  \qquad \qquad + \cdots + \int_{[0,1)^d} [D^{\{1,\ldots, d\}}f](\bsx) \, [D^{\{1,\ldots, d\}}g](\bsx) \, \mathrm{d} \bsx \nonumber \\
+	& = \sum_{\bsell \subseteq \{1, \ldots, d\}} \langle D^{\bsell}f, D^{\bsell}g \rangle_2
+\end{align}
+where $\langle \cdot,\cdot \rangle_2$ denotes the $L^2$ inner product,
+\begin{multline*}
+	[D^{\{\ell_1, \ell_2, \ldots, \ell_s\} }f](x_1, x_2, \ldots, x_s) \\
+	: = \frac{\partial^s f(1/2,\ldots, 1/2, x_{\ell_1}, 1/2, \ldots, 1/2, x_{\ell_2}, 1/2, \ldots, 1/2, x_{\ell_s}, 1/2, \ldots, 1/2)}{\partial x_{\ell_1} \partial x_{\ell_2} \cdots \partial x_s},
+\end{multline*}
+and $D^{\emptyset}f$ is understood to be the constant $f(1/2, \ldots, 1/2)$ \cite{Hic97a}.
+
+We show that $K$ defined in \eqref{eq:ctrkernel} is the reproducing kernel for the $\calH_K$ with the above inner product for $d=1$ and assuming $0 \le x \le 1/2$:
+\begin{align*}
+	\langle K(\cdot,x), f \rangle_{\calH_K}
+	& =
+	K(1/2,x) f(1/2) + \int_0^1 \frac{\partial K(t,x)}{\partial t} f'(t) \, \mathrm{d} t \\
+	& = 1 \times f(1/2) +  \int_0^x \frac 12 [-1  - (-1) ] f'(t) \, \mathrm{d} t +
+	\int_x^{1/2} \frac 12 [-1  - 1 ] f'(t) \, \mathrm{d} t \\
+	& \qquad \qquad +
+	\int_{1/2}^{1} \frac 12 [1  - 1 ] f'(t) \, \mathrm{d} t \\
+	& = f(1/2) + 0 - \int_x^{1/2} f'(t) \, \mathrm{d} t + 0 = f(1/2) - [f(1/2) - f(x)] \\
+	& =  f(x).
+\end{align*}
+The extension to general $1/2 < x < 1$ and to $d > 1$ is straightforward but a bit tedious.
+
+Figure
+
+\begin{figure}
+	\centering
+	\caption{A plot of the o
+\end{figure}
+
+
 
 
 \subsection{Geometrically Motivated Discrepancies} \label{sec:geodisc}
