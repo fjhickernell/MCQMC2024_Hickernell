@@ -131,13 +131,13 @@ In mathematical terms, the random outcome is $Y := f(\bsX)$, where $\bsX$ is a v
 
 Simple  Monte Carlo chooses the nodes $\{\bsx_0, \bsx_1, \ldots\}$ to be independent and identically distributed (IID).  Quasi-Monte Carlo (qMC)  chooses the nodes \emph{not} IID, but with an empirical distribution that approximates well the true probability distribution of $\bsX$.  The difference between these two distributions is called a \emph{discrepancy}, and the node sequences used in qMC are called low discrepancy (LD) sequences.
 
-This tutorial describes what qMC is, why we would want to use qMC, and how qMC can be implemented well.  The next session illustrates by example of the advantages of qMC.  This is followed by a description of how deterministic LD sequences are constructed and randomizations that preserve their low discrepancy.  We describe various measures of discrepancy.  We explain how to decide what sample size, $n$, is sufficient to meet the user's error criterion.  We then discuss how to rewrite the problem of interest in a qMC-friendly way.
+This tutorial describes what qMC is, why we would want to use qMC, and how qMC can be implemented well.  The next session illustrates by example the advantages of qMC.  This is followed by a description of how deterministic LD sequences are constructed and randomizations that preserve their low discrepancy.  We describe various measures of discrepancy.  We explain how to decide what sample size, $n$, is sufficient to meet the user's error criterion.  We then discuss how to rewrite the problem of interest in a qMC-friendly way.
 
 
 %
 \section{An Illustration of Quasi-Monte Carlo} \label{sec:practice}
 
-We illustrate the benefits of qMC with an example from Keister \cite[(13)]{Kei96}, motivated by computational physics:
+We illustrate the benefits of qMC with an example from Keister \cite{Kei96}, motivated by computational physics:
 
 \begin{equation}\label{eq:keisterA}
 	\mu := \int_{\mathbb{R}^d} \cos(\lVert \bst \rVert) \exp(-\lVert \bst \rVert^2) \, \rmd \bst,
@@ -154,11 +154,11 @@ However, for the purpose of this illustration, we work with $\mu$ in its origina
 \end{equation}
 This does require some further preparation, which is discussed in greater generality in Section \ref{sec:reformulate}.
 
-This $\mu$, may be thought of as the expectation of $Y := g(\bsT) := \pi^{d/2} \cos(\lVert \bsT \rVert)$, where $T_1, \ldots, T_d$ are IID Gaussian (normal) random variables with zero mean and variance $1/2$, i.e., $\bsT :=(T_1, \ldots, T_d) \sim \calN(\bszero,\mathsf{I}/2)$:
+This $\mu$ may be thought of as the expectation of $Y := g(\bsT) := \pi^{d/2} \cos(\lVert \bsT \rVert)$, where $T_1, \ldots, T_d$ are IID Gaussian (normal) random variables with zero mean and variance $1/2$, i.e., $\bsT :=(T_1, \ldots, T_d) \sim \calN(\bszero,\mathsf{I}/2)$:
 \begin{equation}\label{eq:keisterB}
 	\mu = \int_{\mathbb{R}^d} \underbrace{\pi^{d/2} \cos(\lVert \bst \rVert)}_{=:g(\bst)} \cdot \underbrace{\frac{\exp(-\lVert \bst \rVert^2)}{\pi^{d/2}}}_{\text{density of } \calN(\bszero,\mathsf{I}/2)} \, \rmd \bst = \bbE(Y) = \bbE[g(\bsT)].
 \end{equation}
-Nearly all LD sequences, which underly qMC, are defined to approximate the standard uniform distribution, $\calU[0,1]^d$.  Thus, we perform a variable transformation $bst = \bigl (\Phi^{-1}(x_1), \ldots, \Phi^{-1}(x_d) \bigr )/\sqrt{2}$,
+Nearly all LD sequences, which underlie qMC, are defined to approximate the standard uniform distribution, $\calU[0,1]^d$.  Thus, we perform a variable transformation $\bst = \bigl (\Phi^{-1}(x_1), \ldots, \Phi^{-1}(x_d) \bigr )/\sqrt{2}$,
 where is $\Phi$ is the cumulative distribution function of the standard Gaussian random variable.  This reimagines the integral $\mu$ as the expectation of a function, $f$, of a standard uniform random variable:
 \begin{multline}\label{eq:keisterC}
 	\mu = \int_{[0,1]^d} \underbrace{\pi^{d/2} \cos\Bigl (\bigl \lVert \bigl( \Phi^{-1}(x_1), \ldots, \Phi^{-1}(x_d)\bigr) \bigr\rVert/\sqrt{2}  \Bigr)}_{=:f(\bsx)} \, \rmd \bsx \\
@@ -168,7 +168,7 @@ where is $\Phi$ is the cumulative distribution function of the standard Gaussian
 
 Now we can apply IID MC, qMC, and other computational methods to approximate $\mu$ by the sample mean
 \begin{equation} \label{eq:sample_mean_Keister}
-	\hat{\mu}_n = \frac 1n \sum_{i=1}^n pi^{d/2} \cos\Bigl (\bigl \lVert \bigl( \Phi^{-1}(x_{i1}), \ldots, \Phi^{-1}(x_{id})\bigr) \bigr\rVert/\sqrt{2}  \Bigr).
+	\hat{\mu}_n = \frac 1n \sum_{i=1}^n \pi^{d/2} \cos\Bigl (\bigl \lVert \bigl( \Phi^{-1}(x_{i1}), \ldots, \Phi^{-1}(x_{id})\bigr) \bigr\rVert/\sqrt{2}  \Bigr).
 \end{equation}
 Consider the specific case of $d=6$ for which $\mu \approx -2.327303729298$.  We approximate $\mu$ by the sample mean defined in \eqref{eq:sample_mean} for three different kinds of nodes, $\{\bsx_i\}_{i=0}^{n-1}$, for various sample sizes, $n$, and plot the relative errors, $\lvert (\mu - 	\hat{\mu}_n)/\mu\rvert$ in Figure \ref{fig:keister-err}. The three kind of nodes are
 \begin{enumerate}
@@ -202,7 +202,7 @@ Note the following from this example:
 
 	\item \emph{LD nodes.}  For qMC methods the error decays nearly like $\mathcal{O}(n^{-1})$, which for this example correponds to a reduction in error of several orders of magnitude compared to simple MC for large enough $n$.  Typically, LD sequences have preferred sample sizes.  For this Sobol' sequence, $n$ is chosen to be non-negative integer powers of $2$, which tends to give better accuracy than arbitrary $n$.
 
-	Figure \ref{fig:ld} shows typical two-dimensional projections of a $64$ LD node set.  Visually, these nodes fill the unit cube better than IID nodes.  A quantitative measure of this, the discrepancy, is defined in Section \ref{sec:discrepancy}.  Constructions of LD node sequences are explained in the next section.
+	Figure \ref{fig:ld} shows typical two-dimensional projections of a size $64$ LD node set.  Visually, these nodes fill the unit cube better than IID nodes.  A quantitative measure of this, the discrepancy, is defined in Section \ref{sec:discrepancy}.  Constructions of LD node sequences are explained in the next section.
 
 \end{itemize}
 
@@ -223,7 +223,7 @@ Note the following from this example:
 \begin{figure}
 	\centering
 	\includegraphics[width =\textwidth]{\figpath/64sobolpts_d6.pdf}
-	\caption{LD points cover the unit cube better even better than IID points or grids.  In any  projection there is  a similar looking distribution of all $64$ points. \label{fig:ld}}
+	\caption{LD points cover the unit cube even better than IID points or grids.  In any  projection there is  a similar looking distribution of all $64$ points. \label{fig:ld}}
 \end{figure}
 
 
@@ -282,7 +282,7 @@ Another family of LD sequences also built upon the van der Corput sequence \eqre
 \end{equation}
 where $\bsx_1, \bsx_2, \ldots$ are carefully chosen.  The node set $\{ \bsx_0, \ldots, \bsx_{2^m-1}\}$  for non-negative integer $m$ is called a digital net and is closed under $\oplus$.
 
-If $x_{ij\ell}$ denotes the $\ell^{\text{th}}$ digit of the $j^{\text{th}}$ coordinate of $\bsx_i$, then the literature often defines generating matrices, $\mathsf{C}_j = (x_{ij\ell})_{\ell,i = 1}^{M,N}$ for $j = 1, \ldots, d$, where $M$ is th maximum number of bits in the expression for $\bsx_i$, say $52$, and $2^N$ is the maximum number of nodes that is intended to be generated.  The digital sequence can then be defined equivalently as
+If $x_{ij\ell}$ denotes the $\ell^{\text{th}}$ digit of the $j^{\text{th}}$ coordinate of $\bsx_i$, then the literature often defines generating matrices, $\mathsf{C}_j = (c_{ij\ell})_{\ell,i = 1}^{M,N}$ for $j = 1, \ldots, d$, where $M$ is the maximum number of bits in the expression for $\bsx_i$, say $52$, and $2^N$ is the maximum number of nodes that is intended to be generated.  The digital sequence can then be defined equivalently as
 \begin{equation} \label{eq:digitalB}
 	\begin{pmatrix} x_{ij1} \\ x_{ij2} \\ \vdots \end{pmatrix}
 	= \mathsf{C}_j \begin{pmatrix} i_0 \\ i_1 \\ \vdots \end{pmatrix} \quad \pmod{2}, \qquad j = 1,\ldots, d, \ i = 0, 1, \ldots.
@@ -359,12 +359,37 @@ where $b_1, \ldots, b_d$ is a choice of $d$ distinct prime numbers.  Often they 
 \end{figure}
 
 \subsection{LD Nodes by Optimization}\label{sec:optLD}
-[Nathan Kirk write here, please]
+
+Most quasi-Monte Carlo constructions are studied based on their asymptotic behavior as \(n \to \infty\), with numerous results on asymptotic rates \cite{NIED1978QMCBook,NovWoz10a}. However, few methods address finding optimal point configurations for specific \(n\) and \(d\) which can be critical in practical applications where each function evaluation is costly. Of course, one possible strategy is to truncate asymptotically optimal sequences to the desired \(n\), however, as discussed above many of the standard LD constructions have a preferred number of points with truncations leading to imbalances in equidistribution. We can often do better optimizing directly for the target \(n\) and \(d\).
+
+%When optimizing a sample point distribution, one requires a figure-of-merit to serve as the objective function for the optimization problem.
+
+\vspace{2mm}
+\noindent
+\textbf{Combinatorial Optimization.}
+For several decades, combinatorial optimization techniques have been employed to obtain good generating vectors for rank-1 lattice points. Recall that for given \(n\) and \(d\), a lattice rule is fully determined by the generating vector \(\boldsymbol{h} \in \mathbb{Z}_n^d \coloneqq \{0, 1, \ldots, n-1\}^d\). While good generating vectors are known for \(d \leq 2\) \cite{DicEtal22a,SloJoe94}, the same does not hold for \(d \geq 3\), often resorting to finding good $\boldsymbol{h}$ via computer search to minimize a chosen figure-of-merit. An exhaustive search is infeasible due to the exponential growth of the search space with \(d\). The component-by-component (CBC) construction, introduced by Korobov \cite{kor63} and later revisited by Sloan and collaborators \cite{Slo02}, reduces the search space to size \(dn\) by constructing \(\boldsymbol{h}\) one component at a time. 
+%Further simplification is possible by restricting the search to Korobov lattices of the form \(\boldsymbol{h} = (1, h, h^2, \ldots, h^{d-1}) \in \mathbb{Z}^d\). 
+For certain choices of function spaces, there exist fast component-by-component construction implementations using fast Fourier transforms (FFTs) as the primary tool. We refer to \cite{DicKuo04a,JoeKuo03,KuoJoe02b} and references therein for works on the CBC construction for lattice rules and \cite{NuyCoo06a,NuyCoo06b} for their fast implementations.
+
+
+
+\vspace{2mm}
+\noindent
+\textbf{Global Optimization.}
+
+
+
+\vspace{2mm}
+\noindent
+\textbf{Other Notable Methods.}
+
+
+
 
 \section{Randomization} \label{sec:random}
 The LD constructions described in the previous section have so far been \emph{deterministic}. The sample mean, $\hat{\mu}_n$, does not change each time it is computed like it would for IID nodes.
 
-While determinism has some advantages randomization has advantages as well.
+While determinism has some advantages, randomization has advantages as well.
 \begin{itemize}
 	\item Randomization done right removes bias in the estimator.
 	\item Replications of random estimators can facilitate error estimates for the sample mean.
@@ -438,7 +463,7 @@ So far, we have relied on eye tests and the Keister example to show how LD seque
 
 
 \subsection{Discrepancies Defined by Kernels} \label{sec:kerdisc}
-Let $K: [0,1)^d \times [0,1)^2 \to \mathbb{R}$ be a function satisfying the following two conditions:
+Let $K: [0,1)^d \times [0,1)^d \to \mathbb{R}$ be a function satisfying the following two conditions:
 \begin{subequations} \label{eq:Kcond}
 	\begin{align}
 		\label{eq:KcondSym}
