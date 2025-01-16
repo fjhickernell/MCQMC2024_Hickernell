@@ -367,8 +367,8 @@ Most quasi-Monte Carlo constructions are studied based on their asymptotic behav
 \vspace{2mm}
 \noindent
 \textbf{Combinatorial Optimization.}
-For several decades, combinatorial optimization techniques have been employed to obtain good generating vectors for rank-1 lattice points. Recall that for given \(n\) and \(d\), a lattice rule is fully determined by the generating vector \(\boldsymbol{h} \in \mathbb{Z}_n^d \coloneqq \{0, 1, \ldots, n-1\}^d\). While good generating vectors are known for \(d \leq 2\) \cite{DicEtal22a,SloJoe94}, the same does not hold for \(d \geq 3\), often resorting to finding good $\boldsymbol{h}$ via computer search to minimize a chosen figure-of-merit. An exhaustive search is infeasible due to the exponential growth of the search space with \(d\). The component-by-component (CBC) construction, introduced by Korobov \cite{kor63} and later revisited by Sloan and collaborators \cite{Slo02}, reduces the search space to size \(dn\) by constructing \(\boldsymbol{h}\) one component at a time. 
-%Further simplification is possible by restricting the search to Korobov lattices of the form \(\boldsymbol{h} = (1, h, h^2, \ldots, h^{d-1}) \in \mathbb{Z}^d\). 
+For several decades, combinatorial optimization techniques have been employed to obtain good generating vectors for rank-1 lattice points. Recall that for given \(n\) and \(d\), a lattice rule is fully determined by the generating vector \(\boldsymbol{h} \in \mathbb{Z}_n^d \coloneqq \{0, 1, \ldots, n-1\}^d\). While good generating vectors are known for \(d \leq 2\) \cite{DicEtal22a,SloJoe94}, the same does not hold for \(d \geq 3\), often resorting to finding good $\boldsymbol{h}$ via computer search to minimize a chosen figure-of-merit. An exhaustive search is infeasible due to the exponential growth of the search space with \(d\). The component-by-component (CBC) construction, introduced by Korobov \cite{kor63} and later revisited by Sloan and collaborators \cite{Slo02}, reduces the search space to size \(dn\) by constructing \(\boldsymbol{h}\) one component at a time.
+%Further simplification is possible by restricting the search to Korobov lattices of the form \(\boldsymbol{h} = (1, h, h^2, \ldots, h^{d-1}) \in \mathbb{Z}^d\).
 For certain choices of function spaces, there exist fast component-by-component construction implementations using fast Fourier transforms (FFTs) as the primary tool. We refer to \cite{DicKuo04a,JoeKuo03,KuoJoe02b} and references therein for works on the CBC construction for lattice rules and \cite{NuyCoo06a,NuyCoo06b} for their fast implementations.
 
 
@@ -566,7 +566,10 @@ where $\langle \cdot,\cdot \rangle_2$ denotes the $L^2$ inner product,
 	[D^{\{\ell_1, \ell_2, \ldots, \ell_s\} }f](x_1, x_2, \ldots, x_s) \\
 	: = \frac{\partial^s f(1/2,\ldots, 1/2, x_{\ell_1}, 1/2, \ldots, 1/2, x_{\ell_2}, 1/2, \ldots, 1/2, x_{\ell_s}, 1/2, \ldots, 1/2)}{\partial x_{\ell_1} \partial x_{\ell_2} \cdots \partial x_s},
 \end{multline*}
-and $D^{\emptyset}f$ is understood to be the constant $f(1/2, \ldots, 1/2)$ \cite{Hic97a}.
+and $D^{\emptyset}f$ is understood to be the constant $f(1/2, \ldots, 1/2)$ \cite{Hic97a}.  The variation, which corresponds to the non-constant part of the function, is
+\begin{equation*}
+		\text{variation}(f) := \sqrt{\sum_{\emptyset \ne \bsell \subseteq \{1, \ldots, d\}} \lVert D^{\bsell}f\rVert_2^2}.
+\end{equation*}
 
 We show that $K$ defined in \eqref{eq:ctrkernel} is the reproducing kernel for the $\calH_K$ with the above inner product for $d=1$ and assuming $0 \le x \le 1/2$:
 \begin{align*}
@@ -580,7 +583,7 @@ We show that $K$ defined in \eqref{eq:ctrkernel} is the reproducing kernel for t
 	& = f(1/2) + 0 - \int_x^{1/2} f'(t) \, \mathrm{d} t + 0 = f(1/2) - [f(1/2) - f(x)] \\
 	& =  f(x).
 \end{align*}
-The extensions to general $1/2 < x < 1$ and to $d > 1$ is straightforward but a bit tedious \cite{Hic97a}.
+The extensions to general $1/2 < x < 1$ and to $d > 1$ are straightforward but tedious \cite{Hic97a}.
 
 Figure \ref{fig:ctrKer} is a color map of the reproducing kernel, $K$, defined in \eqref{eq:ctrkernel} for $d=1$.  As shown in the figure, the matrix $\mathsf{K} := \bigl( K(x_i,x_j) \bigr)_{i,j=1}^n$ that arises in condition \eqref{eq:KcondPD} is formed by taking $n$ rows and corresponding columns of this plot.  Any such matrix $\mathsf{K}$ is strictly positive definite, as is suggested by the higher values near the diagonal.
 
@@ -599,7 +602,7 @@ The squared centered discrepancy is given by substituting the formula for $K$ in
 	- \frac 2n \sum_{i=0}^{n-1} \prod_{\ell=1}^d \left [ 1 + \frac 12 \bigl ( \lvert x_{i\ell} - 1/2 \rvert - \lvert x_{i\ell} - 1/2 \rvert^d \bigr )\right ] \\
 	& \qquad \qquad \frac{1}{n^2} \sum_{i,j=0}^{n-1} \prod_{\ell = 1}^d \left[ 1 + \frac 12 \bigl ( \lvert x_{i\ell} - 1/2 \rvert + \lvert x_{j\ell} - 1/2 \rvert - \lvert x_{i\ell} - x_{j\ell} \rvert \bigr ) \right].
 \end{align}
-As is true for most cases, the computational cost of computing the discrepancy is $\Order(dn^2)$ as $d$ and/or $n$ tend to infinity.
+As is true for most cases, the computational cost of computing the discrepancy is $\mathcal{O}(dn^2)$ as $d$ and/or $n$ tend to infinity.
 
 Figure \ref{fig:ctrdiscmodestd} displays the discrepancy for a Sobol' LD digital net for several modest values of $d$ and for $n =  1, 2, 4, \ldots$.  The decay rate of nearly $\calO(n^{-1})$ is observed for small $d$ and can be anticipated for a bit larger $d$.  Thus, the decay of the discrepancy mirrors the convergenc rate for LD sequences for the Kiester example in Section \ref{sec:intro} and Figure \ref{fig:keister-err}.
 
@@ -612,9 +615,31 @@ Figure \ref{fig:ctrdiscmodestd} displays the discrepancy for a Sobol' LD digital
 The centered discrepancy also has a geometric interpretation, as is described in \cite{Hic97a}. Other choices of kernels and their geomeetric interpretations are explained there as well.
 
 
-
-
 \subsection{Coordinate weights} \label{sec:coordwts}
+When the dimension, $d$, is increased, the discrepancy increases and the rate of decay with increasing sample size deteriorates, as can be seen in Figure ??.  This raises the question of whether the LD sequences lose their effectiveness for higher dimensions or whether the theory described in the pervious section does not well describe what may occur in practice.
+
+One thing to note is that the discrepancy of the null set, which is equivalent to the norm of the linear functional $\mu(\cdot)$, is
+\begin{equation}
+		\text{discrepancy}\bigl(\emptyset,K \bigr)  = \sqrt{\int_{[0,1)^d \times [0,1)^d} K(\bst,\bsx) \, \mathrm{d} \bst \, \mathrm{d} \bsx},
+\end{equation}
+which corresponds to $(13/12)^{d/2}$ for the centered discrepancy.  This means that integration gets exponentially harder as $d$ increases.  One may scale the discrepancy of a node set by dividing it by discrepancy$(\emptyset,K)$, but this does not recover the desired nearly $\mathcal{O}(n^{-1})$ decay rate.
+
+A better approach is to introduce coordinate weights, $\gamma_1, \ldots, \gamma_d$ into the reproducing kernel.  For the kernel defining the centered discrepancy, this means
+\begin{align} \label{eq:wtctrkernel}
+	K(\bst,\bsx) &= \prod_{\ell = 1}^d \biggl [ 1 + \frac {\gamma_\ell^2}2 \bigl ( \lvert t_\ell - 1/2 \rvert + \lvert x_\ell - 1/2 \rvert - \lvert t_\ell - x_\ell \rvert \bigr ) \biggr] , \\
+	\langle f, g \rangle_{\calH_K}  &= \sum_{\bsell \subseteq \{1, \ldots, d\}} \prod_k \gamma_{\ell_k}^2 \langle D^{\bsell}f, D^{\bsell}g \rangle_2, \\
+	\text{variation}(f)  &= \sqrt{\sum_{\bsell \subseteq \{1, \ldots, d\}} \prod_k \gamma_{\ell_k}^2 \lVert D^{\bsell}f \rVert_2^2}, \\
+	\label{eq:wt-ctrdisc}
+	\nonumber
+	\MoveEqLeft[4]\text{wt-ctr-discrepancy}^2\bigl(\{ \bsx_i\}_{i=0}^{n-1} \bigr) \\
+	\nonumber
+	&= \prod_{\ell=1}^d \left ( 1 + \frac{\gamma_{\ell}^2}{12} \right )^d
+	- \frac 2n \sum_{i=0}^{n-1} \prod_{\ell=1}^d \left [ 1 + \frac {\gamma_{\ell}^2}2 \bigl ( \lvert x_{i\ell} - 1/2 \rvert - \lvert x_{i\ell} - 1/2 \rvert^d \bigr )\right ] \\
+	& \qquad \qquad \frac{1}{n^2} \sum_{i,j=0}^{n-1} \prod_{\ell = 1}^d \left[ 1 + \frac {\gamma_{\ell}^2}2 \bigl ( \lvert x_{i\ell} - 1/2 \rvert + \lvert x_{j\ell} - 1/2 \rvert - \lvert x_{i\ell} - x_{j\ell} \rvert \bigr ) \right].
+\end{align}
+
+
+
 \subsection{Discrepancies for Lattices and Nets} \label{sec:latticenetdis}
 
 \subsection{Randomized Error}
