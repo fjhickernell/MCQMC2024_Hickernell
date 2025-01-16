@@ -115,6 +115,9 @@ This tutorial describes  low discrepancy sequences  and their quality measures. 
 \keywords{}
 \end{abstract}
 %
+\setcounter{tocdepth}{2}
+\tableofcontents
+
 \section{Introduction} \label{sec:intro}
 There are may settings where key underlying quantities that affect the outcome are unknown, e.g.,
 \begin{itemize}
@@ -356,7 +359,7 @@ where $b_1, \ldots, b_d$ is a choice of $d$ distinct prime numbers.  Often they 
 \end{figure}
 
 \subsection{LD Nodes by Optimization}\label{sec:optLD}
-[Nathan Kirk write here, please] 
+[Nathan Kirk write here, please]
 
 \section{Randomization} \label{sec:random}
 The LD constructions described in the previous section have so far been \emph{deterministic}. The sample mean, $\hat{\mu}_n$, does not change each time it is computed like it would for IID nodes.
@@ -462,9 +465,9 @@ This is guaranteed by the Riesz Representation Theorm, and $\eta_L$ is called th
 \eta_L(\bsx) = \langle K(\cdot, \bsx), \eta_L \rangle_{\calH_K} = L\bigl( K(\cdot,\bsx) \bigr).
 \end{equation*}
 From this expression for $\eta_L(\bsx)$ one may then calculate the squared norm of the linear functional $L$ as the squared norm of its representer:
-\begin{equation*}
+\begin{equation} \label{eq:sqnormL}
 	\lVert \eta_L \rVert_{\calH_K}^2 = \langle\eta_L, \eta_L \rangle_{\calH_K} = L(\eta_L) = L^{\cdot\cdot} \Bigl(L^{\cdot}\bigl( K(\cdot,\cdot \cdot) \bigr) \Bigr).
-\end{equation*}
+\end{equation}
 
 If $\mu(\cdot)$ is a bounded linear functional on $\calH_K$ is, we may use the argument above to derive our error bound.  First we write the dependence of $\mu - \hat{\mu}_n$ on  $f$ explicitly as $\mu(f) - \hat{\mu}_n(f)$ and note that the error functional, $\mu(\cdot) - \hat{\mu}_n(\cdot)$, is  linear.  The Riesz Representation Theorem and the Cauchy-Schawarz inequality imply a tight error bound:
 \begin{align}
@@ -473,15 +476,17 @@ If $\mu(\cdot)$ is a bounded linear functional on $\calH_K$ is, we may use the a
 	& = \lvert \langle \eta_{\mu(\cdot) - \hat{\mu}_n(\cdot)}, f \rangle_{\calH_K} \rvert
 	 \le \lVert  \eta_{\mu(\cdot) - \hat{\mu}_n(\cdot)} \rVert_{\calH_K} \, \lVert f \rVert_{\calH_K}\\
 	\lvert\mu(f) - \hat{\mu}_n(f) \rvert
-	& \le \underbrace{\lVert  \eta_{\mu(\cdot) - \hat{\mu}_n(\cdot)} \rVert_{\calH_K}}_{\text{discrepancy}\bigl(\{\bsx\}_{i=0}^{n-1},K \bigr)}
-	\, \underbrace{\inf_{c \in \RR}\lVert  f - c \rVert_{\calH_K}}_{\text{variation}(f,K)} \qquad \forall f \in \calH_K,  \label{eq:cuberrbd}
-	\intertext{since $\hat{\mu}_n$ is exact for constants.  (It is assumed that $\calH$ contains constant functions so that $f \in \calH_K$ implies that $f - c \in \calH_K$.)  The squared norm of the error funtional can be expressed explicitly as}
+	& \le \underbrace{\lVert  \eta_{\mu(\cdot) - \hat{\mu}_n(\cdot)} \rVert_{\calH_K}}_{=:\text{discrepancy}\bigl(\{\bsx\}_{i=0}^{n-1},K \bigr)}
+	\, \underbrace{\inf_{c \in \RR}\lVert  f - c \rVert_{\calH_K}}_{=:\text{variation}(f,K)} \qquad \forall f \in \calH_K,  \label{eq:cuberrbd}
+	\intertext{since $\hat{\mu}_n$ is exact for constants.  (It is assumed that $\calH$ contains constant functions so that $f \in \calH_K$ implies that $f - c \in \calH_K$.)  The squared norm of the error funtional can be expressed explicitly via \eqref{eq:sqnormL} as}
 	\nonumber
-	\lVert  \eta_{\mu(\cdot) - \hat{\mu}_n(\cdot)} \rVert_{\calH_K}^2 &=
+	\text{discrepancy}^2\bigl(\{\bsx\}_{i=0}^{n-1},K \bigr) & = \lVert  \eta_{\mu(\cdot) - \hat{\mu}_n(\cdot)} \rVert_{\calH_K}^2 \\
+	\nonumber
+	& =
 	\bigl(\mu(\cdot\cdot) - \hat{\mu}_n(\cdot\cdot)\bigr) \Bigl(\bigl(\mu(\cdot) - \hat{\mu}_n(\cdot)\bigr)\bigl( K(\cdot,\cdot \cdot) \bigr) \Bigr) \\
 	\nonumber
 	& = \int_{[0,1)^d \times [0,1)^d} K(\bst,\bsx) \, \mathrm{d} \bst \, \mathrm{d} \bsx  -\frac 2n  \sum_{i=0}^{n-1} \int_{[0,1)^d} K(\bst,\bsx_i) \, \mathrm{d} \bst \\
-	& \qquad \qquad + \frac{1}{n^2} \sum_{i,j=0}^{n-1}  K(\bsx_i,\bsx_j).
+	& \qquad \qquad + \frac{1}{n^2} \sum_{i,j=0}^{n-1}  K(\bsx_i,\bsx_j). \label{eq:sqdisc}
 \end{align}
 
 Error bound \eqref{eq:cuberrbd} has two factors:
@@ -550,19 +555,40 @@ We show that $K$ defined in \eqref{eq:ctrkernel} is the reproducing kernel for t
 	& = f(1/2) + 0 - \int_x^{1/2} f'(t) \, \mathrm{d} t + 0 = f(1/2) - [f(1/2) - f(x)] \\
 	& =  f(x).
 \end{align*}
-The extension to general $1/2 < x < 1$ and to $d > 1$ is straightforward but a bit tedious.
+The extensions to general $1/2 < x < 1$ and to $d > 1$ is straightforward but a bit tedious \cite{Hic97a}.
 
-Figure
+Figure \ref{fig:ctrKer} is a color map of the reproducing kernel, $K$, defined in \eqref{eq:ctrkernel} for $d=1$.  As shown in the figure, the matrix $\mathsf{K} := \bigl( K(x_i,x_j) \bigr)_{i,j=1}^n$ that arises in condition \eqref{eq:KcondPD} is formed by taking $n$ rows and corresponding columns of this plot.  Any such matrix $\mathsf{K}$ is strictly positive definite, as is suggested by the higher values near the diagonal.
 
 \begin{figure}
 	\centering
-	\caption{A plot of the of the reproducing kernel}
+	\includegraphics[width = \textwidth]{\figpath/centered_discrepancy_kernel.pdf}
+	\caption{A plot of the reproducing kernel for the centered discrepancy defined in \eqref{eq:ctrkernel} for $d=1$.  Note that the vertical axis is inverted so that the plot is a picture of the ``matrix'' $\bigl( K(t,x) \bigr)_{t,x \in [0,1)]}$.  Any submatrix is positive definite by property \eqref{eq:KcondPD}. \label{fig:ctrKer}}
 \end{figure}
 
+The squared centered discrepancy is given by substituting the formula for $K$ into \eqref{eq:sqdisc}, which implies
+\begin{align} \label{eq:ctrdisc}
+	\nonumber
+	\MoveEqLeft\text{ctr-discrepancy}^2\bigl(\{ \bsx_i\}_{i=0}^{n-1} \bigr) \\
+	\nonumber
+	&= \left ( \frac{13}{12} \right )^d
+	- \frac 2n \sum_{i=0}^{n-1} \prod_{\ell=1}^d \left [ 1 + \frac 12 \bigl ( \lvert x_{i\ell} - 1/2 \rvert - \lvert x_{i\ell} - 1/2 \rvert^d \bigr )\right ] \\
+	& \qquad \qquad \frac{1}{n^2} \sum_{i,j=0}^{n-1} \prod_{\ell = 1}^d \left[ 1 + \frac 12 \bigl ( \lvert x_{i\ell} - 1/2 \rvert + \lvert x_{j\ell} - 1/2 \rvert - \lvert x_{i\ell} - x_{j\ell} \rvert \bigr ) \right].
+\end{align}
+As is true for most cases, the computational cost of computing the discrepancy is $\Order(dn^2)$ as $d$ and/or $n$ tend to infinity.
+
+Figure \ref{fig:ctrdiscmodestd} displays the discrepancy for a Sobol' LD digital net for several modest values of $d$ and for $n =  1, 2, 4, \ldots$.  The decay rate of nearly $\calO(n^{-1})$ is observed for small $d$ and can be anticipated for a bit larger $d$.  Thus, the decay of the discrepancy mirrors the convergenc rate for LD sequences for the Kiester example in Section \ref{sec:intro} and Figure \ref{fig:keister-err}.
+
+\begin{figure}
+	\centering
+	\includegraphics[width = \textwidth]{\figpath/SobolCtrDisc_n_8192_d8.pdf}
+	\caption{The centered discrepancy for several modest values of $d$.  They show an asymptotic decay close to $\calO(n^{-1})$, but this rate is achieved only at higher $n$ for larger values of $d$ \label{fig:ctrdiscmodestd}}
+\end{figure}
+
+The centered discrepancy also has a geometric interpretation, as is described in \cite{Hic97a}. Other choices of kernels and their geomeetric interpretations are explained there as well.
 
 
 
-\subsection{Geometrically Motivated Discrepancies} \label{sec:geodisc}
+
 \subsection{Coordinate weights} \label{sec:coordwts}
 \subsection{Discrepancies for Lattices and Nets} \label{sec:latticenetdis}
 
@@ -608,4 +634,20 @@ This implies that
 Need to finish and check against VS Code today
 
 \end{document}
+
+\iffalse
+\subsection{Geometrically Motivated Discrepancies} \label{sec:geodisc}
+
+The centered discrepancy also has a geometric explanation, as is explained in \cite{Hic97a}.  Let's explain for $d=1$, which means that we are measuring the discrepancy of points on $[0,1)$.  Consider the line segment between an arbitrary point $x$ and closesr end of the line segment.  The length of that line segment is $\lvert \ind_{[1/2,1)}(x) - x \rvert$, ,where $\ind$ is the indicator function.  The fraction of nodes that lie inside this line segment is
+\begin{equation*}
+	\frac 1n \sum_{i=0}^{n-1} \bigl \lvert \ind_{[1/2,1)}(x) - \ind_{[x_i,1)}(x) \bigr \rvert
+\end{equation*}
+A measure of discrepancy is the root mean square integral of the difference between the `fare share value'' and the actual value, i.e.,
+\begin{align*}
+	\text{geo-discrepancy}\bigl( \{x_i\|_{i=0}^{n-1}\}\bigr) & =
+	\int_0^1 \left [ \lvert \ind_{[1/2,1)}(x) - x \rvert - \frac 1n \sum_{i=0}^{n-1} \bigl \lvert \ind_{[1/2,1)}(x) - \ind_{[x_i,1)}(x) \bigr \rvert \right ] ^2
+\end{align*}
+
+\fi
+
 
