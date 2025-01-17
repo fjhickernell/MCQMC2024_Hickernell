@@ -699,7 +699,20 @@ For the kernel defining the centered discrepancy with coordinate weights,
 \end{equation}
 
 \subsection{Randomized Error and Bayesian Error}
-The error analysis leading to the 
+The error analysis leading to error bound \eqref{eq:cuberrbd} is a worst-case error analysis, meaning that the error in approximating $\mu(f)$ by $\hat{\mu}_n(f)$ is definitely smaller than the discrepancy times the variation, provided that $f$ lies inside the Hilbert space with reproducing kernel $K$.  There are other error measures that we mention briefly here.  More detail is given in \cite{HicEtal17a}.
+
+For sample means where the nodes, $\{\bsx_i\}_{i=0}^{n-1}$ are randomized, one can define a measure of their quality based on the root mean squared error of $\hat{\mu}_n(f)$:
+\begin{align}
+    \text{RMSE}(\hat{\mu}_n(f)) & : = \sqrt{\mathbb{E}[(\mu(f) - \hat{\mu}_n(f))^2]} \\
+    &\le \underbrace{ \sup_{\text{variation}(f,K) \le 1} \sqrt{\mathbb{E}[(\mu(f) - \hat{\mu}_n(f))^2]}}_{\text{RERR}\bigl(\{\bsx_i\}_{i=0}^{n-1},K\bigr)} \, \text{variation}(f,K).
+\end{align}
+This quality measure $\text{RERR}\bigl(\{\bsx_i\}_{i=0}^{n-1},K\bigr)$ is typically more optimistic than the root mean squared of  $\text{discrepancy}\bigl(\{\bsx_i\}_{i=0}^{n-1},K\bigr)$ because the latter is finding a worst case function for each random instance of nodes, while the former is finding one worst function.
+
+Unfortunately, $\text{RERR}\bigl(\{\bsx_i\}_{i=0}^{n-1},K\bigr)$ is normally not as easy to compute as the discrepancy.  If $\hat{\mu}_n$ is unbiased, then $\sqrt{\mathbb{E}[(\mu(f) - \hat{\mu}_n(f))^2]} = \text{std}(\hat{\mu}_n(f))$.  For IID nodes we know that this is $\text{std}(f(\bsX))/\sqrt{n}$.
+
+For randomly shifted lattices
+
+Bayesian
 
 
 
