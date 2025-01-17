@@ -362,14 +362,14 @@ where $b_1, \ldots, b_d$ is a choice of $d$ distinct prime numbers.  Often they 
 
 Most quasi-Monte Carlo constructions are studied based on their asymptotic behavior as \(n \to \infty\), with numerous results on asymptotic rates \cite{NIED1978QMCBook,NovWoz10a}. However, few methods address finding optimal point configurations for specific \(n\) and \(d\) which can be critical in practical applications where each function evaluation is costly. Of course, one possible strategy is to truncate asymptotically optimal sequences to the desired \(n\), however, as discussed above many of the standard LD constructions have a preferred number of points with truncations leading to imbalances in equidistribution. We can often do better optimizing directly for the target \(n\) and \(d\).
 
-When optimizing LD nodes, one requires an objective function which in some sense must assesses the quality of the LD nodes themselves, or the expected performance when implemented in a qMC estimate.  We will refer to such an objective function as a figure-of-merit (FOM) and popular choices include discrepancy or worst-case error metrics (see Section \ref{sec:discrepancy}) and spectral test... [come back to this]
+When optimizing LD nodes, one requires an objective function which in some sense must assesses the quality of the LD nodes themselves, or the expected performance when implemented in a qMC estimate.  We will refer to such an objective function as a figure-of-merit (FOM) and popular choices include the discrepancy (see Section \ref{sec:discrepancy}) or worst-case error metrics when considering a specific space of functions; see \cite{Hic00a,LatNet}.
 
 \vspace{2mm}
 \noindent
 \textbf{Combinatorial Optimization.}
 For several decades, combinatorial optimization techniques have been employed to obtain good generating parameters for LD constructions. For example, in the case of a lattice rule which is fully determined by the generating vector \(\boldsymbol{h} \in \mathbb{Z}_n^d \coloneqq \{0, 1, \ldots, n-1\}^d\) given $n$ and $d$, 
 %While good generating vectors are known for \(d \leq 2\) \cite{DicEtal22a,SloJoe94}, the same does not hold for \(d \geq 3\), 
-one often resorts to finding good $\boldsymbol{h}$ via computer search to minimize a chosen figure-of-merit. An exhaustive search is infeasible due to the exponential growth of the search space with \(d\). Thus, the component-by-component (CBC) construction, introduced by Korobov \cite{kor63} and later revisited by Sloan and collaborators \cite{Slo02}, reduces the search space to size \(dn\) by constructing \(\boldsymbol{h}\) one component at a time while keeping the previous components fixed. This greedy procedure also applies to finding good generating matrices $\mathsf{C}_j$ for digital sequences.
+one often resorts to finding good $\boldsymbol{h}$ via computer search to minimize a chosen FOM. An exhaustive search is infeasible due to the exponential growth of the search space with \(d\). Thus, the component-by-component (CBC) construction, introduced by Korobov \cite{kor63} and later revisited by Sloan and collaborators \cite{Slo02}, reduces the search space to size \(dn\) by constructing \(\boldsymbol{h}\) one component at a time while keeping the previous components fixed. This greedy procedure also applies to finding good generating matrices $\mathsf{C}_j$ for digital sequences.
 %Further simplification is possible by restricting the search to Korobov lattices of the form \(\boldsymbol{h} = (1, h, h^2, \ldots, h^{d-1}) \in \mathbb{Z}^d\). 
 For certain choices of function spaces, there exist fast component-by-component construction implementations using fast Fourier transforms (FFTs) as the primary tool. We refer to \cite{DicKuo04a,JoeKuo03,KuoJoe02b} and references therein for works on the CBC construction for lattice rules and digital sequences, \cite{NuyCoo06a,NuyCoo06b} for their fast implementations and \cite{LatNet} for a QMC software tool called LatNet Builder by L'Ecuyer to generate LD nodes which relies heavily upon the CBC construction method.
 
@@ -377,14 +377,21 @@ For certain choices of function spaces, there exist fast component-by-component 
 
 \vspace{2mm}
 \noindent
-\textbf{Global Optimization.} Global optimization of LD nodes is often challenging due to the non-convex nature of the FOM as a function of the nodes. Traditional global optimization methods, such as regular gradient descent, struggle in this setting becoming trapped in suboptimal local minima and failing to identify the global optimum. One of the first works to globally optimize LD nodes, albeit a heuristic approach, was by Winker and Fang \cite{WinFan97b} employing the threshold accepting optimization algorithm. 
-More recently, Rusch, Kirk, Bronstein, Lemieux and Rus \cite{ruschkirk24} developed the first machine-learning assisted optimization tool for LD node optimization in the Message-Passing Monte Carlo (MPMC) method. MPMC implements tools for geometric deep learning imposing a computational graph onto an initialized IID node set and learning a transformation mapping
+\textbf{Global Optimization.} Global optimization of LD nodes is often challenging due to the non-convex nature of the FOM as a function of the nodes. Traditional global optimization methods, such as gradient descent or its variants, struggle in this setting becoming trapped in suboptimal local minima and failing to identify the global optimum configuration of nodes. 
+
+One of the first works to globally optimize LD nodes, albeit a heuristic approach, was by Winker and Fang \cite{WinFan97b} employing the threshold accepting optimization algorithm to directly optimize the uniformity of the LD nodes with respect to the discrepancy FOM.
+
+More recently, Rusch, Kirk, Bronstein, Lemieux and Rus \cite{ruschkirk24} developed the first machine-learning assisted optimization tool for LD node optimization in the Message-Passing Monte Carlo (MPMC) method. MPMC implements tools from geometric deep learning imposing a computational graph onto an initialized IID node set to transform the points to LD node set via a learned mapping, again guided by the minimization of a discrepancy-based FOM. 
+
+Lastly, we highlight the method proposed by Hinrichs and Oettershagen \cite{hinoet16}, which generates optimal LD nodes for a specific class of functions in two-dimensions. To address the non-convexity challenge, the authors decompose the global optimization problem into a large number of smaller, convex sub-problems.
 
 
 \vspace{2mm}
 \noindent
-\textbf{Other Notable Methods.} Recently, a method called subset selection is formulated to choose from an $n−$element point set, the $k<n$ points which yield the smallest discrepancy. An exact selection algorithm was presented in \cite{cle22}, while a swap-based heuristic approach was used in \cite{cle24}. Furthermore, a method to generate optimal star-discrepancy point sets for fixed N and d based on a non-linear programming approach was suggested in \cite{}.
+\textbf{Other Notable Methods.} 
+There are several other attempts to construct optimal LD nodes, many of which are well summarized in the thesis of Cl\'{e}ment \cite{}. We highlight the subset selection method proposed in \cite{cle22} to choose from an $n$-element initialization set, the $k<n$ points which minimize a discrepancy FOM. A heuristic approach to this problem was later shown in \cite{cle24}. %Furthermore, a method to generate optimal star-discrepancy point sets for fixed $n$ and $d$ based on a non-linear programming approach was suggested in \cite{}.
 
+It is commonplace in qMC constructions that equidistribution is required not just in the (possibly high dimensional) $d$-dimensional space, but also for all or specific low-dimensional projections; see Section \ref{sec:coordwts}. MatBuilder \cite{paulin2022} is a software tool developed precisely for this task; to generate digital sequence LD nodes when low-dimensional uniformity is critical. Uniformity constraints related to digital sequence stratification across boxes of the form \eqref{eq:element_box} are expressed as integer linear programming (ILP) problems and subsequently solved, while optimizing an objective function relating to the ILP reformulation, to determine the next columns in the generator matrices for the digital sequence.
 
 
 \section{Randomization} \label{sec:random}
@@ -642,22 +649,59 @@ A better approach is to introduce coordinate weights, $\gamma_1, \ldots, \gamma_
 	& \qquad \qquad \frac{1}{n^2} \sum_{i,j=0}^{n-1} \prod_{\ell = 1}^d \left[ 1 + \frac {\gamma_{\ell}^2}2 \bigl ( \lvert x_{i\ell} - 1/2 \rvert + \lvert x_{j\ell} - 1/2 \rvert - \lvert x_{i\ell} - x_{j\ell} \rvert \bigr ) \right].
 \end{align}
 
-Figure \ref{fig:wt} plots the scaled weighted centered discrepancy,
+Figure \ref{fig:scaledweightedcentered} plots the scaled centered discrepancy with coordinate weights $\bsgamma = (1/\ell)_{\ell =1}^d$,
 \begin{equation*}
     \text{wt-ctr-discrepancy}\bigl(\{ \bsx_i\}_{i=0}^{n-1} \bigr)/\text{wt-ctr-discrepancy}(\emptyset ),
 \end{equation*}
-against sample size for a variety of $d$
+against sample size for a variety of $d$.  Now, even for larger $d$ there is a reasonable decay that approximates $\mathcal{O}(n^{-1})$.
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.5\textwidth]{\figpath/IIDSobolScaledWtCtrDisc_n_8192_d64.pdf}
-    \caption{Caption}
+    \includegraphics[width=\textwidth]{\figpath/IIDSobolScaledWtCtrDisc_n_8192_d64.pdf}
+    \caption{The scaled centered discrepancy with coordinate weights for a Sobol' LD sequence for various $d$ and the root mean squared scaled centered discrepancy with coordinate weights for IID nodes.  LD nodes have a much smaller discrepancy than IID nodes.}
     \label{fig:scaledweightedcentered}
 \end{figure}
 
-\subsection{Discrepancies for Lattices and Nets} \label{sec:latticenetdis}
+For IID samples the root mean squared discrepancy for a general reproducing kernel, $K$, is 
+\begin{multline}
+    \mathbb{E}[\text{discrepancy}^2\bigl(\{\bsx\}_{i=0}^{n-1},K \bigr)]  \\
+    = \frac 1{\sqrt{n}}  \sqrt{  \int_{[0,1)^d} K(\bsx,\bsx) \, \mathrm{d} \bsx - 
+	 \int_{[0,1)^d \times [0,1)^d} K(\bst,\bsx) \, \mathrm{d} \bst \, \mathrm{d} \bsx}.
+\end{multline}
+This is also plotted in Figure \ref{fig:scaledweightedcentered}. which highlights the superiority of LD nodes.
 
-\subsection{Randomized Error}
+\subsection{Discrepancies for Lattices and Digital Nets} \label{sec:latticenetdis}
+Many useful constructions of LD sequences are constructed numerically by minimizing the discrepancy, however, as noted earlier, computing the discrepancy requires $\mathcal{O}(dn^2)$ operations, which can be expensive.  However, there is a way to reduce this computational cost for lattices and digital nets when using friendly kernels.
+
+The mean squared discrepancy of a randomly shifted node set, $\{\bsx_i^{\bsDelta} =  \bsx_i + \bsDelta \bmod \bsone \}_{i=0}^{n-1}$ for an arbitrary kernel takes the form
+\begin{align}
+\nonumber
+\MoveEqLeft \mathbb{E}\bigl[\text{discrepancy}^2 \bigl (\{ \bsx_{i} + \bsDelta \bmod \bsone \}_{i=0}^{n-1} \bigr) \bigr] \\
+\nonumber
+& = \int_{[0,1)^d \times [0,1)^d} K(\bst,\bsx) \, \mathrm{d} \bst \, \mathrm{d} \bsx  -\frac 2n  \sum_{i=0}^{n-1}  \int_{[0,1)^d} \mathbb{E} \bigl [K(\bst,\bsx_i + \bsDelta \bmod \bsone) \bigr]  \, \mathrm{d} \bst \\
+\nonumber
+	& \qquad \qquad + \frac{1}{n^2} \sum_{i,j=0}^{n-1}  \mathbb{E} \bigl [ K(\bsx_i + \bsDelta \bmod \bsone,\bsx_j + \bsDelta \bmod \bsone) \bigr] \\
+\nonumber
+    & = \frac{1}{n^2} \sum_{i,j=0}^{n-1}  \mathbb{E} \bigl [ K(\bsx_i - \bsx_j  + \bsDelta \bmod \bsone, \bsDelta \bmod \bsone) \bigr] - \int_{[0,1)^d \times [0,1)^d} K(\bst,\bsx) \, \mathrm{d} \bst \, \mathrm{d} \bsx ,\\
+    \intertext{where we have applied a variable transformation $\bsDelta \to \bsDelta - \bsx_j$,}
+    & = \frac{1}{n^2} \sum_{i,j=0}^{n-1}  \widetilde{K}(\bsx_i - \bsx_j \bmod \bsone ) - \int_{[0,1)^d} \widetilde{K}(\bsx) \, \mathrm{d} \bsx, \\
+    \intertext{where the filtered version of the reproducing kernel is defined as}
+    \widetilde{K}(\bsx) &: = \int_{[0,1)^d} K(\bsx + \bst \bmod \bsone, \bst) \, \mathrm{d} \bst.
+\end{align}
+
+For arbitrary node sets, this mean squared discrepancy is of similar computational cost as the original, but if the unshifted node set $\{\bsx_i\}_{i=0}^{n-1}$ is a lattice as defined in \eqref{eq:latticepts}, then for any $j$, the set $\{\bsx_i - \bsx_j \bmod \bsone \}_{i=0}^{n-1}$ has the same values.  Thus the mean squared discrepancy for a randomly shifted lattice can be computed in only $\mathcal{O}(dn)$ operations, assuming that $K(\bsx)$ requires $d$ operations to compute:
+\begin{equation}
+\mathbb{E}\bigl[\text{discrepancy}^2 \bigl (\{ \bsx^{\bsDelta-\text{lat}}_{i} \}_{i=0}^{n-1} \bigr) \bigr] = \frac{1}{n} \sum_{i=0}^{n-1}  \widetilde{K}(\bsx_i) - \int_{[0,1)^d} \widetilde{K}(\bsx) \, \mathrm{d} \bsx. 
+\end{equation}
+For the kernel defining the centered discrepancy with coordinate weights, 
+\begin{equation}
+    \widetilde{K}(\bsx) = \int_{[0,1)^d} \prod_{\ell = 1}^d \Bigl [ 1 + \gamma_\ell^2 \{ 1/4 - x_\ell (1-x_\ell ) \} \Bigr], \quad \int_{[0,1)^d} \widetilde{K}(\bsx) \, \mathrm{d} \bsx = \prod_{\ell = 1}^d \biggl [ 1 + \frac{\gamma_\ell^2}{12} \biggr ].
+\end{equation}
+
+\subsection{Randomized Error and Bayesian Error}
+The error analysis leading to the 
+
+
 
 \section{Stopping Criteria} \label{sec:stop}
 
@@ -698,6 +742,36 @@ This implies that
 \end{align*}
 
 Need to finish and check against VS Code today
+
+\section*{Appendix B}
+We derive the filtered version of the centered discrepancy with coordinate weights:
+\begin{align*}
+    \widetilde{K}(\bsx)
+    &: = \int_{[0,1)^d} K(\bsx + \bst \bmod \bsone, \bst) \, \mathrm{d} \bst \\
+    & = \int_{[0,1)^d} \prod_{\ell = 1}^d \biggl [ 1 + \frac {\gamma_\ell^2}2 \bigl ( \lvert (x_\ell + t_\ell) \bmod 1 - 1/2 \rvert + \lvert t_\ell - 1/2 \rvert   \\
+    & \qquad \qquad  - \lvert (x_\ell + t_\ell) \bmod 1 - t_\ell \rvert \bigr ) \biggr] \, \mathrm{d} \bst \\
+    & = \prod_{\ell = 1}^d \int_0^1 \biggl [ 1 + \frac {\gamma_\ell^2}2 \bigl ( \lvert (x + t) \bmod 1 - 1/2 \rvert + \lvert t - 1/2 \rvert - \lvert (x + t) \bmod 1 - t \rvert \bigr ) \biggr] \, \mathrm{d} t
+\end{align*}
+Now
+\begin{align*}
+   \int_0^1   \lvert (x + t) \bmod 1 - 1/2 \rvert  \, \mathrm{d} t & =  \int_0^1   \lvert t - 1/2 \rvert  \, \mathrm{d} t \\
+   & = \int_0^{1/2} (1/2-t) \, \mathrm{d} t + \int_{1/2}^1 (t - 1/2) \, \mathrm{d} t \\
+   & = \left. - \frac{(1/2-t)^2}{2} \right \rvert_0^{1/2} + \left . - \frac{(t-1/2)^2}{2} \right \rvert _{1/2}^1 = \frac 14, \\
+   \int_0^1   \lvert (x + t) \bmod 1 - t \rvert  \, \mathrm{d} t & =
+   \int_0^{1-x} \lvert x+t - t \rvert \, \mathrm{d} t + \int_{1-x}^1 \lvert x+t -1 - t \rvert \, \mathrm{d} t \\
+   & = x(1-x) + x(1-x) = 2x(1-x).
+\end{align*}
+Thus, 
+\begin{equation}
+    \widetilde{K}(\bsx) = \int_{[0,1)^d} \prod_{\ell = 1}^d \Bigl [ 1 + \gamma_\ell^2 \{ 1/4 - x_\ell (1-x_\ell ) \} \Bigr]
+\end{equation}
+Moreover,
+\begin{align*}
+    \int_{[0,1)^d} \widetilde{K}(\bsx) \, \mathrm{d} \bsx & =
+    \prod_{\ell = 1}^d \Bigl [ 1 + \gamma_\ell^2  \bigl\{ 1/4 - \int_0^1 x (1-x ) \, \mathrm{d}x \bigr\} \Bigr] \\
+    & = \prod_{\ell = 1}^d \Bigl [ 1 + \gamma_\ell^2 \bigl \{ 1/4 - \left . [x^2/2 - x^3 / 3] \right \rvert_0^1  \bigr \} \Bigr ]    \\
+    & = \prod_{\ell = 1}^d \Bigl [ 1 + \frac{\gamma_\ell^2}{12} \Bigr ]
+\end{align*}
 
 \end{document}
 
