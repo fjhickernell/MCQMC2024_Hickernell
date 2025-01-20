@@ -27,7 +27,8 @@ def find_pdf_files_in_latex(latex_file):
     except Exception as e:
         print(f"An error occurred: {e}")
 
-    return pdf_files
+    #return pdf_files
+    return sorted(pdf_files)
 
 # Example usage
 if __name__ == "__main__":
