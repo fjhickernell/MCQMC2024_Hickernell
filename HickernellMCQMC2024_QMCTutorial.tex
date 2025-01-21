@@ -241,13 +241,13 @@ Note the following from this example:
 
 \begin{figure}
 	\centering
-	\includegraphics[width =0.7\textwidth]{\figpath/64iidpts_d6.pdf}
+	\includegraphics[width =\textwidth]{\figpath/64iidpts_d6.pdf}
 	\caption{IID points cover the unit cube better than grid points, although one does observe clusters and gaps.  In any  projection there is  a similar looking distribution of all $64$ points \label{fig:iid}}
 \end{figure}
 
 \begin{figure}
 	\centering
-	\includegraphics[width = 0.7\textwidth]{\figpath/64sobolpts_d6.pdf}
+	\includegraphics[width = \textwidth]{\figpath/64sobolpts_d6.pdf}
 	\caption{LD points cover the unit cube even better than IID points or grids.  In any  projection there is  a similar looking distribution of all $64$ points. \label{fig:ld}}
 \end{figure}
 
@@ -290,7 +290,7 @@ Figure \ref{fig:extensiblelatticeconstruct} shows the first $4$, $8$, and $16$ n
 
 \begin{figure}
 	\centering
-	\includegraphics[width = 0.7\textwidth]{\figpath/16_extensible_lattice_construct_d2.pdf}
+	\includegraphics[width = \textwidth]{\figpath/16_extensible_lattice_construct_d2.pdf}
 	\caption{An extensible lattice corresponding to  Figure \ref{fig:latticeconstruct}  with the nodes reordered using the van der Corput sequence in base $2$.  For each plot the blue nodes are a copy of the nodes to the left and the orange nodes are a shifted copy (modulo $\bsone$) of the blue nodes. \label{fig:extensiblelatticeconstruct}}
 \end{figure}
 
@@ -380,7 +380,7 @@ where $b_1, \ldots, b_d$ is a choice of $d$ distinct prime numbers.  Often they 
 
 \begin{figure}
 	\centering
-	\includegraphics[width=0.7\textwidth]{\figpath/64Halton_pts_d6.pdf}
+	\includegraphics[width=\textwidth]{\figpath/64Halton_pts_d6.pdf}
 	\caption{Halton nodes as defined in \eqref{eq:Halton} have low discrepancy but no preferred sample size. \label{fig:Halton}}
 \end{figure}
 
@@ -768,23 +768,53 @@ Briefly, let $\{Y_l := f_l(\bsX_{l})\}_{l=1}^L$ be a sequence of approximations 
     \bsx^{(1)} & = (x_1, \dots, x_{d_1}), \quad \bsx^{(2)} = (x_1, \dots, x_{d_2}), \ldots, \bsx^{(L)} = (x_1, \dots, x_{d_L}).
 \end{align*}
 This series of integrals may be approximated by a series of sample means, namely
-\begin{multline*}
+\begin{multline} \label{eq:MLmuhat}
     \hat{\mu}^{\text{ML}}_{\bsn,\bsd}  := \frac{1}{n_1}  \sum_{i=0}^{n_1-1} f_1(\bsx^{(1)}_i)  +  \frac{1}{n_2}  \sum_{i=0}^{n_2-1}  \bigl[f_2(\bsx^{(2)}_i) - f_1(\bsx^{(1)}_i)\bigr] + \cdots \\
      + \frac{1}{n_L}  \sum_{i=0}^{n_L-1}  \bigl[f_L(\bsx_i^{(L)}) - f_{L-1}(\bsx_i^{(L-1)}) \bigr].
-\end{multline*}
+\end{multline}
 The computational cost of this approximation is $\mathcal{O}(d_1n_1 + \cdots + d_Ln_L)$.
 
 A worst case error analysis as described in Section \ref{sec:discrepancy} implies that
-\begin{multline*}
-    \bigl \lvert \mu - \hat{\mu}^{\text{ML}}_{\bsn,\bsd} \bigr \rvert \le
-    \text{discrepancy}\bigl(\{\bsx_i^{(1)}\}_{i=0}^{n_1-1}, K^{(1)} \bigr) \text{variation}(f^{(1)}, K^{(1)}) \\
-    + \text{discrepancy}\bigl(\{\bsx_i^{(2)}\}_{i=0}^{n_2-1}, K^{(2)} \bigr) \text{variation}(f^{(2)} - f^{(1)}, K^{(2)}) + \cdots \\
-    + \text{discrepancy}\bigl(\{\bsx_i^{(L)}\}_{i=0}^{n_L-1}, K^{(L)} \bigr) \text{variation}(f^{(L)} - f^{(L-1)}, K^{(L)}),
-\end{multline*}
-where $K^{(l)}$ is the reproducing kernel corresponding to the relevant  Hilbert space of functions of $d_l$ variables.
+\begin{align}
+    \label{eq:MLerrbd}
+    \bigl \lvert \mu - \hat{\mu}^{\text{ML}}_{\bsn,\bsd} \bigr \rvert &\le
+    V_1/n_1 + V_2/n_2 + \cdots + V_L/n_L,  \\
+    \intertext{where} 
+    \nonumber
+    V_1 &= n_1 \, \text{discrepancy}\bigl(\{\bsx_i^{(1)}\}_{i=0}^{n_2-1}, K^{(1)} \bigr) \, \text{variation}(f^{(1)}, K^{(1)})\\
+    \nonumber
+    V_l & = n_l \,\text{discrepancy}\bigl(\{\bsx_i^{(l)}\}_{i=0}^{n_l-1}, K^{(l)} \bigr) \, \text{variation}(f^{(l)} - f^{(l-1)}, K^{(l)}), \\
+    \nonumber
+    & \qquad \qquad l = 2, \ldots, L,
+\end{align}
+and $K^{(l)}$ is the reproducing kernel corresponding to the relevant  Hilbert space of functions of $d_l$ variables.  The $V_l$ are defined such that we expect them to have little dependence on $n_l$ since we are using quasi-Monte Carlo nodes.
+
+If $C_1$ is the computational cost of $f^{(1)}(\bsx^{(1)})$ and $C_l$ is the computational cost of $f^{(l)}(\bsx^{(1)})$ of $f_L(\bsx_i^{(l)}) - f_{l-1}(\bsx_i^{(l-1)})$ for $l = 2, \ldots, L$, then the total computational cost of 
+\eqref{eq:MLmuhat} is 
+\begin{equation}
+    \text{cost}(\bsn,\bsd) = n_1 C_1 + \cdots + n_L C_L.
+\end{equation}
+Optimizing $\bsn$ to minimize the error bound in \eqref{eq:MLerrbd} for a fixed cost and assuming constant $\bsC$ and $\bsV$, yields
+\begin{align}
+    \bigl \lvert \mu - \hat{\mu}^{\text{ML}}_{\bsn,\bsd} \bigr \rvert &\le \varepsilon \\
+\intertext{for}
+    n_l & = \frac{\sqrt{V_l} \bigl(\sqrt{V_1 C_1} + \ldots + \sqrt{V_LC_L}\bigr)}{\varepsilon \sqrt{C_l} }, \qquad l = 1, \ldots, d,\\
+    \text{cost}(\bsn,\bsd) & = \frac{\bigl(\sqrt{V_1 C_1} + \ldots + \sqrt{V_LC_L}\bigr)^2}{\varepsilon}. \label{eq:MLcost}
+\end{align}
+
+To understand this result, suppose that the cost per function value at each level, $l$, is proportional to the dimension, $d_l$, and that the dimensions increase exponentially, i.e.,  $C_l \le \alpha d_1^l$.  Moreover, suppose that the $V_l$, which are roughly the variation, decrease exponentially, i.e., $V_l \le \beta r^{-l} $.  Then the computational cost in \eqref{eq:MLcost} can be bounded above by
+\begin{align*}
+     \text{cost}(\bsn,\bsd) & \le \frac{\alpha \beta \bigl((d_1/r)^{-1/2} + \ldots + (d_1/r)^{-L/2}\bigr)^2}{\varepsilon} \\
+     & = \frac{\alpha \beta \bigl((d_1/r)^{1/2} - (d_1/r)^{(L+1)/2}\bigr)^2}{\varepsilon \bigl( 1 - (d_1/r)^{1/2}\bigr)^2}.
+\end{align*}
+If the $V_l$ decay quickly enough, which means that the corrections $f_l - f_{l-1}$ depending on many variables decay quickly enough, in particular, if $r > d_1$, then 
+\begin{equation}
+         \text{cost}(\bsn,\bsd) \le \frac{\alpha \beta d_1} {r \varepsilon \bigl( 1 - (d_1/r)^{1/2}\bigr)^2} = \mathcal{O}(d_1/\varepsilon).
+\end{equation}
 
 
-\section{Ongoing Research} \label{sec:onging}
+
+\section{Ongoing Research} \label{sec:ongoing}
 \section{Conclusion} \label{sec:conclusion}
 
 
