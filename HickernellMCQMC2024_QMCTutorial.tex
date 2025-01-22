@@ -491,7 +491,7 @@ As Halton nodes can be viewed as digital nets with different bases for each dime
 
 \subsection{Randomized Generators}
 
-Instead of explicitly searching for good generating vectors or matrices, one can instead sample a few random generating vectors or generating matrices and then prune out bad choices \cite{}.  Random generating vectors $\bsh$ take $h_j \sim \calU\{0,\dots,n-1\}$. Random generating matrices for base $2$ digital nets set $c_{ij\ell} \sim \calU\{0,1\}$ for $i<\ell$ while enforcing $c_{iji}=1$ and $c_{ij\ell}=0$ for $i>\ell$. One idea is to generate
+Instead of explicitly searching for good generating vectors or matrices, one can instead sample a few random generating vectors or generating matrices and then prune out bad choices \cite{}.  Random generating vectors $\bsh$ take $h_j \sim \calU\{0,\dots,n-1\}$. Random generating matrices for base $2$ digital nets set $c_{ij\ell} \sim \calU\{0,1\}$ for $i<\ell$ while enforcing $c_{iji}=1$ and $c_{ij\ell}=0$ for $i>\ell$. 
 
 \section{Discrepancy} \label{sec:discrepancy}
 So far, we have relied on eye tests and the Keister example to show how LD sequences are better than IID.  This section introduces the theory that shows why minimizing discrepancy leads to better approximations to $\mu$.
@@ -620,12 +620,14 @@ We show that $K$ defined in \eqref{eq:ctrkernel} is the reproducing kernel for t
 \end{align*}
 The extensions to general $1/2 < x < 1$ and to $d > 1$ are straightforward but tedious \cite{Hic97a}.
 
-Figure \ref{fig:ctrKer} is a color map of the reproducing kernel, $K$, defined in \eqref{eq:ctrkernel} for $d=1$.  As shown in the figure, the matrix $\mathsf{K} := \bigl( K(x_i,x_j) \bigr)_{i,j=1}^n$ that arises in condition \eqref{eq:KcondPD} is formed by taking $n$ rows and corresponding columns of this plot.  Any such matrix $\mathsf{K}$ is strictly positive definite, as is suggested by the higher values near the diagonal.
+Figure \ref{fig:ctrKer} (left) is a color map of the reproducing kernel, $K$, defined in \eqref{eq:ctrkernel} for $d=1$.  As shown in the figure, the matrix $\mathsf{K} := \bigl( K(x_i,x_j) \bigr)_{i,j=1}^n$ that arises in condition \eqref{eq:KcondPD} is formed by taking $n$ rows and corresponding columns of this plot.  Any such matrix $\mathsf{K}$ is strictly positive definite, as is suggested by the higher values near the diagonal.
 
 \begin{figure}
 	\centering
-	\includegraphics[width = \textwidth]{\figpath/centered_discrepancy_kernel.pdf}
-	\caption{A plot of the reproducing kernel for the centered discrepancy defined in \eqref{eq:ctrkernel} for $d=1$.  Note that the vertical axis is inverted so that the plot is a picture of the ``matrix'' $\bigl( K(t,x) \bigr)_{t,x \in [0,1)]}$.  Any submatrix is positive definite by property \eqref{eq:KcondPD}. \label{fig:ctrKer}}
+	\includegraphics[width = 0.48\textwidth]{\figpath/centered_discrepancy_kernel.pdf} \quad 
+    \includegraphics[width = 0.48\textwidth]{\figpath/SobolCtrDisc_n_8192_d8.pdf}
+	\caption{Left:  A plot of the reproducing kernel for the centered discrepancy defined in \eqref{eq:ctrkernel} for $d=1$.  Note that the vertical axis is inverted so that the plot is a picture of the ``matrix'' $\bigl( K(t,x) \bigr)_{t,x \in [0,1)]}$.  Any submatrix is positive definite by property \eqref{eq:KcondPD}. \\
+    Right: The centered discrepancy for several modest values of $d$.  They show an asymptotic decay close to $\calO(n^{-1})$, but this rate is achieved only at higher $n$ for larger values of $d$ \label{fig:ctrKer}}
 \end{figure}
 
 The squared centered discrepancy is given by substituting the formula for $K$ into \eqref{eq:sqdisc}, which implies
@@ -639,13 +641,8 @@ The squared centered discrepancy is given by substituting the formula for $K$ in
 \end{align}
 As is true for most cases, the computational cost of computing the discrepancy is $\mathcal{O}(dn^2)$ as $d$ and/or $n$ tend to infinity.
 
-Figure \ref{fig:ctrdiscmodestd} displays the discrepancy for a Sobol' LD digital net for several modest values of $d$ and for $n =  1, 2, 4, \ldots$.  The decay rate of nearly $\calO(n^{-1})$ is observed for small $d$ and can be anticipated for a bit larger $d$.  Thus, the decay of the discrepancy mirrors the convergenc rate for LD sequences for the Kiester example in Section \ref{sec:intro} and Figure \ref{fig:keister-err}.
+Figure  \ref{fig:ctrKer} (right)  displays the discrepancy for a Sobol' LD digital net for several modest values of $d$ and for $n =  1, 2, 4, \ldots$.  The decay rate of nearly $\calO(n^{-1})$ is observed for small $d$ and can be anticipated for a bit larger $d$.  Thus, the decay of the discrepancy mirrors the convergenc rate for LD sequences for the Kiester example in Section \ref{sec:intro} and Figure \ref{fig:keister-err}.
 
-\begin{figure}
-	\centering
-	\includegraphics[width = \textwidth]{\figpath/SobolCtrDisc_n_8192_d8.pdf}
-	\caption{The centered discrepancy for several modest values of $d$.  They show an asymptotic decay close to $\calO(n^{-1})$, but this rate is achieved only at higher $n$ for larger values of $d$ \label{fig:ctrdiscmodestd}}
-\end{figure}
 
 The centered discrepancy also has a geometric interpretation, as is described in \cite{Hic97a}. Other choices of kernels and their geometric interpretations are explained there as well.
 
@@ -744,42 +741,61 @@ The symmetric, positive definite reproducing kernel, $K$, which appears in the w
 
 
 
-\section{Stopping Criteria} \label{sec:stop}
+\section{Stopping Criteria \textcolor{blue}{Aleksei}} \label{sec:stop}
 
-Art
+Monte Carlo approximates the true mean $\mu = \bbE[f(\bsX)]$, $X \sim \mathcal{U}[0,1]^d$ by the sample mean $\hat{\mu} = n^{-1} \sum_{i=0}^{n-1} f(\bsx_i)$ \textcolor{green}{maybe these formulas are already in the paper.}. Stopping criterion determine how large $n$ should be so that the error $\lvert \mu - \hat{\mu} \rvert$ is below an error tolerance $\epsilon$ either certainly or with sufficiently low uncertainty $\alpha$. The error tolerance and probability threshold are problem dependent. For example, in option pricing one may set the error tolerance to a penny, $\varepsilon=0.01$, and wish to find error bounds which hold with 95\% confidence i.e. $\alpha=.05$. 
 
-Tony
+For classic Monte Carlo with IID points, the Central Limit Theorem (CLT) may be used to get an approximate confidence interval $(\mu^-,\mu^+)$ where $\mu^\pm = \hat{\mu} \pm Z^{1-\alpha/2} \sigma/\sqrt{n}$ where $\sigma = \mathrm{Std}[f(X)]$ and $Z^{1-\alpha/2}$ is the $1-\alpha/2$ quantile of the standard Gaussian distribution. If 
+\begin{equation}
+    n > (2 Z^{1-\alpha/2} \sigma/\varepsilon)^2
+    \label{eq:sc_clt_iid_n}
+\end{equation} then $\mu \in (\mu^-,\mu^+)$ with probability $1-\alpha$. A simple IID Monte Carlo stopping criterion uses an initial sample of $n_0$ points to approximate $\sigma^2 \approx (n_0-1)^{-1} \sum_{i=0}^{n_0-1}(f(\bsx_i)-\hat{\mu})^2$, and then plugs this into \eqref{eq:sc_clt_iid_n} to determine $n$. As the CLT only holds as $n$ goes to infinity, this is only a approximate stopping criterion. For integrands $f$ with bounded kurtosis, a guaranteed version of this two-stage-sampling idea has been developed to account for the finite sample size using Berry-Esseen inequalities \cite{JiaHic16a}. 
 
-Jags
+A straightforward Quasi-Monte Carlo stopping criterion may also be derived from the CLT using a few randomizations of a low-discrepancy pointset. Let $\bsx_{ir}$ be the $i^\mathrm{th}$ point in the $r^\mathrm{th}$ randomization of a low discrepancy pointset with $0 \leq i < n$ and $1 \leq r \leq R$. For example, we may use $R$ independent shifts of a lattice pointset or independent digital shifts of a digital net. Crucially, the randomized pointsets presented in Section \ref{sec:random} are also low discrepancy. Let $\hat{\mu}_r = n^{-1} \sum_{i=0}^{n-1} f(\bsx_{ir})$ be approximate means for each randomization and set $\hat{\mu} = R^{-1} \sum_{r=1}^R \hat{\mu}_r$ to be the aggregate approximation. In the spirit of CLT, a standard approximate $1-\alpha$ confidence interval $(\mu^-,\mu^+)$ has $\mu^\pm = \hat{\mu} \pm t_{R-1}^{1-\alpha/2} S/\sqrt{R}$ where $S^2 = (R-1)^{-1} \sum_{r=1}^R (\hat{\mu}_r - \hat{\mu})^2$ and $t_{R-1}^{1-\alpha/2}$ is the $1-\alpha/2$ quantile of the Student $t$ distribution with $R-1$ degrees of freedom. Here we have used the Student $t$ distribution since $R$ is typically small, for example $R=15$. In \cite{l2023confidence}, comprehensive numerical experiments show that this straightforward QMC stopping criterion achieve better coverage than more involved bootstrap $t$ methods for a variety of test functions. To use this confidence interval for a stopping criterion, one may iteratively double the sample size $n$ until the interval width is sufficiently low.
+
+One of the drawbacks of this QMC-CLT stopping criterion is that, at least intuitively, independent randomizations of a low discrepancy pointset are less efficient than simply using more low discrepancy points from a single sequence. Concretely, we would expect an approximation with $n=2^8$ and $R=2^3$ to perform worse than simply taking $n=2^{11}$ points from a single randomized low discrepancy sequence ($R=1$). One idea in this direction is to approximate the decay rate of Fourier coefficients of $f$. Bounds of absolute certainty have be derived for cones of functions with sufficient decay \cite{HicEtal17a}. As in the QMC CLT stopping criterion, one may iteratively double $n$ until the bounds are sufficiently tight. 
+
+One cone tracks the decay of approximate complex-exponential Fourier coefficients \cite{JimHic16a}. When paired with a randomly shifted lattice, these approximate coefficients may be computed at only $\calO(n \log n)$ cost using the fast Fourier transform. Another cone tracks the decay of approximate Walsh coefficients  \cite{HicJim16a}. When paired with a digitally shifted digital net, these approximate coefficients may be computed at only $\calO(n \log n)$ using the fast Walsh-Hadamard transform. 
+
+Another idea which avoids multiple randomizations is to treat $f$ as a Gaussian process. Conditioned on observations $f(\bsx_i)$, a closed form expression exists for the $1-\alpha$ credible intervals for $\mu$. While also applicable when using IID points, using low discrepancy sequences paired with special kernels enables these credible intervals to be computed at only $\calO(n \log n)$ cost \cite{rathinavel2019fast}. Again we may iteratively double the sample size $n$ until the credible intervals are sufficiently tight.
+
+Specifically, pairing shifted lattices with shift-invariant kernels yields circulant Gram matrices for which computations can be done quickly using the fast Fourier transform \cite{RatHic19a}. Similarly, pairing digitally shifted digital nets with digitally-shift-invariant kernels yields recursive-block Toeplitz Gram matrices for which computations can be done quickly using fast Walsh-Hadamard transform \cite{JagHic22a}. 
+
+Extensions of these stopping criteria to functions of multiple expectations was explored in \cite{sorokin2022bounding}. Such problems include computing the posterior mean in a Bayesian context or the sensitivity indices for quantifying feature importance to a functions output variability. This work also considered sharing samples across approximations and generalized error tolerances such as relative error tolerance.  
 
 \section{Reformulating Our Problem} \label{sec:reformulate}
-\subsection{Variable Transformations}
-\subsection{Variation Reduction}
-\subsection{Multilevel Methods} \label{sec:multi}
-The cost of computing the sample mean defined in \eqref{eq:sample_mean} is typically $\mathcal{O}(dn)$ as the dimension, $d$, and the sample size, $n$, tend to infinity.  Some applications have $d$ either huge or infinite.  On example is in quantitative finance, where $d$ denotes the number of times that the asset price is monitored over the life of a financial derivative times the number of assets involved.  However, there is a way to reduce the cost of approximating $\mu$ by employing multilevel methods \cite{}.
+\subsection{Variable Transformations \textcolor{blue}{Aleksei}} 
+\subsection{Variation Reduction \textcolor{blue}{Fred}} 
+\subsection{Multilevel Methods \textcolor{blue}{Fred}} \label{sec:multi}
+The cost of computing the sample mean defined in \eqref{eq:sample_mean} is typically $\mathcal{O}(dn)$ as the dimension, $d$, and the sample size, $n$, tend to infinity.  Some applications have $d$ that is either huge or infinite.  On example is in quantitative finance, where $d$ denotes the number of times that the asset price is monitored over the life of a financial derivative times the number of assets involved.  
 
-Briefly, let $\{Y_l := f_l(\bsX_{l})\}_{l=1}^L$ be a sequence of approximations to $Y = f(\bsX)$, where $\bsX_l \sim \mathcal{U}[0,1)^{d_l}$.  Here we assume that $d_1 < \cdots < d_L$, and that the cost of evaluating $f_l(\bsx_{l})$ is $\mathcal{O}(d)$.  Also, $d_L = d$, $Y_{d_L} = T$, and $f_L = f$. Then
+However, there is a way to reduce the cost of approximating $\mu$ by employing multilevel methods so that the computational cost may be comparable to solving a low dimensional approximation \cite{Gil15a}. We give an introduction to these methods here.
+
+Let $\{Y_l := f_l(\bsX_{l})\}_{l=1}^L$ be a sequence of approximations to $Y = f(\bsX)$, where $\bsX_l \sim \mathcal{U}[0,1)^{d_l}$.  Here we assume that $d_1 < \cdots < d_L$, and that the cost of evaluating $f_l(\bsx_{l})$ is $\mathcal{O}(d_l)$.  Also, $d_L = d$, $Y_{d_L} = Y$, and $f_L = f$. Then
 \begin{align*}
     \mu & := \mathbb{E}(Y) = \mathbb{E}\bigl[f(\bsX)\bigr]
-    = \mathbb{E}(Y_1) + \mathbb{E}(Y_2 - Y_1) + \cdots + \mathbb{E}(Y_{d_{L-1}} - Y_d) \\
+    = \mathbb{E}(Y_1) + \mathbb{E}(Y_2 - Y_1) + \cdots + \mathbb{E}(Y_{d_L} - Y_{d_{L-1}}) \\
     & = \int_{[0,1)^{d_1}} f_1(\bsx^{(1)}) \, \mathrm{d} \bsx^{(1)} +  \int_{[0,1)^{d_2}} \bigl[f_2(\bsx^{(2)}) - f_1(\bsx^{(1)})\bigr] \, \mathrm{d} \bsx^{(2)} + \cdots \\
-    & \qquad \qquad + \int_{[0,1)^{d_L}} \bigl[f_L(\bsx^{(L)}) - f_{L-1}(\bsx^{(L-1)}) \bigr] \, \mathrm{d} \bsx^{(L)}
-    \intertext{where}
-    \bsx^{(1)} & = (x_1, \dots, x_{d_1}), \quad \bsx^{(2)} = (x_1, \dots, x_{d_2}), \ldots, \bsx^{(L)} = (x_1, \dots, x_{d_L}).
+    & \qquad \qquad + \int_{[0,1)^{d_L}} \bigl[f_L(\bsx^{(L)}) - f_{L-1}(\bsx^{(L-1)}) \bigr] \, \mathrm{d} \bsx^{(L)},
 \end{align*}
+where $\bsx^{(1)}  = (x_1, \dots, x_{d_1}), \ldots, \bsx^{(L)} = (x_1, \dots, x_{d_L})$.
 This series of integrals may be approximated by a series of sample means, namely
 \begin{multline} \label{eq:MLmuhat}
     \hat{\mu}^{\text{ML}}_{\bsn,\bsd}  := \frac{1}{n_1}  \sum_{i=0}^{n_1-1} f_1(\bsx^{(1)}_i)  +  \frac{1}{n_2}  \sum_{i=0}^{n_2-1}  \bigl[f_2(\bsx^{(2)}_i) - f_1(\bsx^{(1)}_i)\bigr] + \cdots \\
      + \frac{1}{n_L}  \sum_{i=0}^{n_L-1}  \bigl[f_L(\bsx_i^{(L)}) - f_{L-1}(\bsx_i^{(L-1)}) \bigr].
 \end{multline}
-The computational cost of this approximation is $\mathcal{O}(d_1n_1 + \cdots + d_Ln_L)$.
+If $C_1$ is the computational cost of $f^{(1)}(\bsx^{(1)})$ and $C_l$ is the computational cost of $f^{(l)}(\bsx^{(1)})$ of $f_L(\bsx_i^{(l)}) - f_{l-1}(\bsx_i^{(l-1)})$ for $l = 2, \ldots, L$, then the total computational cost of 
+\eqref{eq:MLmuhat} is 
+\begin{equation} \label{eq:MLcostdef}
+    \text{cost}(\bsn,\bsd) = n_1 C_1 + \cdots + n_L C_L.
+\end{equation}
 
 A worst case error analysis as described in Section \ref{sec:discrepancy} implies that
 \begin{align}
     \label{eq:MLerrbd}
     \bigl \lvert \mu - \hat{\mu}^{\text{ML}}_{\bsn,\bsd} \bigr \rvert &\le
     V_1/n_1 + V_2/n_2 + \cdots + V_L/n_L,  \\
-    \intertext{where} 
+    \intertext{where the $V_l$ are defined such that we expect them to have little dependence on $n_l$ since we are using quasi-Monte Carlo nodes:} 
     \nonumber
     V_1 &= n_1 \, \text{discrepancy}\bigl(\{\bsx_i^{(1)}\}_{i=0}^{n_2-1}, K^{(1)} \bigr) \, \text{variation}(f^{(1)}, K^{(1)})\\
     \nonumber
@@ -787,13 +803,8 @@ A worst case error analysis as described in Section \ref{sec:discrepancy} implie
     \nonumber
     & \qquad \qquad l = 2, \ldots, L,
 \end{align}
-and $K^{(l)}$ is the reproducing kernel corresponding to the relevant  Hilbert space of functions of $d_l$ variables.  The $V_l$ are defined such that we expect them to have little dependence on $n_l$ since we are using quasi-Monte Carlo nodes.
+and $K^{(l)}$ is the reproducing kernel corresponding to the relevant  Hilbert space of functions of $d_l$ variables.  
 
-If $C_1$ is the computational cost of $f^{(1)}(\bsx^{(1)})$ and $C_l$ is the computational cost of $f^{(l)}(\bsx^{(1)})$ of $f_L(\bsx_i^{(l)}) - f_{l-1}(\bsx_i^{(l-1)})$ for $l = 2, \ldots, L$, then the total computational cost of 
-\eqref{eq:MLmuhat} is 
-\begin{equation}
-    \text{cost}(\bsn,\bsd) = n_1 C_1 + \cdots + n_L C_L.
-\end{equation}
 Optimizing $\bsn$ to minimize the error bound in \eqref{eq:MLerrbd} for a fixed cost and assuming constant $\bsC$ and $\bsV$, yields
 \begin{align}
     \bigl \lvert \mu - \hat{\mu}^{\text{ML}}_{\bsn,\bsd} \bigr \rvert &\le \varepsilon \\
@@ -802,20 +813,56 @@ Optimizing $\bsn$ to minimize the error bound in \eqref{eq:MLerrbd} for a fixed 
     \text{cost}(\bsn,\bsd) & = \frac{\bigl(\sqrt{V_1 C_1} + \ldots + \sqrt{V_LC_L}\bigr)^2}{\varepsilon}. \label{eq:MLcost}
 \end{align}
 
-To understand this result, suppose that the cost per function value at each level, $l$, is proportional to the dimension, $d_l$, and that the dimensions increase exponentially, i.e.,  $C_l \le \alpha d_1^l$.  Moreover, suppose that the $V_l$, which are roughly the variation, decrease exponentially, i.e., $V_l \le \beta r^{-l} $.  Then the computational cost in \eqref{eq:MLcost} can be bounded above by
+We see that the cost of approximating $\mu$ within an absolute error tolerance of $\varepsilon$ is $\mathcal{O}(\varepsilon^{-1})$, as expected, but the dependence of $\text{cost}(\bsn,\bsd)$ on the dimension of the problem depends critically on how quickly the variation at each level decays.  Suppose that 
+\begin{itemize}
+    \item The cost of a function value at each level, $l$, is proportional to the dimension, $d_l$, and that the dimensions increase exponentially, i.e.,  $d_l = d_1^{l}$ and $C_l \le \alpha d_1^l$. 
+    \item The $V_l$, which are roughly the variation, decrease exponentially, i.e., $V_l \le \beta r^{-l} $.
+\end{itemize}   
+Then the computational cost in \eqref{eq:MLcost} can be bounded above by
 \begin{align*}
-     \text{cost}(\bsn,\bsd) & \le \frac{\alpha \beta \bigl((d_1/r)^{-1/2} + \ldots + (d_1/r)^{-L/2}\bigr)^2}{\varepsilon} \\
+     \text{cost}(\bsn,\bsd) & \le \frac{\alpha \beta \bigl((d_1/r)^{1/2} + \ldots + (d_1/r)^{L/2}\bigr)^2}{\varepsilon} \\
      & = \frac{\alpha \beta \bigl((d_1/r)^{1/2} - (d_1/r)^{(L+1)/2}\bigr)^2}{\varepsilon \bigl( 1 - (d_1/r)^{1/2}\bigr)^2}.
 \end{align*}
+
 If the $V_l$ decay quickly enough, which means that the corrections $f_l - f_{l-1}$ depending on many variables decay quickly enough, in particular, if $r > d_1$, then 
 \begin{equation}
          \text{cost}(\bsn,\bsd) \le \frac{\alpha \beta d_1} {r \varepsilon \bigl( 1 - (d_1/r)^{1/2}\bigr)^2} = \mathcal{O}(d_1/\varepsilon).
 \end{equation}
+In this case $\text{cost}(\bsn,\bsd)$ for this high dimensional problem is ont much worse than the cost of ensuring that just error of the rough $d_1$ approximation is smaller than $\varepsilon$, which would be $V_1C_1/\varepsilon \le \alpha \beta d_1/(r\varepsilon)$.  
+
+However, if $r < d_1$, then $\text{cost}(\bsn,\bsd) \ge V_LC_L/\varepsilon$ which may be as large as $\alpha \beta (d_1/r)^{-L}{\varepsilon}$, which grows exponentially as $d = d_L = d_1^L$ increases via increasing $L$.  Granted, this may not be as high a cost as the standard single-level approach where the cost would be roughly $V_1C_L$ if the $V_l$ are decaying.
+
+The ability to write one's problem to have the favorable case of high, or even infinite dimension with a computational cost comparable to the low dimensional case is somewhat an art.  However, the multilevel method takes advantage of the principle that we pointed out in Section \ref{sec:coordwts}, namely that qMC thrives when problem have a low essential dimension.  
+
+\section{Beyond Computing Expectations \textcolor{blue}{Nathan}}
+
+Quasi-Monte Carlo methods have found many applications in other areas of the computational sciences. We review several popular applications of qMC methods to highlight their practical impact and to motivate the further development of QMC theory and methodology.
+
+Besides computing expectations, it is often useful to know the distribution, $F$, or the density, $\varrho$, of a variable $Y$, i.e., 
+\[
+F(y) \coloneqq \mathbb{P}(Y\leq y)=\mathbb{P}(f(\mathbf{X})\leq y)=\int_{[0,1]^d} \mathbf{1}_{(-\infty,y]}(f(\mathbf{x}))d\mathbf{x}, \quad \varrho(y)\coloneqq F'(y).
+\]
+Several works in this direction use qMC \cite{LEcPuc20a,LEcuyer2022b,GilKuoSlo23a} and randomized qMC \cite{AbdEtal21a}.
+
+
+Sorokin and Rao \cite{SorRao23a} illustrates that integration of QMC methods with Gaussian process models enhance the reliability of estimating failure probabilities.
+
+
+Novel approaches are proposed for supervised deep learning algorithms for training Machine learning hyperparameter tuning \cite{longo21,mishra21}
+
+
+Keller \cite{kell95} was the first to adopt qMC for computer graphics.  \cite{kellprem12,shired08} 
+
+
+Path planning is a critical aspect of efficient robotic operation, defining of a route from an initial position to a target destination while considering an optimality criterion. Most existing approaches utilize LD nodes, such as the Halton sequence \cite{veldel14,zhong24} with more recent efforts \cite{chahine24} demonstrating that employing state-of-the-art LD nodes from \cite{ruschkirk24} can significantly enhance performance compared to traditional implementations.
+
+
+PDEs - Frances and others 
 
 
 
-\section{Ongoing Research} \label{sec:ongoing}
-\section{Conclusion} \label{sec:conclusion}
+%\section{Ongoing Research} \label{sec:ongoing}
+\section{Conclusion \textcolor{blue}{Fred}} \label{sec:conclusion}
 
 
 
