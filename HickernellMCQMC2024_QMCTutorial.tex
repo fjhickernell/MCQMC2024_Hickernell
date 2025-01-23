@@ -137,11 +137,11 @@ Quasi-Monte Carlo methods replace independent and identically distributed  seque
 
 This tutorial describes  low discrepancy sequences  and their quality measures.  We demonstrate the performance gains possible with quasi-Monte Carlo methods.  Moreover, we describe how to formulate problems to realize the greatest performance gains using quasi-Monte Carlo methods.  We also briefly describe the use of quasi-Monte Carlo methods for problems beyond computing the mean, $\mu$.
 
-\keywords{}
+\keywords{low discrepancy, randomization, sample mean, simulation}
 \end{abstract}
 %
 \setcounter{tocdepth}{2}
-\tableofcontents
+%\tableofcontents
 
 \section{Introduction} \label{sec:intro}
 There are may settings where key underlying quantities that affect the outcome are unknown, e.g.,
@@ -152,11 +152,11 @@ There are may settings where key underlying quantities that affect the outcome a
 \end{itemize}
 In such situations, the unknown inputs are often modeled using random vector variables or stochastic processes.  Computations are performed by generating a multidude of possible outcomes informed by the assumed probability distribution of the input. These are used to estimate the mean, quantiles, and/or probability distribution of the outcome.  This is the essence of the Monte Carlo (MC) method.
 
-In mathematical terms, the random outcome is $Y := f(\bsX)$, where $\bsX$ is a vector random input.  Given an input, $\bsx$, the corresponding outcome  $y = f(\bsx)$ can be computed by an algorithm, whose complexity may might make $f$ a \emph{black box}, or at least a gray box.  The user selects a sequence of input values, also known as data sites or \emph{nodes}, $\bsx_0, \bsx_1, \ldots$, which result in observed outcomes $y_0 = f(\bsx_0), y_1 = f(\bsx_1), \ldots$.  The $y_i$ may be used to approximate $\bbE(Y)$, quartiles of $Y$, the probability density of $Y$, and other quantities of interest.
+In mathematical terms, the random outcome is $Y := f(\bsX)$, where $\bsX$ is a vector random input.  Given an input, $\bsx$, the corresponding outcome  $y = f(\bsx)$ can be computed by an algorithm, whose complexity makes $f$ a \emph{black box}, or at least a gray box.  The user selects a sequence of input values, also known as data sites or \emph{nodes}, $\bsx_0, \bsx_1, \ldots$, which lead to observed outcomes $y_0 = f(\bsx_0), y_1 = f(\bsx_1), \ldots$.  The $y_i$ may be used to approximate $\bbE(Y)$, quartiles of $Y$, the probability density of $Y$, and other quantities of interest.
 
-Simple  Monte Carlo chooses the nodes, $\{\bsx_0, \bsx_1, \ldots\}$, to be independent and identically distributed (IID).  Quasi-Monte Carlo (qMC)  chooses the nodes differently, so that their empirical distribution approximates well the true probability distribution of $\bsX$.  The difference between  the true and empirical distributions is called a \emph{discrepancy}, and the node sequences used in qMC are called low discrepancy (LD) sequences.
+Simple  Monte Carlo chooses the sequence of nodes, $\{\bsx_i\}_{i=0}^\infty$, to be independent and identically distributed (IID).  Quasi-Monte Carlo (qMC)  chooses the nodes differently, so that their empirical distribution approximates well the true probability distribution of $\bsX$.  The difference between  the true and empirical distributions is called a \emph{discrepancy}, and the node sequences used in qMC are called low discrepancy (LD) sequences.
 
-This tutorial describes what qMC is, why we would want to use qMC, and how qMC can be implemented well.  The next session illustrates by example the advantages of qMC.  This is followed by a description of how deterministic LD sequences are constructed and randomizations that preserve their low discrepancy.  We describe various measures of discrepancy.  We explain how to decide what sample size, $n$, is sufficient to meet the user's error criterion.  We then discuss how to rewrite the problem of interest in a qMC-friendly way.
+This tutorial describes what qMC is, why we would want to use qMC, and how qMC can be implemented well.  The next section illustrates by example the advantages of qMC.  This is followed by a description of how deterministic LD sequences are constructed (Section \ref{sec:construct}) and randomizations that preserve their low discrepancy (Section \ref{sec:random}).  We describe various measures of discrepancy (Section \ref{sec:discrepancy}).  We explain how to decide what sample size, $n$, is sufficient to meet the user's error requirements (Section \ref{sec:stop}).  We then discuss how to rewrite the problem of interest in a qMC-friendly way (Section \ref{sec:reformulate}). We briefly discuss applications of qMC beyond computing the mean (Section \ref{sec:beyond}), and finish with a brief conclusion (Section \ref{sec:conclusion}).
 
 
 %
@@ -207,7 +207,7 @@ There are $50$ replications for each of the latter two cases with the average er
 \begin{figure}
 	\centering
 	\includegraphics[width =0.7\textwidth]{\figpath/n_is_16777216_d_is_6_n_rep_is_50_KeisterErrors.pdf}
-	\caption{The relative error of approximating $\mu$ defined in \eqref{eq:keisterC} by the sample mean, $\hat{\mu}_n$, defined in \eqref{eq:sample_mean} for various choices of nodes, $\bsx_0, \bsx_1, \ldots$.  Grids have the largest error and LD nodes have the smallest error. The numerical computations behind this figure and the others in the is chapter may be reproduced using the Jupyter notebook \url{??}. \label{fig:keister-err}}
+	\caption{The relative error of approximating $\mu$ defined in \eqref{eq:keisterC} by the sample mean, $\hat{\mu}_n$, defined in \eqref{eq:sample_mean} for various choices of nodes, $\bsx_0, \bsx_1, \ldots$.  Grids have the largest error and LD nodes have the smallest error. The numerical computations used to generate this figure and the others in the is chapter may be reproduced using the Jupyter notebook \url{??}. \label{fig:keister-err}}
 \end{figure}
 
 Note the following from this example:
@@ -218,7 +218,7 @@ Note the following from this example:
 
 	Choosing the nodes to lie on a grid corresponds to a tensor product midpoint cubature rule, which would normally be expected to have an error of $\mathcal{O}(n^{-2/d})$  for general $d$.  The error decay of $\mathcal{O}(n^{-1/5})$ rather than $\mathcal{O}(n^{-2/6})$ for this example may be due to the lack of smoothness of $f$ near the boundaries of the unit cube.
 
-	\item \emph{IID.}  Simple MC (orange diamonds) is a substantial improvement over grid nodes. As a reminder, for IID nodes the root mean squared error is
+	\item \emph{IID.}  Simple MC is a substantial improvement over grid nodes. As a reminder, for IID nodes the root mean squared error is
 	\begin{equation}\label{eq:IIDerror}
 		\sqrt{\mathbb{E}[(\mu - \hat{\mu})^2]} = \sqrt{\var(\hat{\mu})} = \sqrt{\frac{\var(f(\bsX))}{n}} = \frac{\mathrm{Std}(f(\bsX))}{n^{1/2}},
 	\end{equation}
@@ -226,7 +226,7 @@ Note the following from this example:
 
 	Whereas grid points collapse on top of one another when viewed in low dimensional projections (Figure \ref{fig:grid}), all IID points may be seen when viewed in any lower dimensional projection, as seen in Figure \ref{fig:iid}.  The disadvantage of IID points is that they form clusters and leave gaps.  This is because the position of any one node is independent of the position of the others.
 
-	\item \emph{LD.}  For qMC methods the error decays nearly like $\mathcal{O}(n^{-1})$, which for this example correponds to a reduction in error of several orders of magnitude compared to simple MC for large enough $n$.  Typically, LD sequences have preferred sample sizes.  For this Sobol' sequence, $n$ is chosen to be non-negative integer powers of $2$, which tends to give better accuracy than arbitrary $n$.
+	\item \emph{LD.}  The error of qMC methods decays nearly like $\mathcal{O}(n^{-1})$, which for this example correponds to a reduction in error of several orders of magnitude compared to simple MC for large enough $n$.  Typically, LD sequences have preferred sample sizes.  For this Sobol' sequence, $n$ is chosen to be non-negative integer powers of $2$, which tends to give better accuracy than arbitrary $n$.
 
 	Figure \ref{fig:ld} shows typical two-dimensional projections of a size $64$ LD node set.  Visually, these nodes fill the unit cube better than IID nodes.  A quantitative measure of this, the discrepancy, is defined in Section \ref{sec:discrepancy}.  Constructions of LD node sequences are explained in the next section.
 
@@ -253,7 +253,7 @@ Note the following from this example:
 
 
 \section{LD Sequence Constructions} \label{sec:construct}
-This section introduces some of the most popular LD sequences.  What sets these apart from IID sequences is that the nodes are deliberately chosen and highly correlated, whether they be deterministic or randomized. \texttt{qmcpy} \cite{QMCPy2020a} is a Python library that contains many of the constructions discussed here, as well as the stopping criteria discussed in Section \ref{sec:stop}.
+This section introduces some of the most popular LD sequences.  What sets these apart from IID sequences is that the nodes are deliberately chosen and highly correlated, whether they be deterministic or randomized. The Python library \texttt{qmcpy} \cite{QMCPy2020a} contains many of the constructions discussed here, as well as the stopping criteria discussed in Section \ref{sec:stop}.
 
 \subsection{Lattice Sequences} \label{sec:lattice}
 One of the simplest LD constructions is the family of good lattice points \cite{DicEtal22a,SloJoe94}.  As a finite node set, they are defined as
@@ -270,9 +270,9 @@ where $\bsh$ is a well chosen $d$-dimensional integer vector. Figure \ref{fig:la
 \end{figure}
 
 
-One disadvantage of this construction is that it is not extensible. For the example in Figure \ref{fig:latticeconstruct} the first $8$ nodes do not fill the unit square well.  However, the set of nodes defined by even $i$ do a reasonable job.  This suggests a method for defining extensible lattice sequences that was proposed independently by \cite{Mai81a} and \cite{HicEtal00}.
+One disadvantage of this construction is that it is not extensible. For the example in Figure \ref{fig:latticeconstruct} the first $8$ nodes do not fill the unit square well.  However, the set of nodes defined by even $i$ do a reasonable job.  This suggests a method for defining extensible lattice sequences that was proposed independently in \cite{Mai81a} and \cite{HicEtal00}.
 
-The one-dimensional extensible lattice is defined by the van der Corput sequence, $\{\phi_b(0), \phi_b(1), \ldots\}$.  This involves reflecting the digits of the integer $i$ in base $b$ about the decimal point.  For example, $\phi_2(6) = \phi_2(110_{2}) = {}_20.011 = 3/8$.  In general,
+The one-dimensional extensible lattice sequence is defined by the van der Corput sequence, $\{\phi_b(0), \phi_b(1), \ldots\}$.  This involves reflecting the digits of the integer $i$ in base $b$ about the decimal point.  For example, $\phi_2(6) = \phi_2(110_{2}) = {}_20.011 = 3/8$.  In general,
 \begin{multline} \label{eq:vdc}
 	\phi_b(i_0 + i_1b + i_2 b^2 + \cdots ) := i_0 b^{-1} + i_1 b^{-2} + i_2 b^{-3} + \cdots \in [0,1)
 	\\
@@ -286,7 +286,7 @@ To construct an extensible lattice, we replace $i/n$ in \eqref{eq:latticepts} by
 \end{equation}
 This reordering of nodes from the original construction allows us to preserve the lattice structure for the first $b^m$ nodes for any non-negative integer $m$. That is, $\{\bsx_0, \ldots, \bsx_{b^m-1}\}$ is a closed under addition modulo $\bsone$.
 
-Figure \ref{fig:extensiblelatticeconstruct} shows the first $4$, $8$, and $16$ nodes of an extensible lattice in base $2$ with the same generator as in Figure \ref{fig:latticeconstruct}.  The blue nodes are a copy of the nodes in the plot to the left, and the the orange nodes correspond to a shifted copy of the blue nodes modulo $\bsone$.  For the left plot, the shift is $\phi_2(2)\bsh = (1,11)/4$ or equivalently $(0.25,0.75)$.  For the middle plot, the shift is $\phi_2(4)\bsh = (1,11)/8$ or equivalently $(0.125,0.375)$. For the right plot, the shift is $\phi_2(8)\bsh = (1,11)/16$  or equivalently $(0.0625,0.6875)$.
+Figure \ref{fig:extensiblelatticeconstruct} shows the first $4$, $8$, and $16$ nodes of an extensible lattice in base $2$ with the same generator as in Figure \ref{fig:latticeconstruct}.  The blue dots are a copy of the nodes in the plot to the left, and the the orange diamonds correspond to a shifted copy of the blue dots modulo $\bsone$.  For the left plot, the shift is $\phi_2(2)\bsh = (1,11)/4$ or equivalently $(0.25,0.75)$.  For the middle plot, the shift is $\phi_2(4)\bsh = (1,11)/8$ or equivalently $(0.125,0.375)$. For the right plot, the shift is $\phi_2(8)\bsh = (1,11)/16$  or equivalently $(0.0625,0.6875)$.
 
 \begin{figure}
 	\centering
@@ -296,18 +296,18 @@ Figure \ref{fig:extensiblelatticeconstruct} shows the first $4$, $8$, and $16$ n
 
 For the example in Figure \ref{fig:extensiblelatticeconstruct}, increasing $n$ beyond $16$ repeats the original nodes because the generating vector, $\bsh$, contains integers all less than $16$.  Obtaining a truly extensible lattice sequence requires that $\bsh$ be a vector of generalized integers---essentially integers with infinite numbers of nonzero digits---as explained in \cite{HicNie03a}, where the existence of good generating vectors is also proved.  In practice, one searches computationally for a $\bsh$ that produces good set of lattice nodes of size $n = b^m$ for a range of $m$ \cite{HicEtal00}.
 
-The construction of great generating vectors for lattices has attracted a great deal of interest.  The component-by-component constructions pioneered by Frances Kuo, Josef Dick, Ian Sloan, Dirk Nuyens and others are surveyed in \cite[Chapter ?]{DicEtal22a}.  LatNet builder \cite{LEcEtal22a,LatNet} is a software package by Pierre L'Ecuyer and collaborators, which constructs generators for lattices and digital sequences.
+The construction of great generating vectors for lattices has attracted a great deal of interest.  The component-by-component constructions pioneered by Frances Kuo, Josef Dick, Ian Sloan, Dirk Nuyens and others are explained in \cite[Chapters 3, 4 \& 6]{DicEtal22a}.  LatNet builder \cite{LEcEtal22a,LatNet} is a software package by Pierre L'Ecuyer and collaborators, which constructs generators for lattices and digital sequences.
 
 \subsection{Digital Sequences} \label{sec:digital}
 
 Another family of LD sequences built upon the van der Corput sequence \eqref{eq:vdc} is digital sequences \cite{DicPil10a,Nie92}.  For simplicity, we restrict ourselves to $b = 2$ and let $\oplus$ denote binary digitwise addition modulo $2$ (also known as digitwise exclusive or), e.g., $3/8 \oplus 3/4 = {}_20.011 \oplus {}_20.110 = {}_20.101 = 5/8$.  A digital sequence is defined as
 \begin{equation} \label{eq:digital}
-	\bsx_i^{\text{dig}} := i_0 \bsx^{\text{dig}} _1 \oplus i_1 \bsx^{\text{dig}} _2 \oplus i_2 \bsx^{\text{dig}} _4 \oplus \cdots \in [0,1)^d \quad \text{for }
+	\bsx_i^{\text{dig}} := i_0 \bsx^{\text{dig}} _1 \oplus i_1 \bsx^{\text{dig}}_2 \oplus i_2 \bsx^{\text{dig}} _4 \oplus \cdots \in [0,1)^d \quad \text{for }
 	i = i_0 + i_12 + i_2 2^2 + \cdots,
 \end{equation}
-where $\bsx_1, \bsx_2, \ldots$ are carefully chosen.  (This is the van  der Corput sequence in base $2$ for $d=1$ and $x_\ell = 2^{-\ell}$.) The node set $\{ \bsx_0, \ldots, \bsx_{2^m-1}\}$  for non-negative integer $m$ is called a digital net and is closed under $\oplus$.
+where $\bsx^{\text{dig}}_1, \bsx^{\text{dig}}_2, \ldots$ are carefully chosen.  (This is the van  der Corput sequence in base $2$ for $d=1$ and $x_\ell = 2^{-\ell}$.) The node set $\{ \bsx_0, \ldots, \bsx_{2^m-1}\}$  for non-negative integer $m$ is called a digital net and is closed under $\oplus$.
 
-If $x_{ij\ell}$ denotes the $\ell^{\text{th}}$ digit of the $j^{\text{th}}$ coordinate of $\bsx_i$, then the literature often defines generating matrices, $\mathsf{C}_j = (c_{ij\ell})_{\ell,i = 1}^{M,N}$ for $j = 1, \ldots, d$, where $M$ is the maximum number of bits in the expression for $\bsx_i$, say $52$, and $2^N$ is the maximum number of nodes that is intended to be generated.  The digital sequence can then be defined equivalently as
+If $x_{ij\ell}$ denotes the $\ell^{\text{th}}$ digit of the $j^{\text{th}}$ coordinate of $\bsx_i$, then the literature often defines generating matrices, $\mathsf{C}_j = (x_{ij\ell})_{\ell,i = 1}^{M,N}$ for $j = 1, \ldots, d$, where $M$ is the maximum number of bits in the expression for $\bsx_i$, say $52$, and $2^N$ is the maximum number of nodes that is intended to be generated.  The digital sequence can then be defined equivalently as
 \begin{equation} \label{eq:digitalB}
 \renewcommand{\arraystretch}{1.5}
 	\begin{pmatrix} x^{\text{dig}}_{ij1} \\ x^{\text{dig}}_{ij2} \\ \vdots \end{pmatrix}
@@ -324,7 +324,7 @@ This box has volume $2^{-(k_1 + \cdots +k_d)} = 2^{-\lVert\bsk\rVert_1}$.  For a
 \begin{multline} \label{eq:tcond}
 	\text{the first $k_1$ rows of the first $m$ columns of $\mathsf{C}_1$ plus} \\
 	\text{the first $k_2$ rows of the first $m$ columns of $\mathsf{C}_2$ plus} \\
-	 \cdots \\
+	 \vdots \\
 	\text{the first $k_d$ rows of the first $m$ columns of $\mathsf{C}_d$} \\
 	\text{are linearly independent over the finite field with the elements $\{0,1\}$, }
 \end{multline}
@@ -765,6 +765,14 @@ Extensions of these stopping criteria to functions of multiple expectations was 
 
 \section{Reformulating Our Problem} \label{sec:reformulate}
 \subsection{Variable Transformations \textcolor{blue}{Aleksei}} 
+
+Often (Quasi-)Monte Carlo problems may be written as $\mu = \bbE[g(\bsT)]$ where $\bsT$ is a $d$-dimensional random variable with has density $\lambda$. Since QMC points have low discrepancy with the standard uniform distribution $\bsX \sim \calU[0,1]^d$, we perform an invertible variable transformation $\bsPsi: [0,1]^d \to \calM$ satisfying $\mathrm{range}(\bsT) \subseteq \calM$. This implies
+$\mu = \bbE[f(\bsX)]$ where  
+$$f(\bsX) = g(\bsPsi(\bsX)) \frac{\lambda (\bsPsi(\bsX))}{\nu(\bsPsi(\bsX))}$$
+and $\nu$ is the density of $\bsPsi(\bsX)$. We may write $\nu(\bsPsi(\bsX))= \lvert \bsJ_\bsPsi(\bsX) \rvert^{-1}$ where $\lvert \bsJ_\bsPsi(\bsX) \rvert$ is the determinant of the Jacobian of $\bsPsi$. 
+
+The above formulation is equivalent to importance sampling by a distribution with density $\nu$. Optimally, we would choose $\nu \propto g\lambda$ so that $f$ is constant, but this is infeasible in practice. Choosing $\bsPsi$ so that $\bsT = \bsPsi(\bsX)$ gives the simplification $f(\bsX) = g(\bsPsi(\bsX))$. An example of this was given in Section \ref{sec:practice} where $\bsT \sim \calN(\boldsymbol{0},\mathsf{I}/2)$ and $\bsPsi(\bsX) = \Phi^{-1}(\bsX)/\sqrt{2}$ where $\Phi^{-1}$ is the inverse CDF of the standard Gaussian distribution applied elementwise.
+
 \subsection{Variation Reduction \textcolor{blue}{Fred}} 
 \subsection{Multilevel Methods \textcolor{blue}{Fred}} \label{sec:multi}
 The cost of computing the sample mean defined in \eqref{eq:sample_mean} is typically $\mathcal{O}(dn)$ as the dimension, $d$, and the sample size, $n$, tend to infinity.  Some applications have $d$ that is either huge or infinite.  On example is in quantitative finance, where $d$ denotes the number of times that the asset price is monitored over the life of a financial derivative times the number of assets involved.  
@@ -834,30 +842,29 @@ However, if $r < d_1$, then $\text{cost}(\bsn,\bsd) \ge V_LC_L/\varepsilon$ whic
 
 The ability to write one's problem to have the favorable case of high, or even infinite dimension with a computational cost comparable to the low dimensional case is somewhat an art.  However, the multilevel method takes advantage of the principle that we pointed out in Section \ref{sec:coordwts}, namely that qMC thrives when problem have a low essential dimension.  
 
-\section{Beyond Computing Expectations \textcolor{blue}{Nathan}}
+\section{Beyond Computing Expectations \textcolor{blue}{Nathan}} \label{sec:beyond}
 
-Quasi-Monte Carlo methods have found many applications in other areas of the computational sciences. We review several popular applications of qMC methods to highlight their practical impact and to motivate the further development of QMC theory and methodology.
+Expectations of the form $\mu \coloneqq \mathbb{E}(f(\mathbf{X}))$ appear in several prominent areas of mathematics and computational science, and qMC methods have long been applied in these contexts. Namely, in mathematical finance many problems can be formulated as high-dimensional integrals, where the large number of dimensions arises from small time steps in time discretization and/or a large number of variables. In this setting, Monte Carlo methods are applied to randomly simulate the evolution of stock prices over time, and the expected value is then estimated by averaging over all sample paths. The qMC approach replaces the randomly generated paths by carefully constructed paths in an effort to reduce the computational burden on the required number of paths. Excellent survey works for qMC and randomized qMC applied to finance include \cite{CafMor96,LEc09,Lem04a,Jae02,wangsloan05}. Another fruitful domain for qMC methods is in partial differential equations (PDEs), used for computing the expectations of nonlinear functionals of solutions of certain classes of PDEs. This includes problems in areas like fluid dynamics or material science, where random coefficients in the PDE model uncertain properties; see \cite{KuoNuy16a,KuoEtal12a,GraEtal11a} and references therein for qMC applied to PDEs.
 
-Besides computing expectations, it is often useful to know the distribution, $F$, or the density, $\varrho$, of a variable $Y$, i.e., 
+
+Besides computing expectations, qMC methods have found many applications in other areas of the computational sciences. We lightly review these applications to highlight their wider practical impact and to motivate the further development of QMC theory and methodology.
+
+For example, when considering a variable $Y$, it is often useful to determine its distribution, $F$, or the density, $\varrho$, i.e., 
 \[
 F(y) \coloneqq \mathbb{P}(Y\leq y)=\mathbb{P}(f(\mathbf{X})\leq y)=\int_{[0,1]^d} \mathbf{1}_{(-\infty,y]}(f(\mathbf{x}))d\mathbf{x}, \quad \varrho(y)\coloneqq F'(y).
 \]
-Several works in this direction use qMC \cite{LEcPuc20a,LEcuyer2022b,GilKuoSlo23a} and randomized qMC \cite{AbdEtal21a}.
+Here, $F(y)$ gives the cumulative probability that $Y$ does not exceed $y$, while $\varrho(y)$ represents the corresponding density function. Several recent works for density estimation use qMC \cite{LEcPuc20a,LEcuyer2022b,GilKuoSlo23a} alongside randomized qMC \cite{AbdEtal21a} and often incorporate kernel-based methods or rely on conditioning strategies (sometimes called preintegration).
 
 
-Sorokin and Rao \cite{SorRao23a} illustrates that integration of QMC methods with Gaussian process models enhance the reliability of estimating failure probabilities.
 
+Taking a broader view, Sorokin and Rao \cite{SorRao23a} illustrates that integration of qMC methods with Gaussian process models enhance the reliability of estimating failure probabilities in the machine learning domain. Furthermore, novel approaches for training deep neural networks utilizing LD nodes have been proposed in recent works \cite{longo21,mishra21}.
 
-Novel approaches are proposed for supervised deep learning algorithms for training Machine learning hyperparameter tuning \cite{longo21,mishra21}
+Keller \cite{kell95} was the first to adopt qMC for rendering photorealistic images in computer graphics where the problem of simulating light transport can be mathematically represented as an integral over all possible light paths from source to camera. Many algorithms involving sampling with LD nodes have since been developed much further in \cite{kellprem12,shired08,Keller2013a,kolkel00,kell96,kell95}. (Remarkably, Monte Carlo methods have even been awarded with an Academy Award for visual effects in movie making.)
 
+Path planning is a critical aspect of efficient robotic operation, defining of a route from an initial position to a target destination while considering an optimality criterion. Most existing approaches utilize LD nodes, such as the Halton sequence \cite{veldel14,zhong24} with more recent efforts \cite{chahine24} demonstrating that employing state-of-the-art LD nodes from \cite{ruschkirk24} can significantly enhance the efficiency and flexibility of a robotic arm, demonstrated in both toy and real-world tasks.
 
-Keller \cite{kell95} was the first to adopt qMC for computer graphics.  \cite{kellprem12,shired08} 
+In summary, qMC methods have demonstrated their applicability and impact well beyond computing expectations, finding fruitful applications across fields such as computer graphics, robotics, and machine learning.
 
-
-Path planning is a critical aspect of efficient robotic operation, defining of a route from an initial position to a target destination while considering an optimality criterion. Most existing approaches utilize LD nodes, such as the Halton sequence \cite{veldel14,zhong24} with more recent efforts \cite{chahine24} demonstrating that employing state-of-the-art LD nodes from \cite{ruschkirk24} can significantly enhance performance compared to traditional implementations.
-
-
-PDEs - Frances and others 
 
 
 
