@@ -157,11 +157,11 @@ There are many settings where key underlying quantities that affect the outcome 
 \end{itemize}
 In such situations, the unknown inputs are often modeled using random vector variables or stochastic processes.  Computations are performed by generating a multitude of possible outcomes informed by the assumed probability distribution of the input. These are used to estimate the mean, quantiles, and/or probability distribution of the outcome.  This is the essence of the Monte Carlo (MC) method.
 
-In mathematical terms, the random outcome is $Y := f(\bsX)$, where $\bsX$ is a vector random input.  Given an input, $\bsx$, the corresponding outcome  $y = f(\bsx)$ can be computed by an algorithm, whose complexity makes $f$ a \emph{black box}, or at least a gray box.  The user selects a sequence of input values, also known as data sites or \emph{nodes}, $\bsx_0, \bsx_1, \ldots$, which lead to observed outcomes $y_0 = f(\bsx_0), y_1 = f(\bsx_1), \ldots$.  The $y_i$ may be used to approximate $\bbE(Y)$, quartiles of $Y$, the probability density of $Y$, and other quantities of interest.
+In mathematical terms, the random outcome is $Y := f(\bsX)$, where $\bsX$ is a vector random input.  Given an input, $\bsx$, the corresponding outcome  $y = f(\bsx)$ can be computed by an algorithm, whose complexity makes $f$ a \emph{black box}, or at least a \emph{gray box}.  The user selects a sequence of input values, also known as data sites or \emph{nodes}, $\bsx_0, \bsx_1, \ldots$, which lead to observed outcomes $y_0 = f(\bsx_0), y_1 = f(\bsx_1), \ldots$.  The $y_i$ may be used to approximate $\bbE(Y)$, quartiles of $Y$, the probability density of $Y$, and other quantities of interest.
 
 Simple  Monte Carlo chooses the sequence of nodes, $\{\bsx_i\}_{i=0}^\infty$, to be independent and identically distributed (IID).  Quasi-Monte Carlo (qMC)  chooses the nodes differently, so that their empirical distribution approximates well the true probability distribution of $\bsX$.  The difference between  the true and empirical distributions is called a \emph{discrepancy}, and the node sequences used in qMC are called low discrepancy (LD) sequences.
 
-This tutorial describes what qMC is, why we would want to use qMC, and how qMC can be implemented well.  The next section illustrates by example the advantages of qMC.  This is followed by a description of how deterministic LD sequences are constructed (Section \ref{sec:construct}) and randomizations that preserve their low discrepancy (Section \ref{sec:random}).  We describe various measures of discrepancy (Section \ref{sec:discrepancy}).  We explain how to decide what sample size, $n$, is sufficient to meet the user's error requirements (Section \ref{sec:stop}).  We then discuss how to rewrite the problem of interest in a qMC-friendly way (Section \ref{sec:reformulate}). We briefly discuss applications of qMC beyond computing the mean (Section \ref{sec:beyond}), and finish with a brief conclusion (Section \ref{sec:conclusion}).
+This tutorial describes what qMC is, why we would want to use qMC, and how qMC can be implemented well.  The next section illustrates by example the advantages of qMC.  This is followed by a description of how deterministic LD sequences are constructed (Section \ref{sec:construct}) and randomizations that preserve their low discrepancy (Section \ref{sec:random}).  We describe various measures of discrepancy (Section \ref{sec:discrepancy}).  We explain how to decide what sample size, $n$, is sufficient to meet the user's error requirements (Section \ref{sec:stop}).  We then discuss how to rewrite the problem of interest in a qMC-friendly way (Section \ref{sec:reformulate}). We briefly discuss applications of qMC beyond computing the mean (Section \ref{sec:beyond}), and finish with a short conclusion (Section \ref{sec:conclusion}).
 
 
 %
@@ -188,7 +188,7 @@ This $\mu$ in \eqref{eq:keisterA} is the expectation of $Y := g(\bsT) := \pi^{d/
 \begin{equation}\label{eq:keisterB}
 	\mu = \int_{\mathbb{R}^d} \underbrace{\pi^{d/2} \cos(\lVert \bst \rVert)}_{=:g(\bst)}  \underbrace{\frac{\exp(-\lVert \bst \rVert^2)}{\pi^{d/2}}}_{\text{density of } \calN(\bszero,\mathsf{I}/2)} \, \rmd \bst = \bbE(Y) = \bbE[g(\bsT)].
 \end{equation}
-Virtually all LD sequences, which underlie qMC, are defined to approximate the standard uniform distribution, $\calU[0,1]^d$.  Thus, we perform a variable transformation $\bst = \bigl (\Phi^{-1}(x_1), \ldots, \Phi^{-1}(x_d) \bigr )/\sqrt{2}$,
+Virtually all LD sequences underlying qMC are defined to approximate the standard uniform distribution, $\calU[0,1]^d$.  Thus, we perform a variable transformation $\bst = \bigl (\Phi^{-1}(x_1), \ldots, \Phi^{-1}(x_d) \bigr )/\sqrt{2}$,
 where is $\Phi$ is the cumulative distribution function of the standard Gaussian random variable.  This reimagines the integral $\mu$ as the expectation of a function, $f$, of a standard uniform random variable:
 \begin{multline}\label{eq:keisterC}
 	\mu = \int_{[0,1]^d} \underbrace{\pi^{d/2} \cos\Bigl (\bigl \lVert \bigl( \Phi^{-1}(x_1), \ldots, \Phi^{-1}(x_d)\bigr) \bigr\rVert/\sqrt{2}  \Bigr)}_{=:f(\bsx)} \, \rmd \bsx \\
@@ -212,7 +212,7 @@ There are $50$ replications for each of the latter two cases with the average er
 \begin{figure}
 	\centering
 	\includegraphics[width =0.5\textwidth]{\figpath/n_is_16777216_d_is_6_n_rep_is_50_KeisterErrors.pdf}
-	\caption{The relative error of approximating $\mu$ defined in \eqref{eq:keisterC} by the sample mean, $\hat{\mu}_n$, defined in \eqref{eq:sample_mean} for various choices of nodes, $\bsx_0, \bsx_1, \ldots$.  Grids have the largest error and LD nodes have the smallest error. \label{fig:keister-err}}
+	\caption{The relative error of approximating $\mu$ defined in \eqref{eq:keisterC} by the sample mean, $\hat{\mu}_n$, defined in \eqref{eq:sample_mean_Keister} for various choices of nodes, $\bsx_0, \bsx_1, \ldots$.  Grids have the largest error and LD nodes have the smallest error. \label{fig:keister-err}}
 \end{figure}
 
 Note the following from this example:
@@ -221,12 +221,14 @@ Note the following from this example:
 
 	\item \emph{Grids.} Although they may be attractive for low dimensional problems, e.g., $d = 1$, $2$, or $3$, grids do poorly for this modest dimension, $d=6$.  Figure \ref{fig:grid} compares a $64$ point grid with $d = 2$ and $6$.  For $d = 6$, the possible sample sizes, $n$, are quite sparse, as shown in Figure \ref{fig:keister-err}.
 
+    Moreover, grids are not naturally extensible.  To move from $n = m^6$ nodes to $n = (m+1)^6$ nodes, one must discard the original nodes.
+
 	Choosing the nodes to lie on a grid corresponds to a tensor product midpoint cubature rule, which would normally be expected to have an error of $\mathcal{O}(n^{-2/d})$  for general $d$.  The error decay of $\mathcal{O}(n^{-1/5})$ rather than $\mathcal{O}(n^{-2/6})$ for this example may be due to the lack of smoothness of $f$ near the boundaries of the unit cube.
 \begin{figure}
 	\centering
 	\includegraphics[width = 0.3\textwidth]{\figpath/64gridpts_d2.pdf}\qquad
 	\includegraphics[width =  0.3\textwidth]{\figpath/64gridpts_d6.pdf}
-	\caption{Although a two-dimensional grid covers the unit square rather well, a $d$-dimensional grid for modest $d$ does \emph{not} cover the unit cube well.  For example, one can only see four distinct points in a two dimensional projection of a six-dimensional grid with $64$ points. \label{fig:grid}}
+	\caption{\FJHNote{Is the font size large enough?}Although a two-dimensional grid covers the unit square rather well, a $d$-dimensional grid for modest $d$ does \emph{not} cover the unit cube well.  For example, one can only see four distinct nodes in a two dimensional projection of a six-dimensional grid with $64$ nodes. \label{fig:grid}}
 \end{figure}
 
 	\item \emph{IID.}  Simple MC is a substantial improvement over grid nodes. For IID nodes the root mean squared error is
@@ -235,15 +237,15 @@ Note the following from this example:
 	\end{equation}
 	where $\var$ denotes the variance and $\mathrm{Std}$ the standard deviation.  This $\mathcal{O}(n^{-1/2})$ decay is observed in Figure \ref{fig:keister-err}. For simple MC the sample size, $n$, can be any positive integer without affecting the rate of decay of the error.
 
-	Whereas grid points collapse on top of one another when viewed in low dimensional projections (Figure \ref{fig:grid}), all IID points may be seen when viewed in any lower dimensional projection, as seen in Figure \ref{fig:iid}.  The disadvantage of IID points is that they form clusters and leave gaps.  This is because the position of any one node is independent of the position of the others.
+	Whereas grid points collapse on top of one another when viewed in low dimensional projections (Figure \ref{fig:grid}), all IID nodes may be seen when viewed in any lower dimensional projection, as seen in Figure \ref{fig:iid}.  The disadvantage of IID nodes is that they form clusters and leave gaps.  This is because the position of any one node is independent of the position of the others.
 
 \begin{figure}
 	\centering
 	\includegraphics[width =\textwidth]{\figpath/64iidpts_d6.pdf}
-	\caption{IID points cover the unit cube better than grid points, although one does observe clusters and gaps.  In any  projection there is  a similar looking distribution of all $64$ points \label{fig:iid}}
+	\caption{IID nodes cover the unit cube better than grid nodes, although one does observe clusters and gaps.  In any  projection there is  a similar looking distribution of all $64$ nodes \label{fig:iid}}
 \end{figure}
 
-	\item \emph{LD.}  The error of qMC methods decays nearly like $\mathcal{O}(n^{-1})$, which for this example correponds to a reduction in error of several orders of magnitude compared to simple MC for large enough $n$.  Typically, LD sequences have preferred sample sizes.  For this Sobol' sequence, $n$ is chosen to be non-negative integer powers of $2$, which tends to give better accuracy than arbitrary $n$.
+	\item \emph{LD.}  The error of qMC methods decays nearly like $\mathcal{O}(n^{-1})$, which for this example correponds to a reduction in error of several orders of magnitude compared to simple MC for large enough $n$.  Typically, LD sequences have preferred sample sizes.  This particular LD sequence is a Sobol' sequence, where the preferred sample sizes are non-negative integer powers of $2$.
 
 	Figure \ref{fig:ld} shows typical two-dimensional projections of a size $64$ LD node set.  Visually, these nodes fill the unit cube better than IID nodes.  A quantitative measure of this, the discrepancy, is defined in Section \ref{sec:discrepancy}.  Constructions of LD node sequences are explained in the next section.
 
@@ -254,10 +256,10 @@ Note the following from this example:
 \begin{figure}
 	\centering
 	\includegraphics[width = \textwidth]{\figpath/64sobolpts_d6.pdf}
-	\caption{LD points cover the unit cube even better than IID points or grids.  In any  projection there is  a similar looking distribution of all $64$ points. \label{fig:ld}}
+	\caption{LD nodes cover the unit cube even better than IID nodes or grids.  In any  projection there is  a similar looking distribution of all $64$ nodes. \label{fig:ld}}
 \end{figure}
 
-As an aside, the numerical computations used to generate the figures in this chapter may be reproduced using the Jupyter notebook \url{??}. The Python library \texttt{qmcpy} \cite{QMCPy2020a} is used to generate the LD node sequences. 
+The numerical computations used to generate the figures in this chapter may be reproduced using the Jupyter notebook \url{??}. The Python library \texttt{qmcpy} \cite{QMCPy2020a} is used to generate the LD node sequences. 
 
 \section{LD Sequence Constructions} \label{sec:construct}
 This section introduces some of the most popular LD sequences.  What sets these apart from IID sequences is that the nodes are deliberately chosen and highly correlated, whether they be deterministic or randomized. The Python library \texttt{qmcpy} \cite{QMCPy2020a} contains many of the constructions discussed here, as well as the stopping criteria discussed in Section \ref{sec:stop}.
@@ -273,7 +275,7 @@ where $\bsh$ is a well chosen $d$-dimensional integer vector. Figure \ref{fig:la
 \begin{figure}
 	\centering
 	\includegraphics[width = \textwidth]{\figpath/16_lattice_construct_d2.pdf}
-	\caption{The construction of a good lattice point set in two dimensions with $16$ nodes is obtained by moving $\bsh/n$ beyond the present point and wrapping around the boundaries of the square (hypercube in $d$ dimensions) until one returns to the origin. \label{fig:latticeconstruct}}
+	\caption{The construction of a good lattice node set in two dimensions with $16$ nodes is obtained by moving $\bsh/n$ beyond the present node and wrapping around the boundaries of the square (hypercube in $d$ dimensions) until one returns to the origin. \label{fig:latticeconstruct}}
 \end{figure}
 
 
@@ -307,7 +309,7 @@ For the example in Figure \ref{fig:extensiblelatticeconstruct}, increasing $n$ b
 
 \subsection{Digital Sequences} \label{sec:digital}
 
-Another family of LD sequences built upon the van der Corput sequence \eqref{eq:vdc} is digital sequences \cite{DicPil10a,Nie92}.  For simplicity, we restrict ourselves to $b = 2$ and let $\oplus$ denote binary digitwise addition modulo $2$ (also known as digitwise exclusive or), e.g., $3/8 \oplus 3/4 = {}_20.011 \oplus {}_20.110 = {}_20.101 = 5/8$.  A digital sequence is defined as
+Another family of LD sequences that is a generalization of the van der Corput sequence \eqref{eq:vdc} is digital sequences \cite{DicPil10a,Nie92}.  For simplicity, we restrict ourselves to $b = 2$ and let $\oplus$ denote binary digitwise addition modulo $2$ (also known as digitwise exclusive or), e.g., $3/8 \oplus 3/4 = {}_20.011 \oplus {}_20.110 = {}_20.101 = 5/8$.  A digital sequence is defined as
 \begin{equation} \label{eq:digital}
 	\bsx_i^{\text{dig}} := i_0 \bsx^{\text{dig}} _1 \oplus i_1 \bsx^{\text{dig}}_2 \oplus i_2 \bsx^{\text{dig}} _4 \oplus \cdots \in [0,1)^d \quad \text{for }
 	i = i_0 + i_12 + i_2 2^2 + \cdots,
@@ -323,7 +325,7 @@ If $x^{\text{dig}}_{ij\ell}$ denotes the $\ell^{\text{th}}$ digit of the $j^{\te
 \end{equation}
 
 
-To understand how these nodes might be evenly distributed over $[0,1)^d$, imagine a box of the form
+To understand how well these nodes are evenly distributed over $[0,1)^d$, imagine a box of the form
 \begin{multline} \label{eq:element_box}
 	[a_1 b^{-k_1}, (a_1 + 1) 2^{-k_1}) \times \cdots \times [a_d b^{-k_d}, (a_d + 1) 2^{-k_d}), \\
 	a_j \in \{0, \ldots, 2^{k_j} - 1\}, \ k_j \in \{0,1, \ldots \}, \qquad j =1, \ldots d, \ \bsk \in \NN_0.
@@ -334,7 +336,7 @@ This box has volume $2^{-(k_1 + \cdots +k_d)} = 2^{-\lVert\bsk\rVert_1}$.  For a
 	\text{the first $k_2$ rows of the first $m$ columns of $\mathsf{C}_2$ plus} \\
 	 \vdots \\
 	\text{the first $k_d$ rows of the first $m$ columns of $\mathsf{C}_d$} \\
-	\text{are linearly independent over the finite field with the elements $\{0,1\}$, }
+	\text{are linearly independent over addition and multiplication modulo $2$, }
 \end{multline}
 regardless of the choice of $\bsa = (a_1, \ldots, a_d)$.  The $t$-value of a digital net with $2^m$ nodes is defined as the smallest $t$ for which condition \eqref{eq:tcond} holds for all $\bsk$ with $\lVert \bsk \rVert_1 \le m-t$.  Equivalently, this $t$ is the smallest value for which every box of the form \eqref{eq:element_box} with volume $2^{\lVert \bsk \rVert_1 - m}$ contains its fair share of $2^t$ nodes.  Such a digital net is then called a $(t,m,d)$-net.  An infinite sequence of the form \eqref{eq:digitalB} for which this condition holds for all non-negative $m$ is called a  $(t,d)$-sequence.
 
@@ -373,7 +375,7 @@ If we consider only the first two coordinates of the node set defined in \eqref{
 	\centering
 	\includegraphics[width = \textwidth]{\figpath/8_sobol_sequence_elementary_intervals_d3_coord_(1,2).pdf}
 	\includegraphics[width = \textwidth]{\figpath/8_sobol_sequence_elementary_intervals_d3_coord_(1,3).pdf}
-	\caption{Each box in the two dimensional projections of the node set \eqref{eq:smallnet} plotted above show one node in each box except for the second row, third plot from the left.  Thus, this node set is not a $(0,3,3)$-net.  It is however a $(1,3,3)$-net.  \label{fig:elementinterval}}
+	\caption{Each box in the two dimensional projections of the node set \eqref{eq:smallnet} plotted above contain one node except for the second row, third plot from the left.  Thus, this node set is not a $(0,3,3)$-net.  It is however a $(1,3,3)$-net.  \label{fig:elementinterval}}
 \end{figure}
 
 
@@ -381,12 +383,13 @@ If we consider only the first two coordinates of the node set defined in \eqref{
 Digital sequence generators can be found via number theory \cite[Chapter 8]{DicPil10a} or numerical search (see \cite{KuoJoe08a} and \cite[Chapter 10]{DicPil10a}).  The earliest instance is due to Sobol' \cite{Sob67}. %\NKNote{I added these two references which were previously left blank. Were you thinking of other papers to cite here?}
 
 
-\subsection{Halton sequences} \label{sec:Halton}  While lattice sequences and digital sequences have preferred sample sizes, $n$, Halton sequences have no preferred sample size.  The Halton sequence is defined in terms of the van der Corput sequence
+\subsection{Halton sequences} \label{sec:Halton}  While lattice sequences and digital sequences have preferred sample sizes, $n$, Halton sequences have no preferred sample size.  The Halton sequence is defined in terms of the van der Corput sequences for different bases:
 \begin{equation}\label{eq:Halton}
 	\bsx^{\text{Hal}}_i = \bigl( \phi_{b_1}(i), \ldots, \phi_{b_d}(i) \bigr), \qquad i = 0, 1, \ldots,
 \end{equation}
 where $b_1, \ldots, b_d$ is a choice of $d$ distinct prime numbers.  Often they are chosen as the first $d$ prime numbers.  Figure \ref{fig:Halton} shows two dimensional projections of Halton nodes in six dimensions. %\NKNote{Suggestion: 
-The Halton construction is an extensible LD sequence. However, should one know $n \in \mathbb{N}$ in advance, a finite $d+1$-dimensional LD node set called the Hammersley point set can be defined similarly as
+
+The Halton construction is an extensible LD sequence. However, should one know $n \in \mathbb{N}$ in advance, a finite $d+1$-dimensional LD node set called the Hammersley node set can be defined similarly as
 \begin{equation}\label{eq:hammersley}
     \bsx_i^{\text{Ham}} = \left( \frac{i}{n}, \phi_{b_1}(i), \ldots, \phi_{b_d}(i) \right) \quad i = 0, 1, \ldots, .
 \end{equation}
@@ -416,8 +419,8 @@ When constructing LD nodes, it is essential to ensure not only a well-distribute
 
 %Uniformity constraints related to digital sequence stratification across boxes of the form \eqref{eq:element_box} are expressed as integer linear programming (ILP) problems and subsequently solved to optimize an objective function relating to the ILP reformulation ensuring good quality low dimensional projections. 
 
-
-In the previous section we discussed how the Halton sequence has the benefit of not having a preferred number of points for its construction. It does however possess the drawback of exhibiting poor uniformity in the lower dimensional projections when $d$ is moderate to high due to number theoretic correlation between the coordinates \cite{kirklem24}. One popular strategy to circumvent this poor behavior, dating back to Faure \cite{fau78} and Braaten and Weller \cite{brawell79}, is to randomly or deterministically permute the digits of the base $b_j$ expansions $j = 1,2\ldots,d$ to disrupt correlations between the components. To do so, we first define the generalized van der Corput sequence by obtaining a sequence $\Sigma = (\sigma_r)_{r\geq0}$ of permutations of $\{0,\ldots,b-1\}$ where the $i^{th}$ term of the one-dimensional sequence is defined as 
+\FJHNote{Should this paragraph go here or in the next section?}
+In the previous section we discussed how the Halton sequence has the benefit of not having a preferred number of nodes for its construction. It does however possess the drawback of exhibiting poor uniformity in the lower dimensional projections when $d$ is moderate to high due to number theoretic correlation between the coordinates \cite{kirklem24}. One popular strategy to circumvent this poor behavior, dating back to Faure \cite{fau78} and Braaten and Weller \cite{brawell79}, is to randomly or deterministically permute the digits of the base $b_j$ expansions $j = 1,2\ldots,d$ to disrupt correlations between the components. To do so, we first define the generalized van der Corput sequence by obtaining a sequence $\Sigma = (\sigma_r)_{r\geq0}$ of permutations of $\{0,\ldots,b-1\}$ where the $i^{th}$ term of the one-dimensional sequence is defined as 
 \begin{multline}\label{eq:gen_vdc}
     \phi_b^{\Sigma}(i_0 + i_1b + i_2 b^2 + \cdots ) := \sigma_0(i_0) b^{-1} + \sigma_1(i_1) b^{-2} + \sigma_2(i_2) b^{-3} + \cdots \in [0,1)
 	\\
@@ -430,7 +433,7 @@ There exist many proposed algorithms to optimize the permutations defining the g
 
 We have outlined various efforts by qMC researchers to optimize specific classes of LD constructions, including lattices, digital sequences, and Halton sequences. There also exist several efforts to generate novel LD constructions which do not adhere to any underlying number theoretic structure, but none-the-less, possess a high level of uniformity. These methods are often global optimization methods of sample point distributions, which is often challenging due to the non-convex nature of the FOM as a function of the nodes. 
 %Traditional global optimization methods, such as gradient descent or its variants, struggle in this setting becoming trapped in suboptimal local minima and failing to identify the global optimum configuration of nodes. 
-One of the first works to globally optimize LD nodes, albeit a heuristic approach, was by Winker and Fang \cite{WinFan97b} employing the threshold accepting optimization algorithm to directly optimize the uniformity of the LD nodes with respect to a discrepancy FOM. More recently, Rusch, Kirk, Bronstein, Lemieux and Rus \cite{ruschkirk24} developed the first machine-learning assisted optimization tool for LD node optimization in the Message-Passing Monte Carlo (MPMC) method. MPMC implements tools from geometric deep learning, imposing a computational graph onto an initialized IID node set to transform the nodes to LD node set via a learned mapping. The optimization is gradient-based and is guided by the direct minimization of a discrepancy-based FOM. We also highlight the method proposed by Hinrichs and Oettershagen \cite{hinoet16} generating optimal LD nodes for a specific class of functions in two-dimensions. To address the non-convexity challenge, the authors decompose the global optimization of a specific FOM into a large number of smaller, convex sub-problems which are solved individually. There are several other recent attempts to construct optimal LD nodes, many of which are well summarized in the PhD thesis of Cl\'{e}ment \cite{clethesis24}. We highlight the subset selection method proposed in \cite{cle22} to choose from an $n$-element initialization set, the $k<n$ nodes which minimize a discrepancy FOM. A heuristic approach to this problem was later shown in \cite{cle24_heuristic}. Furthermore, a method to generate optimal star-discrepancy node sets for fixed $n$ and $d$ based on a non-linear programming approach was suggested in \cite{cle24}, however is computationally restricted to very small numbers of points in dimensions two and three only.
+One of the first works to globally optimize LD nodes, albeit a heuristic approach, was by Winker and Fang \cite{WinFan97b} employing the threshold accepting optimization algorithm to directly optimize the uniformity of the LD nodes with respect to a discrepancy FOM. More recently, Rusch, Kirk, Bronstein, Lemieux and Rus \cite{ruschkirk24} developed the first machine-learning assisted optimization tool for LD node optimization in the Message-Passing Monte Carlo (MPMC) method. MPMC implements tools from geometric deep learning, imposing a computational graph onto an initialized IID node set to transform the nodes to LD node set via a learned mapping. The optimization is gradient-based and is guided by the direct minimization of a discrepancy-based FOM. We also highlight the method proposed by Hinrichs and Oettershagen \cite{hinoet16} generating optimal LD nodes for a specific class of functions in two-dimensions. To address the non-convexity challenge, the authors decompose the global optimization of a specific FOM into a large number of smaller, convex sub-problems which are solved individually. There are several other recent attempts to construct optimal LD nodes, many of which are well summarized in the PhD thesis of Cl\'{e}ment \cite{clethesis24}. We highlight the subset selection method proposed in \cite{cle22} to choose from an $n$-element initialization set, the $k<n$ nodes which minimize a discrepancy FOM. A heuristic approach to this problem was later shown in \cite{cle24_heuristic}. Furthermore, a method to generate optimal star-discrepancy node sets for fixed $n$ and $d$ based on a non-linear programming approach was suggested in \cite{cle24}, however is computationally restricted to very small numbers of nodes in dimensions two and three only.
 
 
 
@@ -474,13 +477,13 @@ Three digital shifts of the same net are given in Figure \ref{fig:shift_net}.  A
 	\caption{Three digital shifts of a digital $(0,3,2)$-net with nodes denoted by three different colors.  There is one node in each smaller box of the form \eqref{eq:element_box} for $\lVert \bsk \rVert = 3$, for each digitally shifted net. \label{fig:shift_net}}
 \end{figure}
 
-Let $\{\bsx_i^{\bsDelta}\}_{i=0}^{n-1}$ denote a uniform (digital or modulo $\bsone$) random shift of any deterministic original node set, $\{\bsx_i \}_{i=0}^{n-1}$.  That is, $\bsx_i^{\bsDelta} : = \bsx_i + \bsDelta \pmod \bsone$ or  $\bsx_i^{\bsDelta} : = \bsx_i \oplus \bsDelta$ and $\bsDelta \sim \calU[0,1)^d$. This then implies that each $\bsx_i^{\bsDelta} \sim \calU[0,1)^d$ and thus $\hat{\mu}_n$ is an unbiased estimator of $\mu$, which was mentioned at the beginning of this section.
+Let $\{\bsx_i^{\bsDelta}\}_{i=0}^{n-1}$ denote a uniform (digital or modulo $\bsone$) random shift of any deterministic original node set, $\{\bsx_i \}_{i=0}^{n-1}$.  That is, $\bsx_i^{\bsDelta} : = \bsx_i + \bsDelta \pmod \bsone$ or  $\bsx_i^{\bsDelta} : = \bsx_i \oplus \bsDelta$ and $\bsDelta \sim \calU[0,1)^d$. This then implies that each $\bsx_i^{\bsDelta} \sim \calU[0,1)^d$ and thus $\hat{\mu}_n$ is an unbiased estimator of $\mu$, which was mentioned as an advantage at the beginning of this section.
 
 \subsection{Digital Scrambles} \label{sec:scrambles}
 For digital nets one can randomize even further by a scrambling that preserves the $t$-value.  Owen \cite{Owe95} proposed a scrambling of nets called nested uniform scrambling.  A simpler version called linear matrix scrambling was proposed by Matou\v{s}ek \cite{Mat98} and is described here.  Starting from the formulation of digital sequences involving generator matrices in \eqref{eq:digitalB}, we multiply each generator matrix on the left by a lower triangular matrix with ones along the diagonals and elements below the diagonal that are randomly chosen to be $0$ or $1$ with equal probability:
 \begin{subequations} \label{eq:scr_lattice}
 \begin{gather} \label{eq:digitalscr}
-	\begin{pmatrix} x^{\text{scr}}_{ij1} \\ x^{\text{scr}}_{ij2} \\ \vdots \end{pmatrix}
+	\begin{pmatrix} x^{\text{scr-net}}_{ij1} \\ x^{\text{scr-net}}_{ij2} \\ \vdots \end{pmatrix}
 	= \mathsf{L_j} \mathsf{C}_j \begin{pmatrix} i_0 \\ i_1 \\ \vdots \end{pmatrix} + \begin{pmatrix} \Delta_{1j} \\ \Delta_{2j} \\ \vdots \end{pmatrix} \quad \pmod{2}, \qquad j = 1,\ldots, d, \ i = 0, 1, \ldots, \\
 	\mathsf{L_j} :=
 	\begin{pmatrix}
@@ -496,12 +499,12 @@ A random digital shift, $\bsDelta$ is also added, where $\Delta_{\ell j}$ denote
 \begin{figure}
 	\centering
 	\includegraphics[width = \textwidth]{\figpath/n_8_n_scr_3_scrambled_sobol_sequence_d2.pdf}
-	\caption{Three linear scrambles of a digital $(0,3,2)$-net with nodes denoted by three different colors.  There is one node in each smaller box of the form \eqref{eq:element_box} for $\lVert \bsk \rVert = 3$, for each digitally shifted net. \label{fig:scrambled_net}}
+	\caption{\FJHNote{Something went awry here.}Three linear scrambles of a digital $(0,3,2)$-net with nodes denoted by three different colors.  There is one node in each smaller box of the form \eqref{eq:element_box} for $\lVert \bsk \rVert = 3$, for each digitally shifted net. \label{fig:scrambled_net}}
 \end{figure}
 
 \subsection{Other Randomizations for Halton}
 
-As Halton nodes can be viewed as digital nets with different bases for each dimension, the randomization techniques used for digital nets can be applied to Halton point sets\NKNote{we should clarify here whether we mean truncated Halton, or Hammersley if it is introduced above} Random digital shifts for Halton set $x_{ij\ell} \mapsto (x_{ij\ell} + \Delta_{j\ell}) \mod b_j$ where the shift $\Delta_{j\ell} \in \{0,\dots,b_j-1\}$. More generally, a permutation scramble for digital nets sets $x_{ij\ell} \mapsto \Pi_{j\ell}(x_{ij\ell})$ where $\Pi_{j\ell}$ are independent random permutations of $\{0,\dots,b_j-1\}$. \AGSNote{Ignore this permutation definition as it is the same as \eqref{eq:gen_vdc}?} Randomization of Halton relating to permutations of digits was discussed briefly in Section \ref{sec:optLD}.  Random nested uniform scrambling and linear matrix scrambling have also been considered for Halton point sets \cite{owen2024gain}.
+As Halton nodes can be viewed as digital nets with different bases for each dimension, the randomization techniques used for digital nets can be applied to Halton node sets\NKNote{we should clarify here whether we mean truncated Halton, or Hammersley if it is introduced above} Random digital shifts for Halton set $x_{ij\ell} \mapsto (x_{ij\ell} + \Delta_{j\ell}) \mod b_j$ where the shift $\Delta_{j\ell} \in \{0,\dots,b_j-1\}$. More generally, a permutation scramble for digital nets sets $x_{ij\ell} \mapsto \Pi_{j\ell}(x_{ij\ell})$ where $\Pi_{j\ell}$ are independent random permutations of $\{0,\dots,b_j-1\}$. \AGSNote{Ignore this permutation definition as it is the same as \eqref{eq:gen_vdc}?} Randomization of Halton relating to permutations of digits was discussed briefly in Section \ref{sec:optLD}.  Random nested uniform scrambling and linear matrix scrambling have also been considered for Halton node sets \cite{owen2024gain}.
 
 
 \subsection{Randomized Generators}
@@ -553,7 +556,7 @@ If $\mu(\cdot):\calH_{\calK} \to \RR$ is a bounded linear functional on $\calH_K
 	\lvert\mu(f) - \hat{\mu}_n(f) \rvert
 	& \le \underbrace{\lVert  \eta_{\mu(\cdot) - \hat{\mu}_n(\cdot)} \rVert_{\calH_K}}_{=:\text{discrepancy}\bigl(\{\bsx\}_{i=0}^{n-1},K \bigr)}
 	\, \underbrace{\inf_{c \in \RR}\lVert  f - c \rVert_{\calH_K}}_{=:\text{variation}(f,K)} \qquad \forall f \in \calH_K,  \label{eq:cuberrbd}
-	\intertext{since $\hat{\mu}_n$ is exact for constants.  (It is assumed that $\calH$ contains constant functions so that $f \in \calH_K$ implies that $f - c \in \calH_K$.)  The squared norm of the error funtional can be expressed explicitly via \eqref{eq:sqnormL} as}
+	\intertext{since $\hat{\mu}_n$ is exact for constants.  (It is assumed that $\calH_K$ contains constant functions so that $f \in \calH_K$ implies that $f - c \in \calH_K$.)  The squared norm of the error funtional can be expressed explicitly via \eqref{eq:sqnormL} as}
 	\nonumber
 	\text{discrepancy}^2\bigl(\{\bsx\}_{i=0}^{n-1},K \bigr) & = \lVert  \eta_{\mu(\cdot) - \hat{\mu}_n(\cdot)} \rVert_{\calH_K}^2 \\
 	\nonumber
@@ -566,8 +569,8 @@ If $\mu(\cdot):\calH_{\calK} \to \RR$ is a bounded linear functional on $\calH_K
 
 The error bound \eqref{eq:cuberrbd} has two factors:
 \begin{itemize}
-	\item the discrepancy, which is the norm of the error functional, is a measure of deficiency of the node set, $\{\bsx\}_{i=0}^{n-1}$, and
-	\item the variation is a measure of the roughness of the function defining our random variable whose expectation we wish to compute.
+	\item The discrepancy, which is the norm of the error functional, depends only on the node set, $\{\bsx\}_{i=0}^{n-1}$, and \emph{not} on $f$.  The discrepancy measures the deficiency of that node set.
+	\item The variation depends only on $f$, the function defining our random variable $Y$ whose expectation we wish to compute,  and \emph{not} on the node set, $\{\bsx\}_{i=0}^{n-1}$.  The variation is a measure of the roughness of $f$.
 \end{itemize}
 In general, designers of qMC methods want to construct sets or sequences of nodes with  discrepancy as small as possible, either by increasing $n$, if the computational budget allows, or by better placement of the nodes.  The constructions described in Section \ref{sec:construct} are ways of ensuring better placement of the nodes, provided that the generators are chosen well.  Practitioners of qMC want to formulate $\mu$ in a way to make the variation as small as possible.  This is discussed in Section \ref{sec:reformulate}.
 
@@ -575,8 +578,8 @@ Although error bound \eqref{eq:cuberrbd} is elegant, it leaves several matters u
 \begin{itemize}
 	\item The reproducing kernel $K$ defines both the discrepancy and the variation.  This means that different choices of $K$ will lead to different error bounds for the same $\hat{\mu}_n$, even though the error is unchanged.
 	\item The Hilbert space $\calH_K$ contains one's assumptions about $f$, such as smoothness or periodicity. Knowing $K$, however, does not automatically lead to an explicit formula for the inner product of the associated Hilbert space, $\langle \cdot, \cdot \rangle_{\calH_K}$.  Conversely, having an explicit formula for  $\langle \cdot, \cdot \rangle_{\calH_K}$ does not automatically lead to an explicit formula for the reproducing kernel, $K$.  In both cases, educated guesswork is involved.
-	\item Choosing a more restrictive $\calH_K$ may lead to a sharper error bound, however, it is often infeasible in practice to check whether the ``black box'' $f$ lies in $\calH_K$.
-	\item   Moreover, even if one is confident that $f \in \calH_K$, it is usually impractical to compute variation$(f,K)$, as we shall see below.  Error bound \eqref{eq:cuberrbd} cannot be used as a stopping criterion to determine the $n$ needed to satisfy an error tolerance.
+	\item Choosing a more restrictive $\calH_K$ may lead to a sharper error bound, however, it is often infeasible in practice to check whether the $f$ lies in $\calH_K$.  This is what we mean in the introduction by referring to $f$ as a ``black box''.
+	\item   Moreover, even if one is confident that $f \in \calH_K$ ($f$ is a ``gray box''), it is usually impractical to compute variation$(f,K)$, as we shall see in the discrepancy example below.  Error bound \eqref{eq:cuberrbd} cannot be used as a stopping criterion to determine the $n$ needed to satisfy an error tolerance.
 \end{itemize}
 In spite of these drawbacks, \eqref{eq:cuberrbd} is quite useful:
 \begin{itemize}
@@ -600,7 +603,7 @@ which is a desirable property for problems where there is no preferred corner of
 
 The inner product for the Hilbert space $\calH_K$ with reproducing kernel $K$ is
 \begin{align}
-	\langle f, g \rangle_{\calH_K} &= f(\boldsymbol{1/2}) g(\boldsymbol{1/2}) \nonumber
+	\langle f, g \rangle_{\calH_K} &= f(1/2, \ldots, 1/2) g(1/2, \ldots, 1/2) \nonumber
 	\\
 	&
 	+ \int_{[0,1)} [D^{\{1\}}f](x_1) \, [D^{\{1\}}g](x_1)\, \mathrm{d} x_1
@@ -614,7 +617,7 @@ The inner product for the Hilbert space $\calH_K$ with reproducing kernel $K$ is
 where $\langle \cdot,\cdot \rangle_2$ denotes the $L^2$ inner product, the operator $D^{\bsell}$ is defined as
 \begin{multline*}
 	[D^{\{\ell_1, \ell_2, \ldots, \ell_s\} }f](x_1, x_2, \ldots, x_s) \\
-	: = \frac{\partial^s f(1/2,\ldots, 1/2, x_{\ell_1}, 1/2, \ldots, 1/2, x_{\ell_2}, 1/2, \ldots, 1/2, x_{\ell_s}, 1/2, \ldots, 1/2)}{\partial x_{\ell_1} \partial x_{\ell_2} \cdots \partial x_s},
+	: = \frac{\partial^s f(1/2,\ldots, 1/2, x_{\ell_1}, 1/2, \ldots, 1/2, x_{\ell_2}, 1/2, \ldots, 1/2, x_{\ell_s}, 1/2, \ldots, 1/2)}{\partial x_{\ell_1} \partial x_{\ell_2} \cdots \partial x_{\ell_s}},
 \end{multline*}
 and $D^{\emptyset}f$ is understood to be the constant $f(1/2, \ldots, 1/2)$ \cite{Hic97a}.  The variation, which corresponds to the non-constant part of the function, is
 \begin{equation*}
@@ -663,7 +666,7 @@ The centered discrepancy also has a geometric interpretation, as is described in
 
 
 \subsection{Coordinate weights} \label{sec:coordwts}
-When the dimension, $d$, is increased, the discrepancy increases and the rate of decay with increasing sample size deteriorates, as can be seen in Figure \ref{fig:scaledweightedcentered} (left). This raises the question of whether the LD sequences lose their effectiveness for higher dimensions or whether the theory of the pervious section does not coincide well with practice.
+When the dimension, $d$, is increased, the discrepancy increases and the rate of decay with increasing sample size deteriorates, as can be seen in Figure \ref{fig:scaledweightedcentered} (left). This raises the question of whether the LD sequences lose their effectiveness for higher dimensions or whether the theory of the previous subsection does not coincide with practice.
 
 Note that the discrepancy of the null set, which is equivalent to the norm of the linear functional $\mu(\cdot)$, is
 \begin{equation}
@@ -671,15 +674,15 @@ Note that the discrepancy of the null set, which is equivalent to the norm of th
 \end{equation}
 which corresponds to $(13/12)^{d/2}$ for the centered discrepancy.  This means that integration gets exponentially harder as $d$ increases.  One may scale the discrepancy of a node set by dividing it by discrepancy$(\emptyset,K)$, but this does not recover the desired nearly $\mathcal{O}(n^{-1})$ decay rate.
 
-A good approach is to introduce coordinate weights, $\gamma_1, \ldots, \gamma_d$ into the reproducing kernel.  For the kernel defining the centered discrepancy, this means
+A good approach is to introduce coordinate weights, $\gamma_1, \ldots, \gamma_d$ into the reproducing kernel.  These were introduced in \cite{Hic95} but begin to be fully exploited in \cite{SloWoz98} and the articles that followed.  For the kernel defining the centered discrepancy, this means
 \begin{align} \label{eq:wtctrkernel}
-	K(\bst,\bsx) &= \prod_{\ell = 1}^d \biggl [ 1 + \frac {\gamma_\ell^2}2 \bigl ( \lvert t_\ell - 1/2 \rvert + \lvert x_\ell - 1/2 \rvert - \lvert t_\ell - x_\ell \rvert \bigr ) \biggr] , \\
-	\langle f, g \rangle_{\calH_K}  &= \sum_{\bsell \subseteq \{1, \ldots, d\}} \biggl(\prod_k \gamma_{\ell_k}^2 \biggr) \langle D^{\bsell}f, D^{\bsell}g \rangle_2, \\
+	K_{\bsgamma}(\bst,\bsx) &= \prod_{\ell = 1}^d \biggl [ 1 + \frac {\gamma_\ell^2}2 \bigl ( \lvert t_\ell - 1/2 \rvert + \lvert x_\ell - 1/2 \rvert - \lvert t_\ell - x_\ell \rvert \bigr ) \biggr] , \\
+	\langle f, g \rangle_{\calH_{K_{\bsgamma}}}  &= \sum_{\bsell \subseteq \{1, \ldots, d\}} \biggl(\prod_k \gamma_{\ell_k}^2 \biggr) \langle D^{\bsell}f, D^{\bsell}g \rangle_2, \\
     \label{eq:wtctrvariation}
-	\text{variation}(f)  &= \sqrt{\sum_{\bsell \subseteq \{1, \ldots, d\}} \biggl( \prod_k \gamma_{\ell_k}^{-2} \biggr) \lVert D^{\bsell}f \rVert_2^2}, \\
+	\text{variation}(f,K_{\bsgamma})  &= \sqrt{\sum_{\bsell \subseteq \{1, \ldots, d\}} \biggl( \prod_k \gamma_{\ell_k}^{-2} \biggr) \lVert D^{\bsell}f \rVert_2^2}, \\
 	\label{eq:wt-ctrdisc}
 	\nonumber
-	\MoveEqLeft[4]\text{wt-ctr-discrepancy}^2\bigl(\{ \bsx_i\}_{i=0}^{n-1} \bigr) \\
+	\MoveEqLeft[4]\text{wt-ctr-discrepancy}^2\bigl(\{ \bsx_i\}_{i=0}^{n-1} , \bsgamma\bigr) \\
 	\nonumber
 	&= \prod_{\ell=1}^d \left ( 1 + \frac{\gamma_{\ell}^2}{12} \right )^d
 	- \frac 2n \sum_{i=0}^{n-1} \prod_{\ell=1}^d \left [ 1 + \frac {\gamma_{\ell}^2}2 \bigl ( \lvert x_{i\ell} - 1/2 \rvert - \lvert x_{i\ell} - 1/2 \rvert^d \bigr )\right ] \\
@@ -688,7 +691,7 @@ A good approach is to introduce coordinate weights, $\gamma_1, \ldots, \gamma_d$
 
 Figure \ref{fig:scaledweightedcentered} (right) plots the scaled centered discrepancy with coordinate weights $\bsgamma = (1/\ell)_{\ell =1}^d$, i.e., 
 \begin{equation*}
-    \text{wt-ctr-discrepancy}\bigl(\{ \bsx_i\}_{i=0}^{n-1} \bigr)/\text{wt-ctr-discrepancy}(\emptyset ),
+    \text{wt-ctr-discrepancy}\bigl(\{ \bsx_i\}_{i=0}^{n-1},\bsgamma \bigr)/\text{wt-ctr-discrepancy}(\emptyset,\bsgamma ),
 \end{equation*}
 against sample size for a variety of $d$.  Now, even for larger $d$ there is a reasonable decay that approximates $\mathcal{O}(n^{-1})$.
 
@@ -710,7 +713,7 @@ For IID samples the root mean squared discrepancy for a general reproducing kern
 \end{multline}
 This is also plotted in Figure \ref{fig:scaledweightedcentered} (right). which highlights the superiority of LD nodes.
 
-The meaning of the coordinate weights is that those coordinates with a small weight should not contribute much to the variation.  In \eqref{eq:wtctrvariation}, if the $\gamma_{\ell_1}, \ldots, \gamma_{\ell_s}$ are small, then $\prod_k \gamma_{\ell_k}^{-2}$ will be large.  For $f$ to have modest variation requires $\lVert D^{\bsell}f \rVert_2$ to be small.  Even though a function may have a large nominal dimension, $d$, its effective dimension, i.e., the number of variables that substantially contribute to the variation, must be relatively few, so that the variation under coordinate weights is modest.
+The meaning of the coordinate weights is that those coordinates with a small weight should not contribute much to the variation.  In \eqref{eq:wtctrvariation}, if the $\gamma_{\ell_1}, \ldots, \gamma_{\ell_s}$ are small, then $\prod_k \gamma_{\ell_k}^{-2}$ will be large.  For $f$ to have modest variation requires $\lVert D^{\bsell}f \rVert_2$ to be small.  Even though a function may have a large nominal dimension, $d$, its effective dimension, i.e., the number of variables that substantially contribute to the variation, must be relatively few, so that the variation under coordinate weights is modest.  Under these conditions, the corresponding discrepancy may retain the nearly $\mathcal{O}(n^{-1})$ decay.
 
 \subsection{Discrepancies for Lattices and Digital Nets} \label{sec:latticenetdis}
 Many useful constructions of LD sequences are constructed numerically by minimizing the discrepancy, however, as noted earlier, computing the discrepancy requires $\mathcal{O}(dn^2)$ operations, which can be expensive.  However, this computational cost can be reduced for lattices and digital nets when using friendly kernels.
@@ -718,7 +721,9 @@ Many useful constructions of LD sequences are constructed numerically by minimiz
 The mean squared discrepancy of a randomly shifted node set, $\{\bsx_i^{\bsDelta} =  \bsx_i + \bsDelta \bmod \bsone \}_{i=0}^{n-1}$ for an arbitrary kernel takes the form
 \begin{align}
 \nonumber
-\MoveEqLeft \mathbb{E}\bigl[\text{discrepancy}^2 \bigl (\{ \bsx_{i} + \bsDelta \bmod \bsone \}_{i=0}^{n-1},K \bigr) \bigr] \\
+\MoveEqLeft \mathbb{E}\bigl[\text{discrepancy}^2 \bigl (\{ \bsx^{\bsDelta}_{i} \}_{i=0}^{n-1},K \bigr) \bigr] \\
+\nonumber
+& = \mathbb{E}\bigl[\text{discrepancy}^2 \bigl (\{ \bsx_{i} + \bsDelta \bmod \bsone \}_{i=0}^{n-1},K \bigr) \bigr] \\
 \nonumber
 & = \int_{[0,1)^d \times [0,1)^d} K(\bst,\bsx) \, \mathrm{d} \bst \, \mathrm{d} \bsx  -\frac 2n  \sum_{i=0}^{n-1}  \int_{[0,1)^d} \mathbb{E} \bigl [K(\bst,\bsx_i + \bsDelta \bmod \bsone) \bigr]  \, \mathrm{d} \bst \\
 \nonumber
@@ -759,13 +764,13 @@ For sample means where the nodes, $\{\bsx_i\}_{i=0}^{n-1}$ are randomized, one c
     \text{RMSE}(\hat{\mu}_n(f)) & : = \sqrt{\mathbb{E}[(\mu(f) - \hat{\mu}_n(f))^2]} \\
     &\le \underbrace{ \sup_{\text{variation}(f,K) \le 1} \sqrt{\mathbb{E}[(\mu(f) - \hat{\mu}_n(f))^2]}}_{\text{RERR}\bigl(\{\bsx_i\}_{i=0}^{n-1},K\bigr)} \, \text{variation}(f,K).
 \end{align}
-This quality measure $\text{RERR}\bigl(\{\bsx_i\}_{i=0}^{n-1},K\bigr)$ is typically more optimistic, i.e., smaller, than the root mean squared of  $\text{discrepancy}\bigl(\{\bsx_i\}_{i=0}^{n-1},K\bigr)$ because the latter is finding a worst case function for each random instance of nodes, while the former is finding one worst function.
+This quality measure $\text{RERR}\bigl(\{\bsx_i\}_{i=0}^{n-1},K\bigr)$ is typically more optimistic (smaller), than the root mean squared of  $\text{discrepancy}\bigl(\{\bsx_i\}_{i=0}^{n-1},K\bigr)$ because the latter finds a worst case function for each random instance of nodes, while the former is finds just one worst function.
 
 Unfortunately, $\text{RERR}\bigl(\{\bsx_i\}_{i=0}^{n-1},K\bigr)$ is typically not as easy to compute as the discrepancy.  If $\hat{\mu}_n$ is unbiased, then $\sqrt{\mathbb{E}[(\mu(f) - \hat{\mu}_n(f))^2]} = \text{std}(\hat{\mu}_n(f))$.  For IID nodes we know that this is $\text{std}(f(\bsX))/\sqrt{n}$, which has the same order of decay as root mean squared discrepancy of an IID node set in \eqref{eq:discIID}, but a smaller constant.
 
 For randomly shifted lattices $\text{RERR}\bigl(\{\bsx_i\}_{i=0}^{n-1},K\bigr)$ tends to have the same rate of decay as does the root mean squared discrepancy.  However, for randomly scrambled and shifted digital nets, there can be an improvement in rate of decay assuming a bit more smoothness \cite{Owe97,HeiHicYue02a,HicYue00}.
 
-The symmetric, positive definite reproducing kernel, $K$, which appears in the worst-case error analysis in Section \ref{sec:kerdisc} may instead take the role of the covariance kernel of a Gaussian process with zero mean.  Average-case error analysis \cite{Rit00a} and probabilistic numerics \cite{BriEtal18a} have pursued this approach.
+The symmetric, positive definite reproducing kernel, $K$, which appears in the worst-case error analysis in Section \ref{sec:kerdisc} may instead take the role of the covariance kernel of a Gaussian process with zero mean.  Average-case error analysis \cite{Rit00a} and probabilistic numerics \cite{BriEtal18a} pursue this approach.
 
 
 
@@ -773,65 +778,70 @@ The symmetric, positive definite reproducing kernel, $K$, which appears in the w
 
 %Monte Carlo approximates the true mean $\mu = \bbE[f(\bsX)]$, $\bsX \sim \mathcal{U}[0,1]^d$ by the sample mean $\hat{\mu} = n^{-1} \sum_{i=0}^{n-1} f(\bsx_i)$ \textcolor{green}{maybe these formulas are already in the paper.}. 
 
-When approximating the true $\mu$ with $\hat{\mu}_n$, stopping criterion determine how large $n$ should be so that the error $\lvert \mu - \hat{\mu}_n \rvert$ is below an error tolerance $\epsilon$ either certainly or with sufficiently low uncertainty $\alpha$. The error tolerance and probability threshold are problem dependent. For example, in option pricing one may set the error tolerance to a penny, $\varepsilon=0.01$, and wish to find error bounds which hold with 95\% confidence, $\alpha=0.05$. The stopping criteria presented here are implemented in QMCPy \cite{QMCPy2020a}.
+When approximating the true $\mu$ with $\hat{\mu}_n$, stopping criterion determine how large $n$ should be so that the error $\lvert \mu - \hat{\mu}_n \rvert$ is below an error tolerance $\varepsilon$ either certainly or with sufficiently low uncertainty $\alpha$. The error tolerance and probability threshold are problem dependent. For example, in option pricing one may set the error tolerance to a penny, $\varepsilon=0.01$, and wish to find error bounds which hold with 95\% confidence, $\alpha=0.05$. The stopping criteria presented here are implemented in QMCPy \cite{QMCPy2020a}.
 
-For simple Monte Carlo with IID points, the Central Limit Theorem (CLT) may be used to get an approximate confidence interval $(\mu^-,\mu^+)$ where $\mu^\pm = \hat{\mu} \pm Z^{1-\alpha/2} \sigma/\sqrt{n}$, $\sigma = \mathrm{Std}[f(X)]$ and $Z^{1-\alpha/2}$ is the $1-\alpha/2$ quantile of the standard Gaussian distribution. If 
+For simple Monte Carlo with IID nodes, the Central Limit Theorem (CLT) may be used to get an approximate confidence interval $[\mu^-,\mu^+]$ where $\mu^\pm = \hat{\mu} \pm Z^{1-\alpha/2} \sigma/\sqrt{n}$, $\sigma = \mathrm{Std}[f(\bsX)]$ and $Z^{1-\alpha/2}$ is the $1-\alpha/2$ quantile of the standard Gaussian distribution. If 
 \begin{equation}
     n > (2 Z^{1-\alpha/2} \sigma/\varepsilon)^2
     \label{eq:sc_clt_iid_n}
-\end{equation} then $\mu \in (\mu^-,\mu^+)$ with probability $1-\alpha$. A simple IID stopping criterion uses an initial sample of $n_0$ points to approximate $\sigma^2 \approx (n_0-1)^{-1} \sum_{i=0}^{n_0-1}(f(\bsx_i)-\hat{\mu})^2$, and then plugs this into \eqref{eq:sc_clt_iid_n} to determine $n$. As the CLT holds only as $n$ goes to infinity, this is an approximate stopping criterion. For integrands $f$ with bounded kurtosis, a guaranteed version of this two-stage-sampling idea has been developed to account for the finite sample size using  Berry-Esseen inequalities\cite{JiaHic16a}. 
+\end{equation} then $\mu \in [(]\mu^-,\mu^+]$ with probability $1-\alpha$. A simple IID stopping criterion uses an initial sample of $n_0$ nodes to approximate $\sigma^2 \approx S^2 := (n_0-1)^{-1} \sum_{i=0}^{n_0-1}(f(\bsx_i)-\hat{\mu})^2$, and then plugs this into \eqref{eq:sc_clt_iid_n} to determine $n$. (Sometimes the sample standard deviation, $S$, is multiplied by an inflation factor to account for the fact that it is an unbiased estimate and not an upper bound.) 
 
-A straightforward qMC stopping criterion may also be derived from the CLT using a few randomizations of a LD point set. Let $\bsx_{ir}$ be the $i^\mathrm{th}$ point in the $r^\mathrm{th}$ randomization of a LD point set with $0 \leq i < n$ and $1 \leq r \leq R$. For example, we may use $R$ independent shifts of a lattice point set or independent digital shifts of a digital net. Crucially, the randomized point sets presented in Section \ref{sec:random} are also LD. Let $\hat{\mu}_r = n^{-1} \sum_{i=0}^{n-1} f(\bsx_{ir})$ be approximate means for each randomization and set $\hat{\mu} = R^{-1} \sum_{r=1}^R \hat{\mu}_r$ to be the aggregate approximation. In the spirit of CLT, a standard approximate $1-\alpha$ confidence interval $(\mu^-,\mu^+)$ has $\mu^\pm = \hat{\mu} \pm t_{R-1}^{1-\alpha/2} S/\sqrt{R}$ where $S^2 = (R-1)^{-1} \sum_{r=1}^R (\hat{\mu}_r - \hat{\mu})^2$ and $t_{R-1}^{1-\alpha/2}$ is the $1-\alpha/2$ quantile of the Student $t$ distribution with $R-1$ degrees of freedom. Here we have used the Student $t$ distribution since $R$ is typically small, for example $R=15$. To use this confidence interval for a stopping criterion, one may iteratively double the sample size $n$ until the interval width is sufficiently low. In \cite{l2023confidence}, comprehensive numerical experiments show that this straightforward qMC stopping criterion achieve better coverage than more involved bootstrap $t$ methods across a variety of test functions. 
+As the CLT holds only as $n$ goes to infinity, this is an approximate stopping criterion. For integrands $f$ with bounded kurtosis, a guaranteed version of this two-stage-sampling idea has been developed to account for the finite sample size using  Berry-Esseen inequalities\cite{HicEtal14a}. 
 
-One of the drawbacks of this qMC-CLT stopping criterion is that, at least intuitively, independent randomizations of LD nodes are less efficient than simply using more LD points from a single sequence. For instance, we would expect an approximation with $n=2^8$ and $R=2^3$ to perform worse than simply taking $n=2^{11}$ points from a single randomized LD sequence ($R=1$). One idea in this direction is to approximate the decay rate of Fourier coefficients of $f$. Bounds of absolute certainty have be derived for cones of functions with sufficient decay \cite{HicEtal17a}. As in the qMC-CLT stopping criterion, one may iteratively double $n$ until the bounds are sufficiently tight. 
+A straightforward qMC stopping criterion may also be derived from the CLT using several randomizations of a LD node set. Let $\bsx_{ir}$ be the $i^\mathrm{th}$ node in the $r^\mathrm{th}$ randomization of a LD node set with $0 \leq i < n$ and $1 \leq r \leq R$. For example, we may use $R$ independent shifts of a lattice node set or independent digital shifts of a digital net. Crucially, the randomized node sets presented in Section \ref{sec:random} are also LD. \FJHNote{Tried to make the notation more consistent.}Let $\hat{\mu}^{(r)} = n^{-1} \sum_{i=0}^{n-1} f(\bsx_{ir})$ be sample means for each randomization and set $\hat{\mu}_{nR} = R^{-1} \sum_{r=1}^R \hat{\mu}^{(r)}$ to be the aggregate approximation. In the spirit of CLT, a standard approximate $1-\alpha$ confidence interval $(\mu^-,\mu^+)$ has $\mu^\pm = \hat{\mu}_{nR} \pm t_{R-1}^{1-\alpha/2} S/\sqrt{R}$ where $S^2 = (R-1)^{-1} \sum_{r=1}^R (\hat{\mu}^{(r)} - \hat{\mu}_{nR})^2$ and $t_{R-1}^{1-\alpha/2}$ is the $1-\alpha/2$ quantile of the Student $t$ distribution with $R-1$ degrees of freedom. Here we have used the Student $t$ distribution since $R$ is typically small, for example $R=15$. To use this confidence interval for a stopping criterion, one may iteratively double the sample size $n$ until the interval width is sufficiently low. In \cite{l2023confidence}, comprehensive numerical experiments show that this straightforward qMC stopping criterion achieve better coverage than more involved bootstrap $t$ methods across a variety of test functions. 
 
-One such cone tracks the decay of approximate complex-exponential Fourier coefficients \cite{JimHic16a}. When paired with a randomly shifted lattice, these approximate coefficients may be computed at only $\calO(n \log n)$ cost using the fast Fourier transform. Another cone tracks the decay of approximate Walsh coefficients  \cite{HicJim16a}. When paired with a digitally shifted digital net, these approximate coefficients may be computed at only $\calO(n \log n)$ using the fast Walsh-Hadamard transform. 
+One of the drawbacks of this qMC-CLT stopping criterion is that, at least intuitively, independent randomizations of LD nodes are less efficient than simply using more LD nodes from a single sequence. For instance, we would expect an approximation with $n=2^8$ and $R=2^3$ to perform worse than simply taking $n=2^{11}$ nodes from a single randomized LD sequence ($R=1$), but we need $R$ large enough to believe the CLT stopping criterion. 
 
-Another idea which avoids multiple randomizations is to treat $f$ as a Gaussian process, as mentioned in Section \ref{sec:randBayes}. Conditioned on observations $f(\bsx_i)$, a closed form expression exists for the $1-\alpha$ credible intervals for $\mu$. While also applicable when using IID points, using LD sequences paired with special kernels enables these credible intervals to be computed at only $\calO(n \log n)$ cost \cite{rathinavel2019fast}. Again one may iteratively double the sample size $n$ until the credible intervals are sufficiently tight.
+One idea for constructing confidence intervals without replications is to approximate the decay rate of Fourier coefficients of $f$. Bounds of absolute certainty have be derived for cones of functions with reasonable decay of their Fourier coefficients \cite{HicEtal17a}. As in the qMC-CLT stopping criterion, one may iteratively double $n$ until the bounds are sufficiently tight. 
 
-Specifically, pairing shifted lattices with shift-invariant kernels as defined in \eqref{eq:shinvK} yields circulant Gram matrices for which computations can be done quickly using the fast Fourier transform \cite{RatHic19a}. Similarly, pairing digitally shifted digital nets with digitally-shift-invariant kernels yields recursive-block Toeplitz Gram matrices \AGSNote{Different name?} for which computations can be done quickly using the fast Walsh-Hadamard transform \cite{JagHic22a}. 
+For lattices one tracks the decay of the complex-exponential Fourier coefficients \cite{JimHic16a}. For digital sequences one tracks the decay of  Fourier-Walsh coefficients  \cite{HicJim16a}. In both cases, the definitions of the node sets paired with the appropriate Fourier basis allows these approximate Fourier coefficients to be computed from the data, $\{y_i = f(\bsx_i)\}_{i=0}^{n -1} $ at a cost of $\calO(n \log n)$ for $n$ a power of $2$ using fast  transforms. 
 
-Extensions of these stopping criteria to functions of multiple expectations was explored in \cite{sorokin2022bounding}. Such problems include computing the posterior mean in a Bayesian context or computing  sensitivity indices which  quantifying feature importance to variability in a simulation. This work also considered sharing samples across approximations and generalized error tolerances such as relative error tolerance.  
+Another idea which avoids multiple randomizations is to treat $f$ as a Gaussian process, as mentioned in Section \ref{sec:randBayes}. Conditioned on observations $f(\bsx_i)$, a closed form expression exists for the $1-\alpha$ credible intervals for $\mu$. While also applicable when using IID nodes, using LD sequences paired with special kernels enables these credible intervals to be computed at only $\calO(n \log n)$ cost \cite{Jag19a,JagHic22a,RatHic19a}. Again one may iteratively double the sample size $n$ until the credible intervals are sufficiently tight.
+
+For this Bayesian approach, one must find the eigenvalues and eigenvectors of the Gram matrix $\mathsf{K} : = \bigl(K(\bsx_i,\bsx_j) \bigr)_{i,j=0}^{n-1}$.  In general this requires $\mathcal{O}(n^3)$ operations.  However, pairing shifted lattices with shift-invariant kernels as defined in \eqref{eq:shinvK} yields circulant Gram matrices for which computations can be done quickly using the fast Fourier transform \cite{RatHic19a}. Similarly, pairing digitally shifted digital nets with digitally-shift-invariant kernels yields recursive-block Toeplitz Gram matrices \AGSNote{Different name?} for which computations can be done quickly using the fast Walsh-Hadamard transform \cite{JagHic22a}. 
+
+Extensions of these stopping criteria to functions of multiple expectations was explored in \cite{sorokin2022bounding}. Such problems include computing the posterior mean in a Bayesian context or computing  sensitivity indices which  quantifying feature importance to variability in a simulation. This work also considered sharing samples across approximations and generalized error criteria, such as a relative error tolerance.  
 
 \section{Reformulating Our Problem} \label{sec:reformulate}
 
-There are two themes of this section.  One is that our original problem may not look like $\mu = f(\bsX)$ for $\bsX \sim \mathcal{U}[0,1)^d$, and thus it may need to be rewritten.  The second is that qMC does best when most of the variation of $f$ is concentrated in the lower coordinates, and we should design $f$ so that this is so, if possible.
+There are two themes of this section.  One is that our original problem may not look like $\mu = f(\bsX)$ for $\bsX \sim \mathcal{U}[0,1)^d$, and thus it may need to be rewritten.  The second is that qMC does best when most of the variation of $f$ is concentrated in the lower numbered coordinates, and, if possible, we should design $f$ so that this is so.
 
 
 \subsection{Variable Transformations} 
 
-Often qMC problems may be written as $\mu = \bbE[g(\bsT)]$ where $\bsT$ is a $d$-dimensional random variable with density $\lambda$. Since qMC points have LD with the standard uniform distribution $\bsX \sim \calU[0,1]^d$, we perform an invertible variable transformation $\bsPsi: [0,1]^d \to \calM$ satisfying $\mathrm{range}(\bsT) \subseteq \calM$. This implies
+Often qMC problems may be written as $\mu = \bbE[g(\bsT)]$ where $\bsT$ is a $d$-dimensional random variable with density $\lambda$. Since qMC nodes have LD with the standard uniform distribution $\bsX \sim \calU[0,1]^d$, we perform an invertible variable transformation $\bsPsi: [0,1]^d \to \calM$ satisfying $\mathrm{range}(\bsT) \subseteq \calM$. This implies
 $\mu = \bbE[f(\bsX)]$ where  
-$$f(\bsX) = g(\bsPsi(\bsX)) \frac{\lambda (\bsPsi(\bsX))}{\nu(\bsPsi(\bsX))}$$
+$$
+f(\bsX) = g(\bsPsi(\bsX)) \frac{\lambda (\bsPsi(\bsX))}{\nu(\bsPsi(\bsX))},
+$$
 and $\nu$ is the density of $\bsPsi(\bsX)$. Specifically, $\nu(\bsPsi(\bsX))= \lvert \bsJ_\bsPsi(\bsX) \rvert^{-1}$ where $\lvert \bsJ_\bsPsi(\bsX) \rvert$ is the determinant of the Jacobian of $\bsPsi$. 
 
 The above formulation is equivalent to importance sampling \AGSNote{reference} by a distribution with density $\nu$. Optimally, one would choose $\nu \propto g\lambda$ so that $f$ is constant, but this is typically infeasible in practice due to our limited knowledge of $g$. Choosing $\bsPsi$ so that $\bsT = \bsPsi(\bsX)$ gives the simplification $f(\bsX) = g(\bsPsi(\bsX))$. An example of this was given in Section \ref{sec:practice} where $\bsT \sim \calN(\boldsymbol{0},\mathsf{I}/2)$ and $\bsPsi(\bsX) = \Phi^{-1}(\bsX)/\sqrt{2}$ where $\Phi^{-1}$ is the inverse CDF of the standard Gaussian distribution applied elementwise.
 
-As observed in Section \ref{sec:coordwts}, qMC is more effective if the variation of $f$ is concentrated in the lower indexed coordinates.  For finance examples where the outcome depends more on the gross behavior of the underlying stochastic process, rather than the high frequency behavior, it makes sense to choose the transformation accordingly.  For example, if $\bsT$ represents a Brownian motion, then a principal component analysis coupled with the inverse Gaussian distribution shows greater convergence gains \AGSNote{compared to the Cholesky decomposition or bridge construction?}.
+As observed in Section \ref{sec:coordwts}, qMC is more effective if the variation of $f$ is concentrated in the lower indexed coordinates.  For finance examples where the outcome depends more on the gross behavior of the underlying stochastic process, rather than the high frequency behavior, it makes sense to choose the transformation accordingly.  For example, if $\bsT$ represents a Brownian motion, then a principal component analysis coupled with the inverse Gaussian distribution shows greater convergence gains compared to the Cholesky decomposition.
 
 \subsection{Control Variates} 
 
-Since the upper bound of the qMC error includes the variation of $f$ as a factor, one can often improve the efficiency of qMC by reformulating the problem to reduce this variation.  Choosing a good variable transformation, which is equivalent to importance sampling, to minimize $\text{variation}(f,K)$ is one approach.  
+Since the upper bound of the qMC error includes the variation of $f$ as a factor, one may improve the efficiency of qMC if one can reformulate the problem to reduce this variation.  Choosing a good variable transformation, as mentioned in the previous subsection, is one approach.  
 
 Another approach is control variates.  If $f_{\text{ctrl}} : [0,1)^d \to \RR$ is a function whose integral is zero, then $\mu(f) = \mu(f - f_{\text{ctrl}})$, and one may approximate $\mu(f)$ by $\hat{\mu}_n(f - f_{\text{ctrl}})$.  If the variation of  $f - f_{\text{ctrl}}$ is smaller than that of $f$, then it is likely that $\hat{\mu}_n(f - f_{\text{ctrl}})$ will have smaller error than $\hat{\mu}_n(f)$.  
 
-An example of this in quantitative finance is where one may use the payoff of a European option, whose expectation is known, as a control variate for more exotic options.  As noted in \cite{HicEtal03}, reducing the variation of $f$ via control variates may or may not bear resemblance to reducing the variance of $f$.  Control variates have been implemented in the stopping criteria based on Fourier coefficients described in the previous section \cite{HicEtal17a}.
+An example of this in quantitative finance is where one may use the payoff of a European option, whose expectation is known, as a control variate for more exotic options.  As noted in \cite{HicEtal03}, reducing the variation of $f$ via control variates may or may not resemble reducing the variance of $f$.  Control variates have been implemented in the stopping criteria based on Fourier coefficients described in the previous section \cite{HicEtal17a}.
 
 
 
 \subsection{Multilevel Methods} \label{sec:multi}
-The cost of computing the sample mean defined in \eqref{eq:sample_mean} is typically $\mathcal{O}(dn)$ as the dimension, $d$, and the sample size, $n$, tend to infinity.  Some applications have $d$ that is either huge or infinite.  On example is in quantitative finance, where $d$ denotes the number of times that the asset price is monitored over the life of a financial derivative times the number of assets involved.  
+The cost of computing the sample mean defined in \eqref{eq:sample_mean} is typically $\mathcal{O}(dn)$ as the dimension, $d$, and the sample size, $n$, tend to infinity.  Some applications have a $d$ that is either huge or infinite.  On example is in quantitative finance, where $d$ denotes the number of times that the asset price is monitored over the life of a financial derivative times the number of assets involved.  
 
-However, there is a way to reduce the cost of approximating $\mu$ by employing multilevel methods so that the computational cost may be comparable to solving a low dimensional approximation \cite{Gil15a}. We give an introduction to these methods here.
+However, the $\mathcal{O}(dn)$ cost of approximating $\mu$ may often be reduced by employing multilevel methods.  In fact, these methods may reduce the cost to the level comparable to solving a low dimensional approximation \cite{Gil15a}. We introduce these methods here.
 
-Let $\{Y_l := f_l(\bsX_{l})\}_{l=1}^L$ be a sequence of approximations to $Y = f(\bsX)$, where $\bsX_l \sim \mathcal{U}[0,1)^{d_l}$.  Here we assume that $d_1 < \cdots < d_L$, and that the cost of evaluating $f_l(\bsx_{l})$ is $\mathcal{O}(d_l)$.  Also, $d_L = d$, $Y_{d_L} = Y$, and $f_L = f$. Then
+Let $\{Y_l := f_l(\bsX^{(l)})\}_{l=1}^L$ be a sequence of approximations to $Y = f(\bsX)$, where $\bsX^{(l)} = (X_1, \ldots, X_l) \sim \mathcal{U}[0,1)^{d_l}$.  Here we assume that $d_1 < \cdots < d_L$, and that the cost of evaluating $f_l(\bsx^{(l)})$ is $\mathcal{O}(d_l)$, where $\bsx^{(l)} = (x_1, \ldots, x_l)$.  Also, $d_L = d$, $Y_{d_L} = Y$, and $f_L = f$. Then the population mean may written as a telescoping sum:
 \begin{align*}
     \mu & := \mathbb{E}(Y) = \mathbb{E}\bigl[f(\bsX)\bigr]
     = \mathbb{E}(Y_1) + \mathbb{E}(Y_2 - Y_1) + \cdots + \mathbb{E}(Y_{d_L} - Y_{d_{L-1}}) \\
     & = \int_{[0,1)^{d_1}} f_1(\bsx^{(1)}) \, \mathrm{d} \bsx^{(1)} +  \int_{[0,1)^{d_2}} \bigl[f_2(\bsx^{(2)}) - f_1(\bsx^{(1)})\bigr] \, \mathrm{d} \bsx^{(2)} + \cdots \\
-    & \qquad \qquad + \int_{[0,1)^{d_L}} \bigl[f_L(\bsx^{(L)}) - f_{L-1}(\bsx^{(L-1)}) \bigr] \, \mathrm{d} \bsx^{(L)},
+    & \qquad \qquad + \int_{[0,1)^{d_L}} \bigl[f_L(\bsx^{(L)}) - f_{L-1}(\bsx^{(L-1)}) \bigr] \, \mathrm{d} \bsx^{(L)}.
 \end{align*}
-where $\bsx^{(1)}  = (x_1, \dots, x_{d_1}), \ldots, \bsx^{(L)} = (x_1, \dots, x_{d_L})$.
 This series of integrals may be approximated by a series of sample means, namely
 \begin{multline} \label{eq:MLmuhat}
     \hat{\mu}^{\text{ML}}_{\bsn,\bsd}  := \frac{1}{n_1}  \sum_{i=0}^{n_1-1} f_1(\bsx^{(1)}_i)  +  \frac{1}{n_2}  \sum_{i=0}^{n_2-1}  \bigl[f_2(\bsx^{(2)}_i) - f_1(\bsx^{(1)}_i)\bigr] + \cdots \\
@@ -868,8 +878,8 @@ Optimizing $\bsn$ to minimize the error bound in \eqref{eq:MLerrbd} for a fixed 
 
 We see that the cost of approximating $\mu$ within an absolute error tolerance of $\varepsilon$ is $\mathcal{O}(\varepsilon^{-1})$, as expected, but the dependence of $\text{cost}(\bsn,\bsd)$ on the dimension of the problem depends critically on how quickly the variation at each level decays.  Suppose that 
 \begin{itemize}
-    \item The cost of a function value at each level, $l$, is proportional to the dimension, $d_l$, and that the dimensions increase exponentially, i.e.,  $d_l = d_1^{l}$ and $C_l \le \alpha d_1^l$. 
-    \item The $V_l$, which are roughly the variation, decrease exponentially, i.e., $V_l \le \beta r^{-l} $.
+    \item The cost of a function value at each level, $l$, is proportional to the dimension, $d_l$, and that the dimensions \emph{increase} exponentially, i.e.,  $d_l = d_1^{l}$ and $C_l \le \alpha d_1^l$. 
+    \item The $V_l$, which are roughly the variation, \emph{decrease} exponentially, i.e., $V_l \le \beta r^{-l} $.
 \end{itemize}   
 Then the computational cost in \eqref{eq:MLcost} can be bounded above by
 \begin{align*}
@@ -885,11 +895,13 @@ In this case $\text{cost}(\bsn,\bsd)$ for this high dimensional problem is not m
 
 However, if $r < d_1$, then $\text{cost}(\bsn,\bsd) \ge V_LC_L/\varepsilon$ which may be as large as $\alpha \beta (d_1/r)^{-L}{\varepsilon}$, which grows exponentially as $d = d_L = d_1^L$ increases via increasing $L$.  Granted, this may not be as high a cost as the standard single-level approach where the cost would be roughly $V_1C_L$ if the $V_l$ are decaying.
 
-The ability to write one's problem to have the favorable case of high, or even infinite dimension with a computational cost comparable to the low dimensional case is somewhat an art.  However, the multilevel method takes advantage of the principle pointed out in Section \ref{sec:coordwts}, namely that qMC thrives when problem have a low effective dimension.  
+It is an art to write one's problem to have the favorable case of high or even infinite nominal dimension, $d$, be solvable with a computational cost comparable to the low dimensional case.  However, the multilevel method takes advantage of the principle noted in Section \ref{sec:coordwts}, namely that qMC thrives when problem have a low effective dimension, even if the nominal dimension is large.  
 
 \section{Beyond Computing Expectations} \label{sec:beyond}
 
-Expectations of the form $\mu \coloneqq \mathbb{E}(f(\mathbf{X}))$ appear in several prominent areas of mathematics and qMC methods have long been applied in these contexts. Namely, in mathematical finance many problems can be formulated as high-dimensional integrals, where the large number of dimensions arises from small time steps in time discretization and/or a large number of variables. In this setting, Monte Carlo methods are applied to randomly simulate the evolution of stock prices over time, and the expected value is then estimated by averaging over all sample paths. The qMC approach replaces the randomly generated paths by carefully constructed paths in an effort to reduce the computational burden on the required number of paths. Excellent survey works for qMC and randomized qMC applied to finance include \cite{CafMor96,LEc09,Lem04a,Jae02,wangsloan05}. Another fruitful domain for qMC methods is in partial differential equations (PDEs), used for computing the expectations of nonlinear functionals of solutions of certain classes of PDEs. This includes problems in areas like fluid dynamics or material science, where random coefficients in the PDE model uncertain properties; see \cite{KuoNuy16a,KuoEtal12a,GraEtal11a} and references therein for qMC applied to PDEs.
+Expectations of the form $\mu \coloneqq \mathbb{E}(f(\mathbf{X}))$ appear in several prominent areas of mathematics and qMC methods have long been applied in these contexts. Namely, in mathematical finance many problems can be formulated as high-dimensional integrals, where the large number of dimensions arises from small time steps in time discretization and/or a large number of variables. In this setting, Monte Carlo methods are applied to randomly simulate the evolution of stock prices over time, and the expected value is then estimated by averaging over all sample paths. The qMC approach replaces the randomly generated paths by carefully constructed paths in an effort to reduce the computational burden on the required number of paths. Excellent survey works for qMC and randomized qMC applied to finance include \cite{CafMor96,LEc09,Lem04a,Jae02,wangsloan05}. 
+
+Another fruitful domain for qMC methods is in partial differential equations (PDEs), used for computing the expectations of nonlinear functionals of solutions of certain classes of PDEs. This includes problems in areas like fluid dynamics or material science, where random coefficients in the PDE model uncertain properties; see \cite{KuoNuy16a,KuoEtal12a,GraEtal11a} and references therein for qMC applied to PDEs.
 
 
 Besides computing expectations, qMC methods have found many applications in other areas of the computational sciences. We lightly review these applications to highlight their wider practical impact and to motivate the further development of qMC theory and methodology.
@@ -902,9 +914,10 @@ Here, $F(y)$ gives the cumulative probability that $Y$ does not exceed $y$, whil
 
 
 
-Taking a broader view, Sorokin and Rao \cite{SorRao23a} illustrates that integration of qMC methods with Gaussian process models enhance the reliability of estimating failure probabilities in the machine learning domain. Furthermore, novel approaches for training deep neural networks utilizing LD nodes have been proposed in recent works \cite{longo21,mishra21}.
+Taking a broader view, Sorokin and Rao \cite{SorRao23a} illustrate that integration of qMC methods with Gaussian process models enhance the reliability of estimating failure probabilities in the machine learning domain. Furthermore, novel approaches for training deep neural networks utilizing LD nodes have been proposed in recent works \cite{longo21,mishra21}.
+\FJHNote{Should include the water paper of Sorokin.  Also, these two sentences do not fit together.}
 
-Keller \cite{kell95} was the first to adopt qMC for rendering photorealistic images in computer graphics where the problem of simulating light transport can be mathematically represented as an integral over all possible light paths from source to camera. Many algorithms involving sampling with LD nodes have since been developed much further in \cite{kellprem12,shired08,Keller2013a,kolkel00,kell96,kell95}. (Remarkably, Monte Carlo methods have even been awarded with an Academy Award for visual effects in movie making.)
+Keller \cite{kell95} was the first to adopt qMC for rendering photorealistic images in computer graphics where the problem of simulating light transport can be mathematically represented as an integral over all possible light paths from source to camera. Many algorithms involving sampling with LD nodes have since been developed much further in \cite{kellprem12,shired08,Keller2013a,kolkel00,kell96,kell95}. (Remarkably, Monte Carlo methods have even been awarded with an Academy Award for visual effects in movie making \FJHNote{citation?}.)
 
 Path planning is a critical aspect of efficient robotic operation, defining of a route from an initial position to a target destination while considering an optimality criterion. Most existing approaches utilize LD nodes, such as the Halton sequence \cite{veldel14,zhong24} with more recent efforts \cite{chahine24} demonstrating that employing state-of-the-art LD nodes from \cite{ruschkirk24} can significantly enhance the efficiency and flexibility of a robotic arm, demonstrated in both toy and real-world tasks.
 
@@ -917,7 +930,7 @@ In summary, qMC methods have demonstrated their applicability and impact well be
 \section{Conclusion} \label{sec:conclusion}
 Quasi-Monte Carlo methods, based on low discrepancy sequences, can approximate the mean of a function, $f$, of $d$ variables to within an error tolerance of $\varepsilon$ at a cost of roughly $\mathcal{O}(\varepsilon^{-1})$ function evaluations, provided that the problem is formulated so that $f$ depends primarily on a modest number of variables.  This means that qMC outperforms alternative methods such as simple Monte Carlo and sampling on grids.  Using the multilevel qMC, the cost to reach the error tolerance is often essentially the same for $d=1$ and $d$ unbounded.  Software libraries are available to facilitate qMC computations.
 
-
+\FJHNote{Our citations need to have Monte Carlo, Halton, etc. capitalized.}
 \bibliographystyle{spmpsci}
 \bibliography{FJH23,FJHown23,main}
 
