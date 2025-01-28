@@ -365,7 +365,7 @@ This conclusion can also be reached by looking at the first three rows and colum
 	1 & 1 & 0 & \cdots \\ 0 & 1 & 1 & \cdots \\ 0 & 0 & 1 & \cdots \\ \vdots & \vdots & \vdots & \ddots
 \end{pmatrix}.
 \end{equation*}
-For $k_1=2$, $k_2 = 0$, and $k_3 = 1$ condition \eqref{eq:tcond} is not satisfied, and so $t$ cannot be $0$ for the node set  \eqref{eq:smallnet}.  However, condition \eqref{eq:tcond} is satisfied for all $\bsk$ with $\lVert \bsk \rVert_1 = 2$, again confirming that we have a $(1,3,3)$-net.
+For $\bsk = (2, 0, 1)$ and $\lVert \bsk \rVert_1 = 3$, condition \eqref{eq:tcond} is not satisfied, and so $t$ cannot be $0$ for the node set  \eqref{eq:smallnet}.  However, condition \eqref{eq:tcond} is satisfied for all $\bsk$ with $\lVert \bsk \rVert_1 = 2$, again confirming that we have a $(1,3,3)$-net.
 
 If we consider only the first two coordinates of the node set defined in \eqref{eq:smallnet}, then  condition \eqref{eq:tcond} is satisfied for all $\bsk$ with $\lVert \bsk \rVert_1 = 3$.  The first two coordinates of \eqref{eq:smallnet} are a $(0,3,2)$-net
 
@@ -410,7 +410,9 @@ When optimizing LD nodes, one requires an objective function which in some sense
 
 For several decades, combinatorial optimization techniques have been employed to obtain good generating parameters for LD constructions. For example, in the case of a lattice rule which is fully determined by the generating vector \(\boldsymbol{h} \in \mathbb{Z}_n^d \coloneqq \{0, 1, \ldots, n-1\}^d\) given $n$ and $d$,
 %While good generating vectors are known for \(d \leq 2\) \cite{DicEtal22a,SloJoe94}, the same does not hold for \(d \geq 3\),
-one often resorts to finding good $\boldsymbol{h}$ via computer search to minimize a chosen FOM. An exhaustive search is infeasible due to the exponential growth of the search space with \(d\). Thus, the component-by-component (CBC) construction, introduced by Korobov \cite{kor63} and later revisited by Sloan and collaborators \cite{Slo02}, reduces the search space to size \(dn\) by constructing \(\boldsymbol{h}\) one component at a time while keeping the previous components fixed. This greedy procedure also applies to finding good generating matrices $\mathsf{C}_j$ for digital sequences.
+one often resorts to finding good $\boldsymbol{h}$ via computer search to minimize a chosen FOM. An exhaustive search is infeasible due to the exponential growth of the search space with \(d\). 
+
+Thus, the component-by-component (CBC) construction, introduced by Korobov \cite{kor63} and later revisited by Sloan and collaborators \cite{Slo02}, reduces the search space to size \(dn\) by constructing \(\boldsymbol{h}\) one component at a time while keeping the previous components fixed. This greedy procedure also applies to finding good generating matrices $\mathsf{C}_j$ for digital sequences.
 %Further simplification is possible by restricting the search to Korobov lattices of the form \(\boldsymbol{h} = (1, h, h^2, \ldots, h^{d-1}) \in \mathbb{Z}^d\).
 For certain choices of function spaces, there exist fast component-by-component construction implementations using fast Fourier transforms (FFTs) as the primary tool. We refer to \cite{DicKuo04a,JoeKuo03,KuoJoe02b,DicEtal22a} and references therein for works on the CBC construction for lattice rules and digital sequences, \cite{NuyCoo06a,NuyCoo06b} for their fast implementations and \cite{LEcEtal22a,LatNet} for a qMC software tool \texttt{LatNet Builder} by L'Ecuyer to generate LD nodes which relies heavily on the CBC construction method.
 
@@ -424,7 +426,13 @@ When constructing LD nodes, it is essential to ensure not only a well-distribute
 
 We have outlined various efforts by qMC researchers to optimize specific classes of LD constructions, including lattices and digital sequences. Significant effort has even been taken to optimize the uniformity of so-called generalized Halton sequences due to the poor lower dimensional projections exhibited by even a moderate dimensional Halton sequence \cite{kirklem24}. These methods are discussed briefly in Section \ref{sec:randHalton}. There also exist several efforts to generate novel LD constructions which do not adhere to any underlying number theoretic structure, but none-the-less, possess a high level of uniformity. These methods are often global optimization methods of sample point distributions, which is often challenging due to the non-convex nature of the FOM as a function of the nodes. 
 %Traditional global optimization methods, such as gradient descent or its variants, struggle in this setting becoming trapped in suboptimal local minima and failing to identify the global optimum configuration of nodes. 
-One of the first works to globally optimize LD nodes, albeit a heuristic approach, was by Winker and Fang \cite{WinFan97b} employing the threshold accepting optimization algorithm to directly optimize the uniformity of the LD nodes with respect to a discrepancy FOM. More recently, Rusch, Kirk, Bronstein, Lemieux and Rus \cite{ruschkirk24} developed the first machine-learning assisted optimization tool for LD node optimization in the Message-Passing Monte Carlo (MPMC) method. MPMC implements tools from geometric deep learning, imposing a computational graph onto an initialized IID node set to transform the nodes to LD node set via a learned mapping. The optimization is gradient-based and is guided by the direct minimization of a discrepancy-based FOM. We also highlight the method proposed by Hinrichs and Oettershagen \cite{hinoet16} generating optimal LD nodes for a specific class of functions in two-dimensions. To address the non-convexity challenge, the authors decompose the global optimization of a specific FOM into a large number of smaller, convex sub-problems which are solved individually. There are several other recent attempts to construct optimal LD nodes, many of which are well summarized in the PhD thesis of Cl\'{e}ment \cite{clethesis24}. We highlight the subset selection method proposed in \cite{cle22} to choose from an $n$-element initialization set, the $k<n$ nodes which minimize a discrepancy FOM. A heuristic approach to this problem was later shown in \cite{cle24_heuristic}. Furthermore, a method to generate optimal star-discrepancy node sets for fixed $n$ and $d$ based on a non-linear programming approach was suggested in \cite{cle24}, however is computationally restricted to very small numbers of nodes in dimensions two and three only.
+One of the first works to globally optimize LD nodes, albeit a heuristic approach, was by Winker and Fang \cite{WinFan97b} employing the threshold accepting optimization algorithm to directly optimize the uniformity of the LD nodes with respect to a discrepancy FOM. 
+
+More recently, Rusch, Kirk, Bronstein, Lemieux and Rus \cite{ruschkirk24} developed the first machine-learning assisted optimization tool for LD node optimization in the Message-Passing Monte Carlo (MPMC) method. MPMC implements tools from geometric deep learning, imposing a computational graph onto an initialized IID node set to transform the nodes to LD node set via a learned mapping. The optimization is gradient-based and is guided by the direct minimization of a discrepancy-based FOM. 
+
+We also highlight the method proposed by Hinrichs and Oettershagen \cite{hinoet16} generating optimal LD nodes for a specific class of functions in two-dimensions. To address the non-convexity challenge, the authors decompose the global optimization of a specific FOM into a large number of smaller, convex sub-problems which are solved individually. 
+
+There are several other recent attempts to construct optimal LD nodes, many of which are well summarized in the PhD thesis of Cl\'{e}ment \cite{clethesis24}. We highlight the subset selection method proposed in \cite{cle22} to choose from an $n$-element initialization set, the $k<n$ nodes which minimize a discrepancy FOM. A heuristic approach to this problem was later shown in \cite{cle24_heuristic}. Furthermore, a method to generate optimal star-discrepancy node sets for fixed $n$ and $d$ based on a non-linear programming approach was suggested in \cite{cle24}, however is computationally restricted to very small numbers of nodes in dimensions two and three only.
 
 
 
@@ -456,7 +464,7 @@ Since the first $2^m$ elements of the lattice sequence form a group under modulo
 
 For digital sequences the shift should be applied using digitwise addition.  A digital shift of the digital sequence defined in  \eqref{eq:digital} then becomes
 \begin{multline} \label{eq:sh_digital}
-	\bsx_i^{\bsDelta\text{-dig}} := \bsx_i^{\text{dig}} \oplus \bsDelta = i_0 \bsx^{\text{dig}}_1 \oplus i_1 \bsx^{\text{dig}}_2 \oplus i_2 \bsx^{\text{dig}}_4 \oplus \cdots \oplus \bsDelta \in [0,1)^d \\
+	\bsx_i^{\bsDelta\text{-dig}} := \bsx_i^{\text{dig}} \oplus \bsDelta = i_0 \bsx^{\text{dig}}_1 \oplus i_1 \bsx^{\text{dig}}_2 \oplus i_2 \bsx^{\text{dig}}_4 \oplus \cdots \oplus \bsDelta \\
     \text{for }
 	i = i_0 + i_12 + i_2 2^2 + \cdots.
 \end{multline}
@@ -465,7 +473,7 @@ Three digital shifts of the same net are given in Figure \ref{fig:shift_net}.  A
 \begin{figure}
 	\centering
 	\includegraphics[width = \textwidth]{\figpath/n_8_n_sh_3_shifted_sobol_sequence_d2.pdf}
-	\caption{Three digital shifts of a digital $(0,3,2)$-net with nodes denoted by three different colors.  There is one node in each smaller box of the form \eqref{eq:element_box} for $\lVert \bsk \rVert = 3$, for each digitally shifted net. \label{fig:shift_net}}
+	\caption{Three digital shifts of a digital $(0,3,2)$-net with nodes denoted by three different colors/shapes.  There is one node in each smaller box of the form \eqref{eq:element_box} for $\lVert \bsk \rVert = 3$, for each digitally shifted net. \label{fig:shift_net}}
 \end{figure}
 
 Let $\{\bsx_i^{\bsDelta}\}_{i=0}^{n-1}$ denote a uniform (digital or modulo $\bsone$) random shift of any deterministic original node set, $\{\bsx_i \}_{i=0}^{n-1}$.  That is, $\bsx_i^{\bsDelta} : = \bsx_i + \bsDelta \pmod \bsone$ or  $\bsx_i^{\bsDelta} : = \bsx_i \oplus \bsDelta$ and $\bsDelta \sim \calU[0,1)^d$. This then implies that each $\bsx_i^{\bsDelta} \sim \calU[0,1)^d$ and thus $\hat{\mu}_n$ is an unbiased estimator of $\mu$, which was mentioned as an advantage at the beginning of this section.
@@ -485,15 +493,15 @@ For digital nets one can randomize even further by a scrambling that preserves t
 	\end{pmatrix}, \qquad l_{\ell j} \overset {\text{IID}}{\sim} \calU\{0,1\}
 \end{gather}
 \end{subequations}
-A random digital shift, $\bsDelta$ is also added, where $\Delta_{\ell j}$ denotes the $\ell^{\text{th}}$ digit of the $j^{\text{th}}$ dimension of the shift.
+A random digital shift, $\bsDelta$ is also added, where $\Delta_{\ell j}$ denotes the $\ell^{\text{th}}$ digit of the $j^{\text{th}}$ dimension of the shift.  Digital scrambling of a $(t,m,d)$-net does not alter its $t$-value.
 
 \begin{figure}
 	\centering
 	\includegraphics[width = \textwidth]{\figpath/n_8_n_scr_3_scrambled_sobol_sequence_d2.pdf}
-	\caption{Three linear scrambles of a digital $(0,3,2)$-net with nodes denoted by three different colors.  There is one node in each smaller box of the form \eqref{eq:element_box} for $\lVert \bsk \rVert = 3$, for each digitally shifted net. \label{fig:scrambled_net}}
+	\caption{Three linear scrambles of a digital $(0,3,2)$-net with nodes denoted by three different colors/shapes.  There is one node in each smaller box of the form \eqref{eq:element_box} for $\lVert \bsk \rVert = 3$, for each digitally shifted net. \label{fig:scrambled_net}}
 \end{figure}
 
-\subsection{Other Randomizations for Halton}\label{sec:randHalton}
+\subsection{Randomizations for Halton}\label{sec:randHalton}
 
 %As Halton nodes can be viewed as digital nets with different bases for each dimension, the randomization techniques used for digital nets can be applied to Halton node sets. Random digital shifts for Halton set $x_{ij\ell} \mapsto (x_{ij\ell} + \Delta_{j\ell}) \mod b_j$ where the shift $\Delta_{j\ell} \in \{0,\dots,b_j-1\}$. More generally, a permutation scramble for digital nets sets $x_{ij\ell} \mapsto \Pi_{j\ell}(x_{ij\ell})$ where $\Pi_{j\ell}$ are independent random permutations of $\{0,\dots,b_j-1\}$. \AGSNote{Ignore this permutation definition as it is the same as \eqref{eq:gen_vdc}?} Randomization of Halton relating to permutations of digits was discussed briefly in Section \ref{sec:optLD}.  
 
