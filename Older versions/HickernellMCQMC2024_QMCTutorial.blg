@@ -1,0 +1,50 @@
+This is BibTeX, Version 0.99d (TeX Live 2024)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: HickernellMCQMC2024_QMCTutorial.aux
+The style file: spmpsci.bst
+Database file #1: FJH23.bib
+Warning--entry type for "LatNet" isn't style-file defined
+--line 1454 of file FJH23.bib
+Database file #2: FJHown23.bib
+You've used 10 entries,
+            2945 wiz_defined-function locations,
+            753 strings with 7616 characters,
+and the built_in function-call counts, 4246 in all, are:
+= -- 320
+> -- 154
+< -- 0
++ -- 65
+- -- 53
+* -- 246
+:= -- 602
+add.period$ -- 16
+call.type$ -- 10
+change.case$ -- 54
+chr.to.int$ -- 0
+cite$ -- 10
+duplicate$ -- 377
+empty$ -- 402
+format.name$ -- 60
+if$ -- 900
+int.to.chr$ -- 0
+int.to.str$ -- 10
+missing$ -- 94
+newline$ -- 52
+num.names$ -- 22
+pop$ -- 177
+preamble$ -- 2
+purify$ -- 46
+quote$ -- 0
+skip$ -- 86
+stack$ -- 0
+substring$ -- 121
+swap$ -- 187
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 32
+warning$ -- 0
+while$ -- 24
+width$ -- 12
+write$ -- 112
+(There was 1 warning)

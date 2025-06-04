@@ -1,0 +1,122 @@
+\relax 
+\providecommand\hyper@newdestlabel[2]{}
+\providecommand\HyField@AuxAddToFields[1]{}
+\providecommand\HyField@AuxAddToCoFields[2]{}
+\@writefile{toc}{\contentsline {title}{Quasi-Monte Carlo Methods: What, Why, and How?}{1}{chapter.1}\protected@file@percent }
+\@writefile{toc}{\authcount {3}}
+\@writefile{toc}{\contentsline {author}{Fred J. Hickernell, Nathan Kirk, Aleksei G. Sorokin}{1}{chapter.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}{section.1}\protected@file@percent }
+\newlabel{sec:intro}{{1}{1}{Introduction}{section.1}{}}
+\citation{Kei96}
+\citation{ }
+\@writefile{toc}{\contentsline {section}{\numberline {2}An Illustration of Quasi-Monte Carlo}{2}{section.2}\protected@file@percent }
+\newlabel{sec:practice}{{2}{2}{An Illustration of Quasi-Monte Carlo}{section.2}{}}
+\newlabel{eq:keisterA}{{1}{2}{An Illustration of Quasi-Monte Carlo}{equation.1}{}}
+\newlabel{eq:keisterExact}{{2}{2}{An Illustration of Quasi-Monte Carlo}{equation.2}{}}
+\newlabel{eq:sample_mean}{{3}{2}{An Illustration of Quasi-Monte Carlo}{equation.3}{}}
+\newlabel{eq:keisterB}{{4}{3}{An Illustration of Quasi-Monte Carlo}{equation.4}{}}
+\newlabel{eq:keisterC}{{5}{3}{An Illustration of Quasi-Monte Carlo}{equation.5}{}}
+\newlabel{eq:sample_mean_Keister}{{6}{3}{An Illustration of Quasi-Monte Carlo}{equation.6}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces The relative error of approximating $\mu $ defined in \eqref  {eq:keisterC} by the sample mean, $\hat  {\mu }_n$, defined in \eqref  {eq:sample_mean} for various choices of nodes, ${\bm  {x}}_0, {\bm  {x}}_1, \ldots  $. Grids have the largest error and LD nodes have the smallest error. }}{4}{figure.1}\protected@file@percent }
+\newlabel{fig:keister-err}{{1}{4}{The relative error of approximating $\mu $ defined in \eqref {eq:keisterC} by the sample mean, $\hat {\mu }_n$, defined in \eqref {eq:sample_mean} for various choices of nodes, $\bsx _0, \bsx _1, \ldots $. Grids have the largest error and LD nodes have the smallest error}{figure.1}{}}
+\newlabel{eq:IIDerror}{{7}{4}{An Illustration of Quasi-Monte Carlo}{equation.7}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Although a two-dimensional grid covers the unit square rather well, a $d$-dimensional grid for modest $d$ does \emph  {not} cover the unit cube well. For example, one can only see four distinct points in a two dimensional projection of a six-dimensional grid with $64$ points. }}{5}{figure.2}\protected@file@percent }
+\newlabel{fig:grid}{{2}{5}{Although a two-dimensional grid covers the unit square rather well, a $d$-dimensional grid for modest $d$ does \emph {not} cover the unit cube well. For example, one can only see four distinct points in a two dimensional projection of a six-dimensional grid with $64$ points}{figure.2}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces IID points cover the unit cube better than grid points, although one does observe clusters and gaps. In any projection there is a similar looking distribution of all $64$ points }}{5}{figure.3}\protected@file@percent }
+\newlabel{fig:iid}{{3}{5}{IID points cover the unit cube better than grid points, although one does observe clusters and gaps. In any projection there is a similar looking distribution of all $64$ points}{figure.3}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces LD points cover the unit cube better even better than IID points or grids. In any projection there is a similar looking distribution of all $64$ points. }}{5}{figure.4}\protected@file@percent }
+\newlabel{fig:ld}{{4}{5}{LD points cover the unit cube better even better than IID points or grids. In any projection there is a similar looking distribution of all $64$ points}{figure.4}{}}
+\citation{DicEtal22a,SloJoe94}
+\citation{Mai81a}
+\citation{HicEtal00}
+\@writefile{toc}{\contentsline {section}{\numberline {3}LD Sequence Constructions}{6}{section.3}\protected@file@percent }
+\newlabel{sec:construct}{{3}{6}{LD Sequence Constructions}{section.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Lattice Sequences}{6}{subsection.3.1}\protected@file@percent }
+\newlabel{sec:lattice}{{3.1}{6}{Lattice Sequences}{subsection.3.1}{}}
+\newlabel{eq:latticepts}{{8}{6}{Lattice Sequences}{equation.8}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces The construction of a good lattice point set in two dimensions with $16$ nodes is obtained by moving ${\bm  {h}}/n$ beyond the present point and wrapping around the boundaries of the square until one returns to the origin. }}{6}{figure.5}\protected@file@percent }
+\newlabel{fig:latticeconstruct}{{5}{6}{The construction of a good lattice point set in two dimensions with $16$ nodes is obtained by moving $\bsh /n$ beyond the present point and wrapping around the boundaries of the square until one returns to the origin}{figure.5}{}}
+\newlabel{eq:vdc}{{9}{6}{Lattice Sequences}{equation.9}{}}
+\citation{HicNie03a}
+\citation{HicEtal00}
+\citation{DicEtal22a}
+\citation{LEcEtal22a,LatNet}
+\citation{DicPil10a,Nie92}
+\newlabel{eq:extensiblelattice}{{10}{7}{Lattice Sequences}{equation.10}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces An extensible lattice corresponding to Figure \ref {fig:latticeconstruct} with the nodes reordered using the van der Corput sequence in base $2$. For each plot the blue nodes are a copy of the nodes to the left and the orange nodes are a shifted copy (modulo ${\bm  {1}}$) of the blue nodes. }}{7}{figure.6}\protected@file@percent }
+\newlabel{fig:extensiblelatticeconstruct}{{6}{7}{An extensible lattice corresponding to Figure \ref {fig:latticeconstruct} with the nodes reordered using the van der Corput sequence in base $2$. For each plot the blue nodes are a copy of the nodes to the left and the orange nodes are a shifted copy (modulo $\bsone $) of the blue nodes}{figure.6}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Digital Sequences}{7}{subsection.3.2}\protected@file@percent }
+\newlabel{sec:digital}{{3.2}{7}{Digital Sequences}{subsection.3.2}{}}
+\newlabel{eq:digital}{{11}{8}{Digital Sequences}{equation.11}{}}
+\newlabel{eq:digitalB}{{12}{8}{Digital Sequences}{equation.12}{}}
+\newlabel{eq:element_box}{{13}{8}{Digital Sequences}{equation.13}{}}
+\newlabel{eq:tcond}{{14}{8}{Digital Sequences}{equation.14}{}}
+\newlabel{eq:smallnet}{{15}{8}{Digital Sequences}{equation.15}{}}
+\citation{ }
+\citation{ }
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Each box in the two dimensional projections of the node set \eqref  {eq:smallnet} plotted above show one point in each box except for the second row, third plot from the left. Thus, this node set is not a $(0,3,3)$-net. It is however a $(1,3,3)$-net. }}{9}{figure.7}\protected@file@percent }
+\newlabel{fig:elementinterval}{{7}{9}{Each box in the two dimensional projections of the node set \eqref {eq:smallnet} plotted above show one point in each box except for the second row, third plot from the left. Thus, this node set is not a $(0,3,3)$-net. It is however a $(1,3,3)$-net}{figure.7}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Halton sequences}{9}{subsection.3.3}\protected@file@percent }
+\newlabel{sec:Halton}{{3.3}{9}{Halton sequences}{subsection.3.3}{}}
+\newlabel{eq:Halton}{{16}{9}{Halton sequences}{equation.16}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces Halton points as defined in \eqref  {eq:Halton} have low discrepancy but no preferred sample size. }}{10}{figure.8}\protected@file@percent }
+\newlabel{fig:Halton}{{8}{10}{Halton points as defined in \eqref {eq:Halton} have low discrepancy but no preferred sample size}{figure.8}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.4}LD Nodes by Optimization}{10}{subsection.3.4}\protected@file@percent }
+\newlabel{sec:optLD}{{3.4}{10}{LD Nodes by Optimization}{subsection.3.4}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {4}Randomization}{10}{section.4}\protected@file@percent }
+\newlabel{sec:random}{{4}{10}{Randomization}{section.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Shifts}{10}{subsection.4.1}\protected@file@percent }
+\newlabel{sec:shifts}{{4.1}{10}{Shifts}{subsection.4.1}{}}
+\newlabel{eq:sh_extensiblelattice}{{17}{10}{Shifts}{equation.17}{}}
+\citation{Owe95}
+\citation{Mat98}
+\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces The original unshifted lattice (left) and three different shifts modulo ${\bm  {1}}$ of the lattice. Note that the structure of the lattice is maintained. }}{11}{figure.9}\protected@file@percent }
+\newlabel{fig:shift_lat}{{9}{11}{The original unshifted lattice (left) and three different shifts modulo $\bsone $ of the lattice. Note that the structure of the lattice is maintained}{figure.9}{}}
+\newlabel{eq:sh_digital}{{18}{11}{Shifts}{equation.18}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {10}{\ignorespaces Three digital shifts of a digital $(0,3,2)$-net with nodes denoted by three different colors. There is one node in each smaller box of the form \eqref  {eq:element_box} for $\lVert {\bm  {k}}\rVert = 3$, for each digitally shifted net. }}{11}{figure.10}\protected@file@percent }
+\newlabel{fig:shift_net}{{10}{11}{Three digital shifts of a digital $(0,3,2)$-net with nodes denoted by three different colors. There is one node in each smaller box of the form \eqref {eq:element_box} for $\lVert \bsk \rVert = 3$, for each digitally shifted net}{figure.10}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Digital Scrambles}{12}{subsection.4.2}\protected@file@percent }
+\newlabel{sec:scrambles}{{4.2}{12}{Digital Scrambles}{subsection.4.2}{}}
+\newlabel{eq:scr_lattice}{{19}{12}{Digital Scrambles}{equation.19}{}}
+\newlabel{eq:digitalscr}{{19a}{12}{Digital Scrambles}{equation.19a}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {11}{\ignorespaces Three linear scrambles of a digital $(0,3,2)$-net with nodes denoted by three different colors. There is one node in each smaller box of the form \eqref  {eq:element_box} for $\lVert {\bm  {k}}\rVert = 3$, for each digitally shifted net. }}{12}{figure.11}\protected@file@percent }
+\newlabel{fig:scrambled_net}{{11}{12}{Three linear scrambles of a digital $(0,3,2)$-net with nodes denoted by three different colors. There is one node in each smaller box of the form \eqref {eq:element_box} for $\lVert \bsk \rVert = 3$, for each digitally shifted net}{figure.11}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Other Randomizations for Halton}{12}{subsection.4.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Randomized Generators}{12}{subsection.4.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {5}Discrepancy}{12}{section.5}\protected@file@percent }
+\newlabel{sec:discrepancy}{{5}{12}{Discrepancy}{section.5}{}}
+\citation{Aro50}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Discrepancies Defined by Kernels}{13}{subsection.5.1}\protected@file@percent }
+\newlabel{sec:kerdisc}{{5.1}{13}{Discrepancies Defined by Kernels}{subsection.5.1}{}}
+\newlabel{eq:cuberrbd}{{22}{13}{Discrepancies Defined by Kernels}{equation.22}{}}
+\bibstyle{spmpsci}
+\bibdata{FJH23,FJHown23}
+\bibcite{LatNet}{1}
+\bibcite{DicEtal22a}{2}
+\bibcite{DicPil10a}{3}
+\bibcite{HicEtal00}{4}
+\bibcite{HicNie03a}{5}
+\bibcite{Kei96}{6}
+\bibcite{LEcEtal22a}{7}
+\bibcite{Mai81a}{8}
+\bibcite{Nie92}{9}
+\bibcite{SloJoe94}{10}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Geometrically Motivated Discrepancies}{15}{subsection.5.2}\protected@file@percent }
+\newlabel{sec:geodisc}{{5.2}{15}{Geometrically Motivated Discrepancies}{subsection.5.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Coordinate weights}{15}{subsection.5.3}\protected@file@percent }
+\newlabel{sec:coordwts}{{5.3}{15}{Coordinate weights}{subsection.5.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.4}Discrepancies for Lattices and Nets}{15}{subsection.5.4}\protected@file@percent }
+\newlabel{sec:latticenetdis}{{5.4}{15}{Discrepancies for Lattices and Nets}{subsection.5.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.5}Randomized Error}{15}{subsection.5.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {6}Stopping Criteria}{15}{section.6}\protected@file@percent }
+\newlabel{sec:stop}{{6}{15}{Stopping Criteria}{section.6}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {7}Reformulating Our Problem}{15}{section.7}\protected@file@percent }
+\newlabel{sec:reformulate}{{7}{15}{Reformulating Our Problem}{section.7}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.1}Variable Transformations}{15}{subsection.7.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.2}Variation Reduction}{15}{subsection.7.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.3}Multilevel Methods}{15}{subsection.7.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {8}Ongoing Research}{15}{section.8}\protected@file@percent }
+\newlabel{sec:onging}{{8}{15}{Ongoing Research}{section.8}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {9}Conclusion}{15}{section.9}\protected@file@percent }
+\newlabel{sec:conclusion}{{9}{15}{Conclusion}{section.9}{}}
+\gdef \@abspage@last{16}
