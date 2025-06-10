@@ -67,7 +67,8 @@
 
 
 %%Fred's temporary macros
-\newcommand{\FJHNote}[1]{{\textcolor{blue}{Fred: #1}}}
+\usepackage[dvipsnames]{xcolor}
+\newcommand{\FJHNote}[1]{{\textcolor{ForestGreen}{#1}}}
 \newcommand{\NKNote}[1]{{\textcolor{blue}{Nathan: #1}}}
 \newcommand{\AGSNote}[1]{{\textcolor{blue}{Aleksei: #1}}}
 %\usepackage[normalem]{ulem}
@@ -163,7 +164,7 @@ In mathematical terms, the random outcome is $Y := f(\bsX)$, where $\bsX$ is a v
 
 Simple  Monte Carlo chooses the sequence of nodes, $\{\bsx_i\}_{i=0}^\infty$, to be independent and identically distributed (IID).  Quasi-Monte Carlo (qMC)  chooses the nodes differently, so that their empirical distribution approximates well the true probability distribution of $\bsX$.  The difference between  the true and empirical distributions is called a \emph{discrepancy}, and the node sequences used in qMC are called low-discrepancy (LD) sequences.
 
-This tutorial describes what qMC is, why we would want to use qMC, and how qMC can be implemented well.  The next section illustrates by example the advantages of qMC.  This is followed by a description of how deterministic LD sequences are constructed (Section \ref{sec:construct}) and randomizations that preserve their low-discrepancy (Section \ref{sec:random}).  We describe various measures of discrepancy (Section \ref{sec:discrepancy}).  We explain how to decide what sample size, $n$, is sufficient to meet the user's error requirements (Section \ref{sec:stop}).  We then discuss how to rewrite the problem of interest in a qMC-friendly way (Section \ref{sec:reformulate}). We briefly discuss applications of qMC beyond computing the mean (Section \ref{sec:beyond}), and finish with a short conclusion (Section \ref{sec:conclusion}). \NKNote{Inevitably, this tutorial is not comprehensive of the full breadth of over a century of development in qMC and uniform distribution theory, dating back to Hermann Weyl's seminal 1916 paper \cite{Wey16}. Instead, our goal is to provide a solid foundation in the core concepts along with practical guidance, and to spark further interest and study in the field.}
+This tutorial describes what qMC is, why we would want to use qMC, and how qMC can be implemented well.  The next section illustrates by example the advantages of qMC.  This is followed by a description of how deterministic LD sequences are constructed (Section \ref{sec:construct}) and randomizations that preserve their low-discrepancy (Section \ref{sec:random}).  We describe various measures of discrepancy (Section \ref{sec:discrepancy}).  We explain how to decide what sample size, $n$, is sufficient to meet the user's error requirements (Section \ref{sec:stop}).  We then discuss how to rewrite the problem of interest in a qMC-friendly way (Section \ref{sec:reformulate}). We briefly discuss applications of qMC beyond computing the mean (Section \ref{sec:beyond}), and finish with a short conclusion (Section \ref{sec:conclusion}). \NKNote{Inevitably, this tutorial is not comprehensive of the full breadth of over a century of development in qMC and uniform distribution theory, dating back to Hermann Weyl's seminal 1916 paper \cite{Wey16}. Instead, our goal is to provide a solid foundation in the core concepts along with practical guidance\FJHNote{, especially for the newcomer}, and to spark further interest and study in the field.}
 
 
 %
@@ -311,20 +312,24 @@ For the example in Figure \ref{fig:extensiblelatticeconstruct}, increasing $n$ b
 
 \subsection{Digital Sequences} \label{sec:digital}
 
-Another family of LD sequences that is a generalization of the van der Corput sequence \eqref{eq:vdc} is digital sequences \cite{DicPil10a,Nie92}.  For simplicity, we restrict ourselves to $b = 2$ and let $\oplus$ denote binary digitwise addition modulo $2$ (also known as digitwise exclusive or), e.g., $3/8 \oplus 3/4 = {}_20.011 \oplus {}_20.110 = {}_20.101 = 5/8$.  A digital sequence is defined as
+\FJHNote{Another family of LD sequences that is a generalization of the van der Corput sequence \eqref{eq:vdc} is digital sequences \cite{DicPil10a,Nie92}.  For simplicity, we restrict ourselves to $b = 2$ and let $\oplus$ denote binary digitwise addition modulo $2$ (also known as digitwise exclusive or), e.g., $3/8 \oplus 3/4 = {}_20.011 \oplus {}_20.110 = {}_20.101 = 5/8$.  A digital sequence is defined as
 \begin{equation} \label{eq:digital}
 	\bsx_i^{\text{dig}} := i_0 \bsx^{\text{dig}} _1 \oplus i_1 \bsx^{\text{dig}}_2 \oplus i_2 \bsx^{\text{dig}} _4 \oplus \cdots \in [0,1)^d \quad \text{for }
 	i = i_0 + i_12 + i_2 2^2 + \cdots,
 \end{equation}
-where $\bsx^{\text{dig}}_1, \bsx^{\text{dig}}_2, \ldots$ are carefully chosen.  (For $d=1$ and $x^{\text{dig}}_{2^m} = 2^{-m-1}$, this is the van  der Corput sequence in base $2$.) The node set $\{ \bsx^{\text{dig}}_0, \ldots, \bsx^{\text{dig}}_{2^m-1}\}$  for non-negative integer $m$ is called a digital net and is closed under $\oplus$.
+where $\bsx^{\text{dig}}_1, \bsx^{\text{dig}}_2, \bsx^{\text{dig}}_4, \bsx^{\text{dig}}_8, \ldots$ are carefully chosen to ensure low discrepancy.  (For $d=1$ and $x^{\text{dig}}_{2^m} = 2^{-m-1}$, this is the van  der Corput sequence in base $2$.) The node set $\{ \bsx^{\text{dig}}_0, \ldots, \bsx^{\text{dig}}_{2^m-1}\}$  for non-negative integer $m$ is called a digital net and is closed under $\oplus$.}
 
-If $x^{\text{dig}}_{ij\ell}$ denotes the $\ell^{\text{th}}$ digit of the $j^{\text{th}}$ coordinate of $\bsx^{\text{dig}}_i$, then the literature often defines generating matrices, $\mathsf{C}_j = \bigl(x^{\text{dig}}_{ij\ell}\bigr)_{\ell,i = 1}^{M,N}$ for $j = 1, \ldots, d$, where $M$ is the maximum number of bits in the expression for $\bsx^{\text{dig}}_i$, say $52$, and $2^N$ is the maximum number of nodes that is intended to be generated.  The digital sequence can then be defined equivalently as
+\FJHNote{Traditionally, digital nets are defined in terms of $N \times M$ generating matrices, $\mathsf{C}_j$, as follows:
 \begin{equation} \label{eq:digitalB}
 \renewcommand{\arraystretch}{1.5}
-	\begin{pmatrix} x^{\text{dig}}_{ij1} \\ x^{\text{dig}}_{ij2} \\ \vdots \end{pmatrix}
+	\begin{pmatrix} x^{\text{dig}}_{i,j,1} \\ x^{\text{dig}}_{i,j,2} \\ \vdots \end{pmatrix}
 	= \mathsf{C}_j \begin{pmatrix} i_0 \\ i_1 \\ \vdots \end{pmatrix}
-    \quad \pmod{2}, \qquad j = 1,\ldots, d, \ i = 0, 1, \ldots.
+    \quad \pmod{2}, \qquad j = 1,\ldots, d, \ i = 0, 1, \ldots,
 \end{equation}
+where $x^{\text{dig}}_{i,j,\ell}$ denotes the $\ell^{\text{th}}$ digit of the $j^{\text{th}}$ component of the $i^{\text{th}}$ node.  Here $N$ is the maximum number of bits in the expression for $\bsx^{\text{dig}}_i$, say $52$, and $2^M$ is the maximum number of nodes that is intended to be generated.
+It can be seen that definitions  \eqref{eq:digital} and \eqref{eq:digitalB} are equivalent by noting that $\mathsf{C}_j = \bigl(x^{\text{dig}}_{2^m,j,\ell}\bigr)_{\ell,m = 0}^{N,M-1}$.
+}
+
 
 
 To understand how well these nodes are evenly distributed over $[0,1)^d$, imagine a box of the form
@@ -340,7 +345,7 @@ This box has volume $2^{-(k_1 + \cdots +k_d)} = 2^{-\lVert\bsk\rVert_1}$.  For a
 	\text{the first $k_d$ rows of the first $m$ columns of $\mathsf{C}_d$} \\
 	\text{are linearly independent over addition and multiplication modulo $2$, }
 \end{multline}
-regardless of the choice of $\bsa = (a_1, \ldots, a_d)$.  The $t$-value of a digital net with $2^m$ nodes is defined as the smallest $t$ for which condition \eqref{eq:tcond} holds for all $\bsk$ with $\lVert \bsk \rVert_1 \le m-t$.  Equivalently, this $t$ is the smallest value for which every box of the form \eqref{eq:element_box} with volume $2^{\lVert \bsk \rVert_1 - m}$ contains its fair share of $2^t$ nodes.  Such a digital net is then called a $(t,m,d)$-net.  An infinite sequence of the form \eqref{eq:digitalB} for which this condition holds for all non-negative $m$ is called a  $(t,d)$-sequence.
+regardless of the choice of $\bsa = (a_1, \ldots, a_d)$.  The $t$-value of a digital net with $2^m$ nodes is defined as \FJHNote{any} $t$ for which condition \eqref{eq:tcond} holds for all $\bsk$ with $\lVert \bsk \rVert_1 \le m-t$.  Equivalently, \FJHNote{for} this $t$, every box of the form \eqref{eq:element_box} with volume $2^{\lVert \bsk \rVert_1 - m}$ contains its fair share of $2^t$ nodes.  Such a digital net is then called a $(t,m,d)$-net.  An infinite sequence of the form \eqref{eq:digitalB} for which this condition holds for all non-negative $m$ is called a  $(t,d)$-sequence. \FJHNote{Ideally, one would like to construct $(t,m,d)$-nets and $(t,d)$-sequences with $t$ as small as possible.}
 
 To illustrate the $t$-value, consider the following $d=3$ dimensional digital net with $2^3$ (eight) nodes, i.e., $m = 3$:
 \begin{multline} \label{eq:smallnet}

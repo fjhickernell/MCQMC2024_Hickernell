@@ -6,6 +6,8 @@
 \usepackage{amsmath}
 \usepackage{lipsum}
 
+\input{macros.tex}
+
 % ---------- Custom Commands and Environments ----------
 
 % Define Response environment
@@ -49,13 +51,17 @@ Good point. Sentence added at the end of the introduction.
 ...This is an unusual way to define a digital
 sequence....
 \end{response}
-...
+We choose this ``unusual'' way because we want to show the connection to the van der Corput sequence.  Lattice sequences, digital sequences, and Halton sequences all can be considered extensions of van der Corput.
+
+By stating that $\bsx^{\text{dig}}_1, \bsx^{\text{dig}}_2, \ldots$ are carefully chosen, we were unintentionally vague, and have now stated that $\bsx^{\text{dig}}_1, \bsx^{\text{dig}}_2, \bsx^{\text{dig}}_4, \bsx^{\text{dig}}_8, \ldots$ are carefully chosen.
+
+Thanks to the reviewer for pointing out the error in our correspondence between generator matrices and the $\boldsymbol{x}_{2^m}$ for $m =  0, 1, \ldots$.  That has been corrected.  These paragraphs have also been reworded.
 
 
 \begin{response}{3.}
 ...the definition of a digital sequence also requires segments between powers of $2$ to be nets with parameter (at most) $t$. This also brings a minor point: especially when defining a $(t, d)$-sequence, one does not usually assume that the t parameter applies as the exact $t$ for all segments...
 \end{response}
-....
+This has been corrected.  Thank you.
 
 
 \begin{response}{4.}
