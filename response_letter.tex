@@ -1,0 +1,168 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{titlesec}
+\usepackage{amsmath}
+\usepackage{lipsum}
+
+% ---------- Custom Commands and Environments ----------
+
+% Define Response environment
+
+
+\newenvironment{response}{%
+  \vspace{1em}
+  \begin{quote}\itshape
+}{%
+  \end{quote}
+  \noindent\textbf{Reply:}~
+}
+
+
+
+% Optional: define formatting for section titles
+\titleformat{\section}{\normalfont\Large\bfseries}{\thesection.}{1em}{}
+\titleformat{\subsection}{\normalfont\large\bfseries}{\thesubsection.}{1em}{}
+
+% ---------- Document Starts ----------
+\title{Author Response for “Quasi-Monte Carlo Methods: What, Why, and How?”}
+\author{Fred J. Hickernell, Nathan Kirk and Aleksei G. Sorokin}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+We thank the reviewers for their careful reading of the manuscript and for their thoughtful suggestions, which have helped improve both the content and presentation of the work. All grammatical errors and typographical mistakes have been corrected. Below, we provide responses to all comments; substantial changes are highlighted in blue in the revised manuscript
+
+\section*{Response to Reviewer 1}
+
+\begin{response}{1.}
+It is unavoidable that surveys of this type are not comprehensive and will choose to focus
+on some areas and ignore others. It would be useful to mention something along those lines
+somewhere in the introduction.
+\end{response}
+Good point. Sentence added at the end of the introduction.
+
+\begin{response}{2.}
+...This is an unusual way to define a digital
+sequence....
+\end{response}
+...
+
+
+\begin{response}{3.}
+...the definition of a digital sequence also requires segments between powers of $2$ to be nets with parameter (at most) $t$. This also brings a minor point: especially when defining a $(t, d)$-sequence, one does not usually assume that the t parameter applies as the exact $t$ for all segments...
+\end{response}
+....
+
+
+\begin{response}{4.}
+Halton sequences do exhibit specific equidistribution properties when $n$ is a product of powers of the $d$ bases used. So it is not completely accurate to say that Halton sequences do not have preferred sample sizes
+\end{response}
+Good point. We have fixed this inaccuracy in Section 3.3.
+
+
+
+\begin{response}{5.}
+    It would be important to cite other works than [49] when discussing the Halton sequences. For example [18] which includes many other important references
+\end{response}
+Good point. Lemieux and Faure has been added.
+
+
+\begin{response}{6.}
+“One example” rather than “On example”. Also in such cases $d$ may be larger than the number of times the asset is monitored, e.g., when dealing with stochastic volatility models or multiple assets. So this should say something like “where $d$ could denote...”
+\end{response}
+Good point. Fixed and added.
+
+
+\subsection*{Minor Comments}
+
+The authors agree with all minor comments  flagged by the reviewer and thus have been rectified.
+
+
+
+\newpage
+
+\section*{Response to Reviewer 2}
+
+
+\begin{response}{1.}
+    Add a simple but practical application, like option pricing under Black-Scholes model, as an illustrative example. This reviewer finds the illustrative example in Section 2 lacks practical relevance
+\end{response}
+....
+
+
+
+\begin{response}{2.}
+    Section 7 mentions variance reduction techniques such as importance sampling (Section 7.1) and control variate (Section 7.2). This reviewer suggests elaborating how variance reduction techniques, which were originally proposed for Monte Carlo methods, can be applied to qMC methods and whether these techniques and effective and in what ways they are effective.
+\end{response}
+.....
+
+
+
+\begin{response}{3.}
+    Section 7.3 seems to be a bit disconnected with the rest of the paper, with some undefined notations like $\boldsymbol{n}$ and $\boldsymbol{d}$. Are these the vector versions of n and d? This reviewer suggests adding more details and discussions in this section.
+\end{response}
+....
+
+\subsubsection*{Minor Issues}
+
+\begin{response}{1.}
+    One line below Equation (6) on page 3: Is there a specific reason to show the value of $\mu$ in such a high accuracy? If there is a reason, maybe it should be clearly explained
+\end{response}
+There is no specific reason. We have kept the same accuracy.
+
+
+\begin{response}{2.}
+    The authors mention the van der Corput sequence a few times (e.g., 4 lines above Equation (9), first line on page 7, and other occurrences). For readers who don’t know what this sequence is, such as this reviewer, it would be helpful to provide some explanations and references
+\end{response}
+The authors have slightly rewritten the paragraph above equation (9) to more clearly define the van der Corput sequence the first time it is mentioned.
+
+
+\begin{response}{3.}
+    Is Equation (14) supposed to be an equation? It looks very strange
+\end{response}
+.....
+
+
+\begin{response}{4.}
+    The last line on page 9 is just a reference...
+\end{response}
+With some rewriting, this is no longer an issue.
+
+\begin{response}{5.}
+    First line in Section 3.4: The acronym qMC is defined and used many times, why not use it here?
+\end{response}
+    Thank you. Acronym now used here.
+
+
+\begin{response}{6.}
+    Figure 9 on page 13. The $x_0 = \Delta$ equation in the figures overlaps with some markers, which makes it hard to see. Please reposition it.
+\end{response}
+.....
+
+
+
+\begin{response}{7.}
+    The legends in Figure 12 and Figure 13 are too small
+\end{response}
+....
+
+
+\begin{response}{8.}
+    First line after Equation (43): “[(]” seems to be a typo
+\end{response}
+Thank you. Fixed.
+
+
+\begin{response}{9.}
+    Third line in Section 7: On example $\rightarrow$ One example
+\end{response}
+Thank you. Fixed.
+
+
+
+
+\end{document}
