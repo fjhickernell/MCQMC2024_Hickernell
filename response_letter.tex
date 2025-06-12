@@ -97,40 +97,40 @@ The authors agree with all minor comments  flagged by the reviewer and thus have
 \begin{response}{1.}
     Add a simple but practical application, like option pricing under Black-Scholes model, as an illustrative example. This reviewer finds the illustrative example in Section 2 lacks practical relevance
 \end{response}
-....
+.... [Aleksei]
 
 
 
 \begin{response}{2.}
     Section 7 mentions variance reduction techniques such as importance sampling (Section 7.1) and control variate (Section 7.2). This reviewer suggests elaborating how variance reduction techniques, which were originally proposed for Monte Carlo methods, can be applied to qMC methods and whether these techniques and effective and in what ways they are effective.
 \end{response}
-.....
+Thanks.  Text has been added to this effect.
 
 
 
 \begin{response}{3.}
     Section 7.3 seems to be a bit disconnected with the rest of the paper, with some undefined notations like $\boldsymbol{n}$ and $\boldsymbol{d}$. Are these the vector versions of n and d? This reviewer suggests adding more details and discussions in this section.
 \end{response}
-....
+We are constrained by page limitations, but more definitions were added to clarify the meaning of symbols.
 
 \subsubsection*{Minor Issues}
 
 \begin{response}{1.}
     One line below Equation (6) on page 3: Is there a specific reason to show the value of $\mu$ in such a high accuracy? If there is a reason, maybe it should be clearly explained
 \end{response}
-There is no specific reason. We have kept the same accuracy.
+Because we show a plot where some cubature errors are $10^{-8}$ and smaller, we want to show that the answer can be known to high accuracy. 
 
 
 \begin{response}{2.}
     The authors mention the van der Corput sequence a few times (e.g., 4 lines above Equation (9), first line on page 7, and other occurrences). For readers who don’t know what this sequence is, such as this reviewer, it would be helpful to provide some explanations and references
 \end{response}
-The authors have slightly rewritten the paragraph above equation (9) to more clearly define the van der Corput sequence the first time it is mentioned.
+The authors have slightly rewritten the paragraph above equation (9) to more clearly define the van der Corput sequence the first time it is mentioned.  We have added a reference to the digital nets book by Dick \& Pillichshammer.
 
 
 \begin{response}{3.}
     Is Equation (14) supposed to be an equation? It looks very strange
 \end{response}
-.....
+It is a condition and it is numbered so that we can refer to it.  It has been rewritten.
 
 
 \begin{response}{4.}
@@ -147,14 +147,14 @@ With some rewriting, this is no longer an issue.
 \begin{response}{6.}
     Figure 9 on page 13. The $x_0 = \Delta$ equation in the figures overlaps with some markers, which makes it hard to see. Please reposition it.
 \end{response}
-.....
+Done.
 
 
 
 \begin{response}{7.}
     The legends in Figure 12 and Figure 13 are too small
 \end{response}
-....
+We have increase the font size of the legends for these figures. 
 
 
 \begin{response}{8.}
