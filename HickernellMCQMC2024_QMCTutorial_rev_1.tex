@@ -214,7 +214,7 @@ There are $50$ replications for each of the latter two cases with the average er
 
 \begin{figure}
 	\centering
-	\includegraphics[width =0.5\textwidth]{\figpath/n_is_16777216_d_is_6_n_rep_is_50_KeisterErrors.pdf}
+	\includegraphics[width =0.75\textwidth]{\figpath/n_is_16777216_d_is_6_n_rep_is_50_KeisterErrors.pdf}
 	\caption{The relative error of approximating $\mu$ defined in \eqref{eq:keisterC} by the sample mean, $\hat{\mu}_n$, defined in \eqref{eq:sample_mean_Keister} for various choices of nodes, $\bsx_0, \bsx_1, \ldots$.  Grids have the largest error and LD nodes have the smallest error. \label{fig:keister-err}}
 \end{figure}
 
@@ -596,7 +596,7 @@ If $\mu(\cdot):\calH_{\calK} \to \RR$ is a bounded linear functional on $\calH_K
 	& \qquad \qquad + \frac{1}{n^2} \sum_{i,j=0}^{n-1}  K(\bsx_i,\bsx_j). \label{eq:sqdisc}
 \end{align}
 
-\NKNote{where again the $(\cdot)$ and $(\cdot\cdot)$ notations represent the functional acting on the first and second arguments respectively.}
+\NKNote{where again the $(\cdot)$ and $(\cdot\cdot)$ notations represent the functional acting on the first and second arguments, respectively.}
 
 The error bound \eqref{eq:cuberrbd} has two factors:
 \begin{itemize}
@@ -857,9 +857,10 @@ As observed in Section \ref{sec:coordwts}, qMC is more effective if the variatio
 
 \begin{figure}
 	\centering
-    \includegraphics[width = 0.48\textwidth]{\figpath//NumSamples_Asian_Option_tol_0.001_d52.pdf}
-	\includegraphics[width = 0.48\textwidth]{\figpath/Times_Asian_Option_tol_0.001_d52.pdf} \quad 
-	\caption{\AGSNote{Comparison of the required number of samples (left) and execution time (right) versus the requested error tolerance for (Q)MC algorithms. We compare decompositions of the Brownian motion using principal component analysis (PCA) against the Cholesky decomposition for IID and Sobol' points. \label{fig:asian_option_pda_vs_chol}}}
+ %    \includegraphics[width = 0.48\textwidth]{\figpath//NumSamples_Asian_Option_tol_0.001_d52.pdf}
+	% \includegraphics[width = 0.48\textwidth]{\figpath/Times_Asian_Option_tol_0.001_d52.pdf} \quad 
+    \includegraphics[width = 1\textwidth]{\figpath//Times_NumSamples_Asian_Option_tol_0.001_d52.pdf}
+	\caption{\AGSNote{Comparison of Monte Carlo and Quasi-Monte Carlo stopping criteria for estimating the fair price of an Asian option with arithmetic mean. For QMC with Sobol' points, using a principal component analysis (PCA) decomposition of the Brownian motion provides substantial savings compared to the Cholesky decomposition. Using an Asian option with geometric mean control variate (CV) provides additional savings. \label{fig:asian_option_pda_vs_chol}}}
 \end{figure}
 
 \subsection{Control Variates} 
@@ -868,7 +869,7 @@ Since the upper bound of the qMC error includes the variation of $f$ as a factor
 
 Another approach is control variates.  If $f_{\text{ctrl}} : [0,1)^d \to \RR$ is a function whose integral is zero, then $\mu(f) = \mu(f - f_{\text{ctrl}})$, and one may approximate $\mu(f)$ by $\hat{\mu}_n(f - f_{\text{ctrl}})$.  If the variation of  $f - f_{\text{ctrl}}$ is smaller than that of $f$, then it is likely that $\hat{\mu}_n(f - f_{\text{ctrl}})$ will have smaller error than $\hat{\mu}_n(f)$. 
 
-An example of this in quantitative finance is where one may use the payoff of a European option, whose expectation is known, as a control variate for more exotic options.  As noted in \cite{HicEtal03}, reducing the variation of $f$ via control variates may or may not resemble reducing the variance of $f$.  Control variates have been implemented in the stopping criteria based on Fourier coefficients described in the previous section \cite{HicEtal17a}.
+An example of this in quantitative finance is where one may use the payoff of a European option, whose expectation is known, as a control variate for more exotic options.  As noted in \cite{HicEtal03}, reducing the variation of $f$ via control variates may or may not resemble reducing the variance of $f$.  Control variates have been implemented in the stopping criteria based on Fourier coefficients described in the previous section \cite{HicEtal17a}. \AGSNote{In Figure \ref{fig:asian_option_pda_vs_chol} we show that, for pricing an Asian option with arithmetic mean, using an Asian option with geometric mean control variate can provide improved convergence.}
 
 
 
@@ -889,7 +890,7 @@ This series of integrals may be approximated by a series of sample means, namely
     \hat{\mu}^{\text{ML}}_{\bsn,\bsd}  := \frac{1}{n_1}  \sum_{i=0}^{n_1-1} f_1(\bsx^{(1)}_i)  +  \frac{1}{n_2}  \sum_{i=0}^{n_2-1}  \bigl[f_2(\bsx^{(2)}_i) - f_1(\bsx^{(1)}_i)\bigr] + \cdots \\
      + \frac{1}{n_L}  \sum_{i=0}^{n_L-1}  \bigl[f_L(\bsx_i^{(L)}) - f_{L-1}(\bsx_i^{(L-1)}) \bigr],
 \end{multline}
-\FJHNote{where $\bsn = (n_1, \ldots, n_L)$ and $\bsd = (d_1, \ldots, d_L$.} 
+\FJHNote{where $\bsn = (n_1, \ldots, n_L)$ and $\bsd = (d_1, \ldots, d_L)$.} 
 If $C_1$ is the computational cost of $f^{(1)}(\bsx^{(1)})$ and $C_l$ is the computational cost of $f^{(l)}(\bsx^{(1)}) - f_{l-1}(\bsx_i^{(l-1)})$ for $l = 2, \ldots, L$, then the total computational cost of 
 \eqref{eq:MLmuhat} is 
 \begin{equation} \label{eq:MLcostdef}
