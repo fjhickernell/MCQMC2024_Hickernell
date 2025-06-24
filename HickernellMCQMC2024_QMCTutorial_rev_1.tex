@@ -68,9 +68,9 @@
 
 %%Fred's temporary macros
 \usepackage[dvipsnames]{xcolor}
-\newcommand{\FJHNote}[1]{{\textcolor{ForestGreen}{#1}}}
+\newcommand{\FJHNote}[1]{{\textcolor{blue}{#1}}}
 \newcommand{\NKNote}[1]{{\textcolor{blue}{ #1}}}
-\newcommand{\AGSNote}[1]{{\textcolor{magenta}{#1}}}
+\newcommand{\AGSNote}[1]{{\textcolor{blue}{#1}}}
 %\usepackage[normalem]{ulem}
 
 \newcommand{\figpath}{Figures}
@@ -125,13 +125,13 @@ CtrDisc_dmax_64_nmax_8192.pkl
 \institute{
 Department of Applied Mathematics, Illinois Institute of Technology, \\ Chicago, IL, 60616, USA\\
 \and
-\email{hickernell@iit.edu}, \
+\email{hickernell@illinoistech.edu}, \
 %\texttt{http://www.iit.edu/\textasciitilde{}hickernell}
-\url{http://www.iit.edu/~hickernell}
+\href{https://www.iit.edu/directory/people/fred-hickernell}{http://www.iit.edu/hickernell}
 \and
-\email{nkirk@iit.edu}
+\email{nkirk@illinoistech.edu}
 \and
-\email{asorokin@hawk.iit.edu}
+\email{asorokin@hawk.illinoistech.edu}
 }
 
 
@@ -344,7 +344,7 @@ This box has volume $2^{-(k_1 + \cdots +k_d)} = 2^{-\lVert\bsk\rVert_1}$.  For a
 	\text{the first $k_1$ rows of the first $m$ columns of $\mathsf{C}_1$} & \text{ plus} \\
 	\text{the first $k_2$ rows of the first $m$ columns of $\mathsf{C}_2$} & \text{ plus} \\
 	 \vdots \hspace{10ex} & \\
-	\text{the first $k_d$ rows of the first $m$ columns of $\mathsf{C}_d$} &\\
+	\text{ the first $k_d$ rows of the first $m$ columns of $\mathsf{C}_d$} &\\
 	\text{are linearly independent over addition and multiplication modulo $2$, }
 \end{aligned}
 \end{equation}}
@@ -809,7 +809,7 @@ The symmetric, positive definite reproducing kernel, $K$, which appears in the w
 
 %Monte Carlo approximates the true mean $\mu = \bbE[f(\bsX)]$, $\bsX \sim \mathcal{U}[0,1]^d$ by the sample mean $\hat{\mu} = n^{-1} \sum_{i=0}^{n-1} f(\bsx_i)$ \textcolor{green}{maybe these formulas are already in the paper.}. 
 
-When approximating the true $\mu$ with $\hat{\mu}_n$, stopping criterion determine how large $n$ should be so that the error $\lvert \mu - \hat{\mu}_n \rvert$ is below an error tolerance $\varepsilon$ either certainly or with sufficiently low uncertainty $\alpha$. The error tolerance and probability threshold are problem dependent. For example, in option pricing one may set the error tolerance to a penny, $\varepsilon=0.01$, and wish to find error bounds which hold with 95\% confidence, $\alpha=0.05$. The stopping criteria presented here are implemented in QMCPy \cite{QMCPy2020a}.
+When approximating the true $\mu$ with $\hat{\mu}_n$, stopping criterion determine how large $n$ should be so that the error $\lvert \mu - \hat{\mu}_n \rvert$ is below an error tolerance $\varepsilon$ either certainly or with sufficiently low uncertainty $\alpha$. The error tolerance and probability threshold are problem dependent. For example, in option pricing one may set the error tolerance to a penny, $\varepsilon=0.01$, and wish to find error bounds which hold with 95\% confidence, $\alpha=0.05$. The stopping criteria presented here are implemented in \texttt{qmcpy} \cite{QMCPy2020a}.
 
 For simple Monte Carlo with IID nodes, the Central Limit Theorem (CLT) may be used to get an approximate confidence interval $[\mu^-,\mu^+]$ where $\mu^\pm = \hat{\mu} \pm Z^{1-\alpha/2} \sigma/\sqrt{n}$, $\sigma = \mathrm{Std}[f(\bsX)]$ and $Z^{1-\alpha/2}$ is the $1-\alpha/2$ quantile of the standard Gaussian distribution. If 
 \begin{equation}
@@ -823,7 +823,7 @@ A straightforward qMC stopping criterion may also be derived from the CLT using 
 
 One of the drawbacks of this qMC-CLT stopping criterion is that, at least intuitively, independent randomizations of LD nodes are less efficient than simply using more LD nodes from a single sequence. For instance, we would expect an approximation with $n=2^8$ and $R=2^3$ to perform worse than simply taking $n=2^{11}$ nodes from a single randomized LD sequence ($R=1$), but we need $R$ large enough to believe the CLT stopping criterion. 
 
-One idea for constructing confidence intervals without replications is to approximate the decay rate of Fourier coefficients of $f$. Bounds of absolute certainty have be derived for cones of functions with reasonable decay of their Fourier coefficients \cite{HicEtal17a}. As in the qMC-CLT stopping criterion, one may iteratively double $n$ until the bounds are sufficiently tight. 
+One idea for constructing confidence intervals without replications is to approximate the decay rate of Fourier coefficients of $f$. Bounds of absolute certainty have be derived for cones of functions with reasonable decay of their Fourier coefficients \cite{HicEtal17a}. As in the qMC-CLT stopping criterion, one may iteratively double $n$ until the bounds are sufficiently tight. \AGSNote{Figure \ref{fig:asian_option_pda_vs_chol} compares these decay-tracking qMC algorithms against IID Monte Carlo stopping criterion across a variety of tolerances for pricing an Asian option from finance \cite[p.\ 8]{Gla03}.}
 
 For lattices one tracks the decay of the complex-exponential Fourier coefficients \cite{JimHic16a}. For digital sequences one tracks the decay of  Fourier-Walsh coefficients  \cite{HicJim16a}. In both cases, the definitions of the node sets paired with the appropriate Fourier basis allows these approximate Fourier coefficients to be computed from the data, $\{y_i = f(\bsx_i)\}_{i=0}^{n -1} $ at a cost of $\calO(n \log n)$ for $n$ a power of $2$ using fast  transforms. 
 
@@ -860,7 +860,7 @@ As observed in Section \ref{sec:coordwts}, qMC is more effective if the variatio
  %    \includegraphics[width = 0.48\textwidth]{\figpath//NumSamples_Asian_Option_tol_0.001_d52.pdf}
 	% \includegraphics[width = 0.48\textwidth]{\figpath/Times_Asian_Option_tol_0.001_d52.pdf} \quad 
     \includegraphics[width = 1\textwidth]{\figpath//Times_NumSamples_Asian_Option_tol_0.001_d52.pdf}
-	\caption{\AGSNote{Comparison of Monte Carlo and Quasi-Monte Carlo stopping criteria for estimating the fair price of an Asian option with arithmetic mean. For QMC with Sobol' points, using a principal component analysis (PCA) decomposition of the Brownian motion provides substantial savings compared to the Cholesky decomposition. Using an Asian option with geometric mean control variate (CV) provides additional savings. \label{fig:asian_option_pda_vs_chol}}}
+	\caption{\AGSNote{Comparison of IID Monte Carlo and qMC stopping criteria for estimating the fair price of an Asian option with arithmetic mean. For QMC with Sobol' points, using a principal component analysis (PCA) decomposition of the Brownian motion provides substantial savings compared to the Cholesky decomposition. Using an Asian option with geometric mean control variate (CV) provides additional savings. \label{fig:asian_option_pda_vs_chol}}}
 \end{figure}
 
 \subsection{Control Variates} 
@@ -869,7 +869,7 @@ Since the upper bound of the qMC error includes the variation of $f$ as a factor
 
 Another approach is control variates.  If $f_{\text{ctrl}} : [0,1)^d \to \RR$ is a function whose integral is zero, then $\mu(f) = \mu(f - f_{\text{ctrl}})$, and one may approximate $\mu(f)$ by $\hat{\mu}_n(f - f_{\text{ctrl}})$.  If the variation of  $f - f_{\text{ctrl}}$ is smaller than that of $f$, then it is likely that $\hat{\mu}_n(f - f_{\text{ctrl}})$ will have smaller error than $\hat{\mu}_n(f)$. 
 
-An example of this in quantitative finance is where one may use the payoff of a European option, whose expectation is known, as a control variate for more exotic options.  As noted in \cite{HicEtal03}, reducing the variation of $f$ via control variates may or may not resemble reducing the variance of $f$.  Control variates have been implemented in the stopping criteria based on Fourier coefficients described in the previous section \cite{HicEtal17a}. \AGSNote{In Figure \ref{fig:asian_option_pda_vs_chol} we show that, for pricing an Asian option with arithmetic mean, using an Asian option with geometric mean control variate can provide improved convergence.}
+An example of this in quantitative finance is where one may use the payoff of a \AGSNote{similar} option, whose expectation is known, as a control variate for more exotic options.  As noted in \cite{HicEtal03}, reducing the variation of $f$ via control variates may or may not resemble reducing the variance of $f$.  Control variates have been implemented in the stopping criteria based on Fourier coefficients described in the previous section \cite{HicEtal17a}. \AGSNote{In Figure \ref{fig:asian_option_pda_vs_chol} we show that, for pricing an Asian option with arithmetic mean, using an Asian option with geometric mean control variate can provide improved convergence.}
 
 
 
@@ -964,10 +964,12 @@ In summary, qMC methods have demonstrated their applicability and impact well be
 
 
 
-
 %\section{Ongoing Research} \label{sec:ongoing}
 \section{Conclusion} \label{sec:conclusion}
 Quasi-Monte Carlo methods, based on low-discrepancy sequences, can approximate the mean of a function, $f$, of $d$ variables to within an error tolerance of $\varepsilon$ at a cost of roughly $\mathcal{O}(\varepsilon^{-1})$ function evaluations, provided that the problem is formulated so that $f$ depends primarily on a modest number of variables.  This means that qMC outperforms alternative methods such as simple Monte Carlo and sampling on grids.  QMC is particularly powerful when the effective dimension of the problem is small, even though the nominal dimension, $d$, may be large.  Software libraries are available to facilitate qMC computations.
+
+
+\subsubsection*{Acknowledgments.} This work is supported by National Science Foundation (DMS Grant No. 2316011). The third author would like to acknowledge support from the DOE Office of Science Graduate Student Research (SCGSR) Program.
 
 
 \bibliographystyle{spmpsci}
