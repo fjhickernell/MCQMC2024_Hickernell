@@ -153,9 +153,9 @@ This tutorial describes  low-discrepancy sequences  and their quality measures. 
 \section{Introduction} \label{sec:intro}
 There are many settings where key underlying quantities that affect the outcome are unknown, e.g.,
 \begin{itemize}
-	\item Future market forces, which affect financial risk,
-	\item The porosity field of rock, which affects the extraction of oil or gas, or
-	\item Elementary particle interactions in a high energy physics experiment, which affect what is observed by detectors.
+	\item future market forces, which affect financial risk,
+	\item the porosity field of rock, which affects the extraction of oil or gas, or
+	\item elementary particle interactions in a high energy physics experiment, which affect what is observed by detectors.
 \end{itemize}
 In such situations, the unknown inputs are often modeled using random vector variables or stochastic processes.  Computations are performed by generating a multitude of possible outcomes informed by the assumed probability distribution of the input. These are used to estimate the mean, quantiles, and/or probability distribution of the outcome.  This is the essence of the Monte Carlo (MC) method.
 
@@ -311,7 +311,7 @@ For the example in Figure \ref{fig:extensiblelatticeconstruct}, increasing $n$ b
 
 \subsection{Digital Sequences} \label{sec:digital}
 
-\FJHNote{Another family of LD sequences that is a generalization of the van der Corput sequence \eqref{eq:vdc} is digital sequences \cite{DicPil10a,Nie92}.  For simplicity, we restrict ourselves to $b = 2$ and let $\oplus$ denote binary digitwise addition modulo $2$ (also known as digitwise exclusive or), e.g., $3/8 \oplus 3/4 = {}_20.011 \oplus {}_20.110 = {}_20.101 = 5/8$.  A digital sequence is defined as
+\FJHNote{Another family of LD sequences that generalize the van der Corput sequence \eqref{eq:vdc} are digital sequences \cite{DicPil10a,Nie92}.  For simplicity, we restrict ourselves to $b = 2$ and let $\oplus$ denote binary digitwise addition modulo $2$ (also known as digitwise exclusive or), e.g., $3/8 \oplus 3/4 = {}_20.011 \oplus {}_20.110 = {}_20.101 = 5/8$.  A digital sequence is defined as
 \begin{equation} \label{eq:digital}
 	\bsx_i^{\text{dig}} := i_0 \bsx^{\text{dig}} _1 \oplus i_1 \bsx^{\text{dig}}_2 \oplus i_2 \bsx^{\text{dig}} _4 \oplus \cdots \in [0,1)^d \quad \text{for }
 	i = i_0 + i_12 + i_2 2^2 + \cdots,
